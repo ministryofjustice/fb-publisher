@@ -1,6 +1,18 @@
-<section class="jumbotron text-center">
-  <h2><img class="jumbo-thumbnail" src="https://cdn.auth0.com/styleguide/1.0.0/img/badge.svg"></h2>
-  <h1>RoR Auth0 Sample</h1>
-  <p>Step 1 - Login.</p>
-  <a class="btn btn-success btn-lg" href="/auth/auth0">Login</a>
-</section>
+
+
+<%- if @current_user %>
+  <section class="jumbotron text-center">
+    <p>Welcome back, <%= @current_user.name %>
+  </section>
+<%- else %>
+  <section class="jumbotron text-center">
+    <header>
+      <h2>
+        <img class="thumbnail" src="https://cdn.auth0.com/styleguide/1.0.0/img/badge.svg"></h2>
+        Login
+      </h2>
+    </header>
+
+    <a class="btn btn-success btn-lg" href="/auth/auth0">Login</a>
+  </section>
+<%- end %>

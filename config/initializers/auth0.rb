@@ -6,7 +6,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     ENV['AUTH0_DOMAIN'],
     callback_path: "/auth/oauth2/callback",
     authorize_params: {
-      scope: 'openid profile',
+      scope: 'openid profile email',
       audience: "https://#{ENV['AUTH0_DOMAIN']}/userinfo"
     },
     provider_ignores_state: true
