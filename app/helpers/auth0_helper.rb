@@ -4,14 +4,20 @@ module Auth0Helper
   # Is the user signed in?
   # @return [Boolean]
   def user_signed_in?
-    session[:userinfo].present?
+    session[:user_id].present?
   end
-  
+
+  def identify_user
+    if user_signed_in?
+      @current_user ||= User.where(id: session[:user_id]).first
+    end
+  end
+
   # Set the @current_user or redirect to public page
-  def authenticate_user!
+  def require_user!
     # Redirect to page that has the login here
     if user_signed_in?
-      @current_user = session[:userinfo]
+      identify_user
     else
       redirect_to login_path
     end

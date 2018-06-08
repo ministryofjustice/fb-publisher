@@ -2,5 +2,5 @@
 %h1
   = t('.title')
 
-%p
-  = session.to_h
+%pre
+  = JSON.pretty_generate session.to_h
