@@ -1,0 +1,19 @@
+.styled-as-link {
+  text-decoration: underline;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+#proposition-menu .styled-as-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
