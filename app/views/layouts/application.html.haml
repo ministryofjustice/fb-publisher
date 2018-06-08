@@ -1,0 +1,41 @@
+= content_for :head do
+  = stylesheet_link_tag "application.css"
+  = csrf_meta_tags
+
+= content_for :body_end do
+  .javascript
+    = javascript_include_tag "application.js"
+
+= content_for :homepage_url do
+  = root_path
+
+= content_for :header_class do
+  = "with-proposition"
+
+= content_for :proposition_header do
+  .header-proposition
+    .content
+
+      = link_to 'Menu', '#proposition-links', class: 'js-header-toggle menu'
+
+      %nav{ class: "proposition-menu" }
+        = link_to 'MoJ Form Publisher', root_url, id: 'proposition-name'
+        - if current_user
+          %ul#proposition-links
+            %li
+              = link_to 'Services', dashboard_path
+            %li
+              = link_to 'Teams', '/teams'
+            %li
+              = link_to current_user.name, edit_user_path
+            %li
+              .sign-out
+                = button_to 'Sign out', user_session_path, method: :delete, class: 'styled-as-link'
+
+= content_for :content do
+  %main{ id: "wrapper", role: "main" }
+    .container
+      %section{ class: "content inner cf", id: "content", role: "main" }
+        = yield
+
+= render template: "layouts/govuk_template"
