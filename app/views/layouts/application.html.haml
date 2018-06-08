@@ -15,10 +15,10 @@
 = content_for :proposition_header do
   .header-proposition
     .content
-
+      / no-js
       = link_to 'Menu', '#proposition-links', class: 'js-header-toggle menu'
 
-      %nav{ class: "proposition-menu" }
+      %nav#proposition-menu
         = link_to 'MoJ Form Publisher', root_url, id: 'proposition-name'
         - if current_user
           %ul#proposition-links
@@ -27,15 +27,23 @@
             %li
               = link_to 'Teams', '/teams'
             %li
-              = link_to current_user.name, edit_user_path
+              = link_to 'Profile', edit_user_path
             %li
               .sign-out
                 = button_to 'Sign out', user_session_path, method: :delete, class: 'styled-as-link'
 
 = content_for :content do
-  %main{ id: "wrapper", role: "main" }
-    .container
-      %section{ class: "content inner cf", id: "content", role: "main" }
-        = yield
+  %main{ class: "content inner cf", id: "content", role: "main" }
+    .phase-banner
+      %p
+        %strong.phase-tag
+          BETA
+        %span
+          This is a new service – your
+          = link_to 'feedback', '#'
+          will help us to improve it.
+    = yield
 
 = render template: "layouts/govuk_template"
+
+= render partial: 'layouts/debug', locals: {var: current_user, var_name: 'current_user'}
