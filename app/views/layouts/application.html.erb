@@ -10,6 +10,20 @@
   </head>
 
   <body>
-    <%= yield %>
+    <header role="banner" id="global-header" class="with-proposition">
+      <%= render partial: 'layouts/header' %>
+    </header>
+    <main role="main">
+      <%= yield %>
+    </main>
+    <section id="debug">
+      <header>
+        <h2>Debug</h2>
+      </header>
+      <h3>Session</h3>
+      <pre>
+        <%= JSON.pretty_generate session.to_h %>
+      </pre>
+    </section>
   </body>
 </html>
