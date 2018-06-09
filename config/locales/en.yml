@@ -30,13 +30,26 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  application:
-    title: "MoJ Form Publisher"
-  nav:
-    profile: Profile
-    services: Services
-    sign_out: Sign out
-    teams: Teams
+  home:
+    show:
+      heading: Welcome to MoJ Form Publisher
+      lede_html:
+        We're trialling a new service to let you publish
+        <a href="#">Form Specification</a> files
+        as digital services on the MoJ Cloud Platform
+      sign_in_or_sign_up:
+        Sign in or sign up
+      warning_html:
+        To take part in the beta, you must have a justice.gov.uk email address
+  layouts:
+    application:
+      logo_link_title: Form Publisher home
+      title: "MoJ Form Publisher"
+    user_nav:
+      profile: Profile
+      services: Services
+      sign_out: Sign out
+      teams: Teams
   phase_banner:
     content_html:
       This is a new service - your <a href="%{link_url}">feedback</a>

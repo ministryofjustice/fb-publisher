@@ -1,0 +1,17 @@
+%h1.heading-xlarge
+  = t('.heading')
+%p.lede
+  = t('.lede_html')
+
+.notice
+  %i.icon.icon-important
+    %span.visually-hidden
+      Warning
+  %strong.bold-small
+    = t('.warning_html')
+
+%h2.heading-large
+  = t('.sign_in_or_sign_up')
+
+.auth0-login
+  = render partial: 'home/login'

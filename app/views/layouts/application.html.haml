@@ -3,7 +3,10 @@
   = csrf_meta_tags
 
 = content_for :page_title do
-  = t(:title, scope: [:application])
+  = t('.title')
+
+= content_for :logo_link_title do
+  = t('.logo_link_title')
 
 = content_for :body_end do
   .javascript
@@ -22,18 +25,9 @@
       = link_to 'Menu', '#proposition-links', class: 'js-header-toggle menu'
 
       %nav#proposition-menu
-        = link_to t(:title, scope: [:application]), root_url, id: 'proposition-name'
+        = link_to t('.title'), root_url, id: 'proposition-name'
         - if current_user
-          %ul#proposition-links
-            %li
-              = link_to t('.services'), dashboard_path
-            %li
-              = link_to t('.teams'), '/teams'
-            %li
-              = link_to t('.profile'), edit_user_path
-            %li
-              .sign-out
-                = button_to t('.sign_out'), user_session_path, method: :delete, class: 'styled-as-link'
+          = render partial: 'layouts/user_nav'
 
 = content_for :content do
   %main{ class: "content inner cf", id: "content", role: "main" }
