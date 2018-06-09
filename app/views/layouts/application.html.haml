@@ -2,12 +2,15 @@
   = stylesheet_link_tag "application.css"
   = csrf_meta_tags
 
+= content_for :page_title do
+  = t(:title, scope: [:application])
+
 = content_for :body_end do
   .javascript
     = javascript_include_tag "application.js"
 
 = content_for :homepage_url do
-  = root_path
+  = root_url
 
 = content_for :header_class do
   = "with-proposition"
@@ -19,29 +22,28 @@
       = link_to 'Menu', '#proposition-links', class: 'js-header-toggle menu'
 
       %nav#proposition-menu
-        = link_to 'MoJ Form Publisher', root_url, id: 'proposition-name'
+        = link_to t(:title, scope: [:application]), root_url, id: 'proposition-name'
         - if current_user
           %ul#proposition-links
             %li
-              = link_to 'Services', dashboard_path
+              = link_to t('.services'), dashboard_path
             %li
-              = link_to 'Teams', '/teams'
+              = link_to t('.teams'), '/teams'
             %li
-              = link_to 'Profile', edit_user_path
+              = link_to t('.profile'), edit_user_path
             %li
               .sign-out
-                = button_to 'Sign out', user_session_path, method: :delete, class: 'styled-as-link'
+                = button_to t('.sign_out'), user_session_path, method: :delete, class: 'styled-as-link'
 
 = content_for :content do
   %main{ class: "content inner cf", id: "content", role: "main" }
     .phase-banner
       %p
         %strong.phase-tag
-          BETA
+          = t(:phase, scope: [:phase_banner])
         %span
-          This is a new service – your
-          = link_to 'feedback', '#'
-          will help us to improve it.
+          = t(:content_html, scope: [:phase_banner], link_url: '#')
+
     = yield
 
 = render template: "layouts/govuk_template"

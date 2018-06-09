@@ -30,4 +30,15 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  application:
+    title: "MoJ Form Publisher"
+  nav:
+    profile: Profile
+    services: Services
+    sign_out: Sign out
+    teams: Teams
+  phase_banner:
+    content_html:
+      This is a new service - your <a href="%{link_url}">feedback</a>
+      will help improve it
+    phase: BETA
