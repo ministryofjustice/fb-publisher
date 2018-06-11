@@ -22,9 +22,11 @@ self-explanatory
 To run locally via docker, you'll need to construct the DATABASE_URL
 correctly, taking care to set the host correctly - this should be
 the IP of your host machine _as seen from inside the containers_
-# You should add a .env file (git will ignore these files) to store
-# your environment variables.
-# important
+
+You should add a .env file (git will ignore these files) to store your
+environment variables. You can still override them per-command if needed
+
+*speak to Al about the AUTH0_ variables!*
 
 You will need a running Docker daemon, and docker-compose
 

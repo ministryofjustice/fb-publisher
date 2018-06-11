@@ -1,7 +1,7 @@
 version: '3'
 volumes:
   assets:
-  postgres_data: {}
+    external: false
 services:
   app:
     build:
@@ -18,7 +18,8 @@ services:
     - RAILS_SERVE_STATIC_ASSETS
     ports:
       - 3000:3000
-      
+    volumes:
+      - assets:/var/www/fb-publisher/public/assets
   # db:
     # image: postgres
     # volumes:
@@ -31,3 +32,5 @@ services:
       - app
     ports:
       - 8000:80
+    volumes:
+      - assets:/var/www/fb-publisher/public/assets
