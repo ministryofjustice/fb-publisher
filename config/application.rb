@@ -18,5 +18,11 @@ module FbPublisher
     config.generators do |g|
       g.template_engine :haml
     end
+
+    # 12-factor principle - log to STDOUT
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.log_tags  = [:subdomain, :uuid]
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 end

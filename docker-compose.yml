@@ -1,0 +1,36 @@
+version: '3'
+volumes:
+  assets:
+    external: false
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    # depends_on:
+      # - db
+    environment:
+    - AUTH0_CLIENT_ID
+    - AUTH0_CLIENT_SECRET
+    - AUTH0_DOMAIN
+    - DATABASE_URL
+    - RAILS_ENV
+    - RAILS_SERVE_STATIC_ASSETS
+    ports:
+      - 3000:3000
+    volumes:
+      - assets:/var/www/fb-publisher/public/assets
+  # db:
+    # image: postgres
+    # volumes:
+      # - postgres_data:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    depends_on:
+      - app
+    ports:
+      - 8000:80
+    volumes:
+      - assets:/var/www/fb-publisher/public/assets
