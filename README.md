@@ -13,16 +13,35 @@ Form Builder Publisher Web application
 
 ## To run via Docker
 
-You will need a running Docker daemon
+### Environment Variables
+
+The application container requires several environment variables.
+These are listed in the docker-compose.yml file, and most should be
+self-explanatory
+
+To run locally via docker, you'll need to construct the DATABASE_URL
+correctly, taking care to set the host correctly - this should be
+the IP of your host machine _as seen from inside the containers_
+# You should add a .env file (git will ignore these files) to store
+# your environment variables.
+# important
+
+You will need a running Docker daemon, and docker-compose
 
 ```bash
+
+# First, build the containers:
+
 # from the root directory of the application
-docker build -t fb-publisher .
+docker compose build --build-arg RAILS_ENV=(env)
+# ...where (env) should be replaced with a Rails environment name
+# - ie. one of development, test, staging or production
+# Then you can run them:
+docker-compose up
+
 # this should start the application running as a daemon,
 # in a container on port 3000, accessible from your
 # local host at port 8000 (i.e. http://localhost:8000/).
-# For possible configuration parameters, see the file dev_docker.sh
-./dev_docker.sh
 
 ```
 
