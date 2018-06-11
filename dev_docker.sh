@@ -9,5 +9,6 @@ DATABASE_URL=${DATABASE_URL:-"postgres://${DB_USER}:${DB_PASSWORD}@${HOST_IP}/${
 docker run  -p ${HOST_PORT}:3000 \
             --add-host="localhost:${HOST_IP}" \
             -e DATABASE_URL=${DATABASE_URL} \
+            -n fb-publisher
             -d \
             ${IMAGE_NAME}
