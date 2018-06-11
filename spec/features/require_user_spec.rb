@@ -11,7 +11,7 @@ describe 'visiting the home page' do
     end
 
     it 'shows a link to login' do
-      expect(page).to have_link('Login')
+      expect(page).to have_link(I18n.t(:link_text, scope: [:home, :login]))
     end
   end
 
@@ -22,7 +22,7 @@ describe 'visiting the home page' do
     end
 
     it 'does not show a link to login' do
-      expect(page).to have_link('Login')
+      expect(page).to have_link(I18n.t(:link_text, scope: [:home, :login]))
     end
   end
 end
@@ -48,8 +48,13 @@ describe 'visiting a page that requires a current user' do
       login_as!(user)
     end
 
-    it 'does not redirect to home' do
-      expect(page.current_url).to eq(root_url)
+    context 'with a session that has not expired' do
+      before do
+
+      end
+      it 'does not redirect to home' do
+        expect(page.current_url).to eq(root_url)
+      end
     end
   end
 end

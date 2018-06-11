@@ -7,18 +7,20 @@ class Auth0UserSession
     'justice.gov.uk'
   ].freeze
 
-  attr_accessor :user_info, :user_id
+  attr_accessor :user_info, :user_id, :created_at
 
   validate :email_domain_is_valid
 
   def initialize(params = {})
     self.user_id = params[:user_id]
     self.user_info = params[:user_info]
+    self.created_at = params[:created_at]
   end
 
   def save_to(actual_session)
     actual_session[:user_info] = user_info
     actual_session[:user_id] = user_id
+    actual_session[:created_at] = Time.now.to_i
   end
 
   def email

@@ -31,6 +31,8 @@
 
 en:
   home:
+    login:
+      link_text: Use your MoJ Google Account to sign in or sign up
     show:
       heading: Welcome to MoJ Form Publisher
       lede_html:

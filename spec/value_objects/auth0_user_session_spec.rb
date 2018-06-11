@@ -30,4 +30,32 @@ describe Auth0UserSession do
       end
     end
   end
+
+  describe 'save_to' do
+    let(:user_info){
+      {
+        'info' => {
+          'email' => 'test-only@some-agency.defra.gov.uk',
+          'name' => 'Example McUser'
+        }
+      }
+    }
+    subject do
+      described_class.new(user_id: 1234, user_info: user_info)
+    end
+    context 'given a hash' do
+      let(:session){ {} }
+      before do
+        subject.save_to(session)
+      end
+
+      it 'saves the user_id to the given hash' do
+        expect(session[:user_id]).to eq(subject.user_id)
+      end
+
+      it 'sets created_at to now' do
+        expect(session[:created_at]).to be_within(100).of(Time.now.to_i)
+      end
+    end
+  end
 end
