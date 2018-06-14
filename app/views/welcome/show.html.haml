@@ -1,0 +1,11 @@
+.govuk-box-highlight
+  %h1.heading-xlarge
+    = t('.heading')
+  %p.font-large
+    = t('.lede_html', user_name: @current_user.name)
+
+%h2.heading-medium
+  = t('.what_now')
+
+%p
+  = t('.what_to_do_next_html', link_url: new_service_path)

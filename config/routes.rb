@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   get '/welcome' => 'welcome#show'
   get '/' => 'home#show', as: 'root'
 
+  resources :teams
+  resources :services
+
   resource :user, only: [:edit, :update, :destroy]
   resource :user_session, only: [:destroy]
 end
