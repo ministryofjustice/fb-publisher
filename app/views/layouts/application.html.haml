@@ -38,6 +38,8 @@
         %span
           = t(:content_html, scope: [:phase_banner], link_url: '#')
 
+    = render partial: 'layouts/flashes'
+
     = yield
 
 = render template: "layouts/govuk_template"

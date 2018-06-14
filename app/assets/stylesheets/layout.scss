@@ -17,3 +17,24 @@
     text-decoration: underline;
   }
 }
+
+.flash {
+  border: 1px solid;
+  margin: 1em 0;
+  padding: 1em ;
+}
+
+@import 'colours';
+
+.flash-notice {
+  background-color: $focus-colour;
+  backkground-opacity: 50%;
+}
+.flash-error {
+  background-color: $error-colour;
+}
+
+.flash-success {
+  background-color: $green;
+  color: #fff;
+}

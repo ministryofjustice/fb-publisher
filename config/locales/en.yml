@@ -30,6 +30,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  auth:
+    existing_user:
+      welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
   home:
     login:
       link_text: Use your MoJ Google Account to sign in or sign up
@@ -57,6 +60,9 @@ en:
       This is a new service - your <a href="%{link_url}">feedback</a>
       will help improve it
     phase: BETA
+  user_sessions:
+    destroy:
+      success: "Signed out successfully"
   welcome:
     show:
       heading: You're all signed up

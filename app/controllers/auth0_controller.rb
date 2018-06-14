@@ -18,7 +18,10 @@ class Auth0Controller < ApplicationController
       # store them
       auth0_user_session.save_to(session)
       # Redirect to the URL you want after successful auth
-      redirect_to dashboard_path
+      redirect_to dashboard_path, 
+                  notice: I18n.t(:welcome_html,
+                                  scope: [:auth, :existing_user],  
+                                  user_name: existing_user.name)
     else
       # is the user OK to sign up? (ie. has a justice.gov.uk email)
       if auth0_user_session.valid?

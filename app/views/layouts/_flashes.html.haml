@@ -1,0 +1,3 @@
+- for key in flash.keys
+  %div{ class: "flash flash-#{key.to_s}" }
+    = flash[key].html_safe
