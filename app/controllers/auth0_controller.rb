@@ -39,10 +39,8 @@ class Auth0Controller < ApplicationController
     # show a failure page or redirect to an error page
     @error_type = request.params['error_type']
     @error_msg = request.params['message']
-  end
-
-  def signup_not_allowed
-
+    flash[:error] = @error_msg
+    redirect_to signup_error_path(error_type: @error_type)
   end
 
   private

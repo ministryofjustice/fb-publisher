@@ -65,6 +65,13 @@ en:
   user_sessions:
     destroy:
       success: "Signed out successfully"
+    signup_error:
+      errors:
+        access_denied:
+          You need to authorize this application to access your email address
+      heading: Something went wrong with your sign up
+      lede: "We couldn't process your sign up because:"
+      try_again: Go back and try again
     signup_not_allowed:
       heading: You can't sign up with that email address
       lede:
