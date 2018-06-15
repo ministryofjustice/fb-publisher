@@ -31,3 +31,6 @@
 # dotenv gem loads .env files automatically
 .env
 *.env
+
+# coverage reports
+coverage

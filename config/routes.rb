@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   get '/dashboard' => 'dashboard#show'
   get '/welcome' => 'welcome#show'
+  get '/signup_not_allowed' => 'user_sessions#signup_not_allowed', as: 'signup_not_allowed'
+  get '/signup_error/:error_type' => 'user_sessions#signup_error', as: 'signup_error'
   get '/' => 'home#show', as: 'root'
 
   resources :teams

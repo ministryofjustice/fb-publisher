@@ -18,9 +18,9 @@ class Auth0Controller < ApplicationController
       # store them
       auth0_user_session.save_to(session)
       # Redirect to the URL you want after successful auth
-      redirect_to dashboard_path, 
+      redirect_to dashboard_path,
                   notice: I18n.t(:welcome_html,
-                                  scope: [:auth, :existing_user],  
+                                  scope: [:auth, :existing_user],
                                   user_name: existing_user.name)
     else
       # is the user OK to sign up? (ie. has a justice.gov.uk email)
@@ -30,7 +30,7 @@ class Auth0Controller < ApplicationController
         auth0_user_session.save_to(session)
         redirect_to welcome_path
       else
-        render :signup_not_allowed, locals: { user_session: auth0_user_session }
+        redirect_to signup_not_allowed_path
       end
     end
   end
@@ -39,10 +39,8 @@ class Auth0Controller < ApplicationController
     # show a failure page or redirect to an error page
     @error_type = request.params['error_type']
     @error_msg = request.params['message']
-  end
-
-  def signup_not_allowed
-
+    flash[:error] = @error_msg
+    redirect_to signup_error_path(error_type: @error_type)
   end
 
   private

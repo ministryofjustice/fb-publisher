@@ -1,0 +1,14 @@
+%h1.heading-xlarge
+  = t('.heading')
+
+%p.lede
+  = t('.lede')
+
+.notice
+  %i.icon.icon-important
+    %span.visually-hidden
+      Warning
+  %strong.bold-small
+    = t('.warning')
+    - emails = @valid_emails.map {|e| "<em>#{e}</em>" }
+    = emails.to_sentence(last_word_connector: t('.or')).html_safe

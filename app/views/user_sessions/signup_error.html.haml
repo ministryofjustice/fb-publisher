@@ -1,0 +1,16 @@
+%h1.heading-xlarge
+  = t('.heading')
+
+%p.lede
+  = t('.lede')
+
+.notice
+  %i.icon.icon-important
+    %span.visually-hidden
+      Warning
+  %strong.bold-small
+    = t(@error_type.to_sym, scope: [:user_sessions, :signup_error, :errors])
+
+%p
+%p
+  = link_to t('.try_again'), root_path, class: 'font-medium'

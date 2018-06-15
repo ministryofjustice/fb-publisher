@@ -65,6 +65,21 @@ en:
   user_sessions:
     destroy:
       success: "Signed out successfully"
+    signup_error:
+      errors:
+        access_denied:
+          You need to authorize this application to access your email address
+      heading: Something went wrong with your sign up
+      lede: "We couldn't process your sign up because:"
+      try_again: Go back and try again
+    signup_not_allowed:
+      heading: You can't sign up with that email address
+      lede:
+        Sorry, this service is only available to Ministry of Justice staff
+        at the moment.
+      or: or
+      warning:
+        To use this service, you must use an email address that ends in
   welcome:
     show:
       heading: You're all signed up
@@ -75,6 +90,3 @@ en:
         <p>Feel free to click around and explore the interface.</p>
         <p>If you're ready to get started, you can
         <br /><a class="button button-cta" href="%{link_url}">Publish a new service</a></p>
-
-
-        
