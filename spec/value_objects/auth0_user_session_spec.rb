@@ -31,7 +31,7 @@ describe Auth0UserSession do
     end
   end
 
-  describe 'save_to' do
+  describe '#save_to' do
     let(:user_info){
       {
         'info' => {
@@ -56,6 +56,24 @@ describe Auth0UserSession do
       it 'sets created_at to now' do
         expect(session[:created_at]).to be_within(100).of(Time.now.to_i)
       end
+    end
+  end
+
+  describe '#name' do
+    let(:user_info){
+      {
+        'info' => {
+          'email' => 'test-only@some-agency.defra.gov.uk',
+          'name' => 'Example McUser'
+        }
+      }
+    }
+    subject do
+      described_class.new(user_id: 1234, user_info: user_info)
+    end
+
+    it 'returns the name in the userinfo packet' do
+      expect(subject.name).to eq('Example McUser')
     end
   end
 end
