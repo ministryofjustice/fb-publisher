@@ -1,0 +1,14 @@
+table {
+  .actions {
+    // line up the links with the button text
+    a, .button_to {
+      display: inline-block;
+      float: left;
+    }
+    a {
+      padding: 0.5em;
+    }
+    .button_to {
+    }
+  }
+}

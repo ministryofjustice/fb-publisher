@@ -21,8 +21,15 @@ class ServicesController < ApplicationController
     end
   end
 
+  def destroy
+    @service = Service.find(params[:id])
+    authorize(@service)
+    @service.destroy!
+    redirect_to index_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
+  end
+
   def show
-    @service = Service.find(id: params[:id])
+    @service = Service.find(params[:id])
     authorize(@service)
   end
 

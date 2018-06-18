@@ -1,7 +1,11 @@
 %h1.heading-xlarge
   = t('.heading')
 
+%p.lede
+  = t('.lede_html')
+
+
 = GovukElementsErrorsHelper.error_summary @service,
   t(:errors_intro, scope: [:shared]), ''
-  
+
 = render partial: 'services/form', locals: {service: @service}

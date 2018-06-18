@@ -1,6 +1,11 @@
 %tr
   %td
     = link_to service.name, service_path(service)
-  %td
+  %td.actions
     = link_to t('.edit'), edit_service_path(service)
-    = button_to t('.delete'), service_path(service), method: :delete
+    = button_to t('.delete'),
+                service_path(service),
+                method: :delete,
+                class: 'button',
+                data: { confirm: t('.delete_confirm', service: service.name),
+                        disable_with: t('.deleting') }
