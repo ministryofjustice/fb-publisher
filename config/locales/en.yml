@@ -62,6 +62,14 @@ en:
       This is a new service - your <a href="%{link_url}">feedback</a>
       will help improve it
     phase: BETA
+  services:
+    index:
+      actions: Actions
+      caption: Your Services
+      heading: Your Services
+      name: Service name
+      no_services_yet: You don't have any services yet.
+      new_service: Create a new service
   user_sessions:
     destroy:
       success: "Signed out successfully"

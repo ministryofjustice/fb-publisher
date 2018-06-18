@@ -1,0 +1,6 @@
+%tr
+  %td
+    = link_to service.name, service_path(service)
+  %td
+    = link_to t('.edit'), edit_service_path(service)
+    = button_to t('.delete'), service_path(service), method: :delete

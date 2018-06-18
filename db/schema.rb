@@ -31,10 +31,9 @@ ActiveRecord::Schema.define(version: 2018_06_18_062003) do
     t.string "name"
     t.string "slug"
     t.string "git_repo_url"
+    t.uuid "created_by_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "user_id"
-    t.index ["user_id"], name: "index_services_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -45,5 +44,5 @@ ActiveRecord::Schema.define(version: 2018_06_18_062003) do
   end
 
   add_foreign_key "identities", "users"
-  add_foreign_key "services", "users"
+  add_foreign_key "services", "users", column: "created_by_user_id"
 end
