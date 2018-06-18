@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   resources :teams
   resources :services
+  resources :services
 
   resource :user, only: [:edit, :update, :destroy]
   resource :user_session, only: [:destroy]
