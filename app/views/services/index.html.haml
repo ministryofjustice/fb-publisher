@@ -1,0 +1,17 @@
+%h1.heading-xlarge
+  = t('.heading')
+
+- if @services.empty?
+  %p
+    = t('.no_services_yet')
+- else
+  %table
+    %thead
+      %th{ scope: 'col' }
+        = t('.name')
+      %th{ scope: 'col' }
+        = t('.actions')
+    %tbody
+      = render partial: 'service', collection: @services
+
+= link_to t('.new_service'), new_service_path, class: 'button button-cta'

@@ -118,6 +118,8 @@ GEM
       ruby_parser (~> 3.5)
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
+    i18n-debug (1.1.1)
+      i18n (< 2)
     io-like (0.3.0)
     jaro_winkler (1.5.1)
     jbuilder (2.7.0)
@@ -169,6 +171,8 @@ GEM
     powerpack (0.1.2)
     public_suffix (3.0.2)
     puma (3.11.4)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (2.0.5)
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
@@ -298,12 +302,14 @@ DEPENDENCIES
   govuk_template
   haml
   haml-rails
+  i18n-debug
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   omniauth (~> 1.6.1)
   omniauth-auth0 (~> 2.0.0)
   pg (>= 0.18, < 2.0)
   puma (~> 3.11)
+  pundit
   rails (~> 5.2.0)
   rspec (~> 3.6.0)
   rspec-rails

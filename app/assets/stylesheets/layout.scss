@@ -28,13 +28,15 @@
 
 .flash-notice {
   background-color: $focus-colour;
-  backkground-opacity: 50%;
+  background-color: rgba($focus-colour, 0.5);
 }
 .flash-error {
   background-color: $error-colour;
+  background-color: rgba($error-colour, 0.5);
 }
 
 .flash-success {
   background-color: $green;
+  background-color: rgba($green, 0.5);
   color: #fff;
 }
