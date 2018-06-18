@@ -1,21 +1,21 @@
 %ul#service-links
   %li
-    - if current_page?(controller: services, action: show)
+    - if current_page?(controller: :services, action: :show)
       = t('.urls')
     - else
       = link_to t('.urls'), show_service_path(service)
   %li
-    - if current_page?(controller: config_params, action: index)
+    - if current_page?(controller: :config_params, action: :index)
       = t('.config_params')
     - else
       = link_to t('.config_params'), service_config_params_index_path(service)
   %li
-    - if current_page?(controller: permissions, action: show)
+    - if current_page?(controller: :permissions, action: :show)
       = t('.permissions')
     - else
       = link_to t('.permissions'), service_permissions_index_path(service)
   %li
-    - if current_page?(controller: services, action: deployments)
+    - if current_page?(controller: :services, action: :deployments)
       = t('.deployments')
     - else
       = link_to t('.deployments'), service_deployments_index_path(service)
