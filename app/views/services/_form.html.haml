@@ -1,0 +1,7 @@
+= form_for service do |f|
+  .form-group
+    = f.text_field :name, required: true
+  .form-group
+    = f.text_field :slug
+
+  = f.submit class: 'button button-cta'

@@ -30,6 +30,21 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  helpers:
+    hint:
+      service:
+        name_html:
+          This is what users will see.<br />
+          Must be 3-128 characters long. You can use any valid Unicode characters<br />
+          Check the <a href="https://www.gov.uk/service-manual/design/naming-your-service#how-to-name-your-service">Government Service Manual guidance on How to name your service</a>
+        slug_html:
+          This will form the first part of your services' initial URL.<br />
+          Must contain 3-64 characters, and only letters, numbers and hyphens (-)<br />
+          Must be unique. If you leave this blank, we'll generate one for you
+    label:
+      service:
+        name: Service name
+        slug: Service "Slug"
   auth:
     existing_user:
       welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
@@ -63,6 +78,7 @@ en:
       will help improve it
     phase: BETA
   services:
+    form:
     index:
       actions: Actions
       caption: Your Services
@@ -70,6 +86,13 @@ en:
       name: Service name
       no_services_yet: You don't have any services yet.
       new_service: Create a new service
+    new:
+      heading: New Service
+    service:
+      delete: Delete
+
+  shared:
+    errors_intro: There were some errors in that form
   user_sessions:
     destroy:
       success: "Signed out successfully"

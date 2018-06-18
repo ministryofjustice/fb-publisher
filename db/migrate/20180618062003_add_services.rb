@@ -1,6 +1,6 @@
 class AddServices < ActiveRecord::Migration[5.2]
   def change
-    create_table :services, primary_key: :uuid do |t|
+    create_table :services, id: :uuid do |t|
       t.string        :name, unique: true
       t.string        :slug, unique: true
       t.string        :git_repo_url
