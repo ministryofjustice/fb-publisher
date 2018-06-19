@@ -31,6 +31,7 @@ class ServicesController < ApplicationController
   def show
     @service = Service.find_by_slug(params[:id])
     authorize(@service)
+    @status_by_environment = StatusService.service_status(@service)
   end
 
   private

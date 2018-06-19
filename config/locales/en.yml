@@ -84,6 +84,8 @@ en:
   services:
     create:
       success: Your new service has been created successfully
+    environment:
+      check_now: 'Check now'
     index:
       actions: Actions
       caption: Your Services
@@ -109,7 +111,9 @@ en:
       deleting: Deleting...
       edit: Edit
       success: The service "%{service}" was successfully deleted
-
+    show:
+      lede_html:
+        Status of your service in the available environments
   shared:
     errors_intro: There were some errors in that form
   user_sessions:

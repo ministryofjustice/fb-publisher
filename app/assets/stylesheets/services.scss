@@ -1,4 +1,9 @@
+@import 'colours';
+
 #service-links {
+  border-bottom: 1px solid $border-colour;
+  padding-bottom: 1em;
+  
   ul {
     list-style-type: none;
     li {

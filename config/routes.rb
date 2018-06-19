@@ -13,9 +13,12 @@ Rails.application.routes.draw do
 
   resources :teams
   resources :services do
-    resources :config_params, controller_name: :service_config_params
-    resources :permissions, controller_name: :service_permissions
-    resources :deployments, controller_name: :service_deployments
+    scope :module => 'services' do
+      resource :status, controller_name: :service_status
+      resources :config_params
+      resources :permissions, controller_name: :service_permissions
+      resources :deployments, controller_name: :service_deployments
+    end
   end
 
 
