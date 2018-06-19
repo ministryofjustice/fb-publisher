@@ -13,7 +13,7 @@ class ServiceEnvironment
 
   def self.find(key)
     all.find do |e|
-      e.slug == key
+      e.slug.to_sym == key.to_sym
     end
   end
 
