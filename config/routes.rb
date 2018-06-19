@@ -12,8 +12,12 @@ Rails.application.routes.draw do
   get '/' => 'home#show', as: 'root'
 
   resources :teams
-  resources :services
-  resources :services
+  resources :services do
+    resources :config_params, controller_name: :service_config_params
+    resources :permissions, controller_name: :service_permissions
+    resources :deployments, controller_name: :service_deployments
+  end
+
 
   resource :user, only: [:edit, :update, :destroy]
   resource :user_session, only: [:destroy]

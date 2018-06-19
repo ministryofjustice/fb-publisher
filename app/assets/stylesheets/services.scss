@@ -1,5 +1,11 @@
 #service-links {
-  li {
-    a {}
+  ul {
+    list-style-type: none;
+    li {
+      display: inline-block;
+      a {
+        padding: 1em;
+      }
+    }
   }
 }

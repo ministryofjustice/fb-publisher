@@ -91,6 +91,11 @@ en:
       name: Service name
       no_services_yet: You don't have any services yet.
       new_service: Create a new service
+    links:
+      config_params: Config Params
+      deployments: Deployments
+      permissions: Permissions
+      urls: URLs
     new:
       heading: New Service
       lede_html:

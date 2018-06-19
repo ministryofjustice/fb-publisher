@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_18_062003) do
+ActiveRecord::Schema.define(version: 2018_06_18_153203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,6 +25,39 @@ ActiveRecord::Schema.define(version: 2018_06_18_062003) do
     t.index ["email"], name: "index_identities_on_email"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid"
     t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
+  create_table "service_config_params", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "uuid"
+    t.string "environment"
+    t.string "name"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "last_update_by_user_id"
+    t.bigint "service_id"
+    t.index ["service_id"], name: "index_service_config_params_on_service_id"
+  end
+
+  create_table "service_deployments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "commit_sha"
+    t.string "environment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "created_by_user_id"
+    t.bigint "service_id"
+    t.index ["service_id"], name: "index_service_deployments_on_service_id"
+  end
+
+  create_table "service_permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "created_by_user_id"
+    t.bigint "services_id"
+    t.bigint "users_id"
+    t.index ["services_id"], name: "index_service_permissions_on_services_id"
+    t.index ["users_id"], name: "index_service_permissions_on_users_id"
   end
 
   create_table "services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -44,5 +77,7 @@ ActiveRecord::Schema.define(version: 2018_06_18_062003) do
   end
 
   add_foreign_key "identities", "users"
+  add_foreign_key "service_deployments", "users", column: "created_by_user_id"
+  add_foreign_key "service_permissions", "users", column: "created_by_user_id"
   add_foreign_key "services", "users", column: "created_by_user_id"
 end
