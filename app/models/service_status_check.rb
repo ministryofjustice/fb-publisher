@@ -58,7 +58,6 @@ class ServiceStatusCheck < ActiveRecord::Base
   def self.execute_many!( service:,
                           environment_slugs: ServiceEnvironment.all_keys,
                           timeout: 5)
-    results = []
     hydra = Typhoeus::Hydra.new
     requests = environment_slugs.map do |slug|
       check = new(service: service, environment_slug: slug)
@@ -66,7 +65,7 @@ class ServiceStatusCheck < ActiveRecord::Base
       hydra.queue(req)
       req
     end
-    # blocks until all completed
+    # 'run' blocks until all requests are completed
     hydra.run
     requests.map do |request|
       request.response.options[:saved_check]
