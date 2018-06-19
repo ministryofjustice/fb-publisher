@@ -1,6 +1,11 @@
 class Service < ActiveRecord::Base
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by_user_id
 
+  has_many :service_status_checks
+  has_many :service_config_params
+  has_many :service_permissions
+  has_many :service_deployments
+
   before_validation :generate_slug_if_blank!
 
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true

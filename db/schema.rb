@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_18_153203) do
+ActiveRecord::Schema.define(version: 2018_06_19_145552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -60,6 +60,18 @@ ActiveRecord::Schema.define(version: 2018_06_18_153203) do
     t.index ["users_id"], name: "index_service_permissions_on_users_id"
   end
 
+  create_table "service_status_checks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "environment_slug"
+    t.integer "status"
+    t.float "time_taken"
+    t.string "url"
+    t.datetime "timestamp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "service_id"
+    t.index ["service_id"], name: "index_service_status_checks_on_service_id"
+  end
+
   create_table "services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "slug"
@@ -79,5 +91,6 @@ ActiveRecord::Schema.define(version: 2018_06_18_153203) do
   add_foreign_key "identities", "users"
   add_foreign_key "service_deployments", "users", column: "created_by_user_id"
   add_foreign_key "service_permissions", "users", column: "created_by_user_id"
+  add_foreign_key "service_status_checks", "services"
   add_foreign_key "services", "users", column: "created_by_user_id"
 end

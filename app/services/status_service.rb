@@ -26,24 +26,10 @@ class StatusService
   end
 
   def self.check(service:, environment:)
-    url = environment.url_for(service)
-    start = Time.now
-
-    response = begin
-      r = Net::HTTP.get(URI.parse(url))
-    rescue SocketError => e
-      nil
-    end
-    time_taken = Time.now - start
-
-    {
-      environment: environment.slug,
-      service: service.slug,
-      status: response.try(:code),
-      timestamp: Time.now,
-      time_taken: time_taken,
-      url: url
-    }
+    ServiceStatusCheck.execute!(
+        environment_slug: environment.slug,
+        service: service
+    )
   end
 
   def self.check_in_parallel( service:,
@@ -62,14 +48,14 @@ class StatusService
     checks = requests.map do |request|
       resp = request.response
       code = resp.response_code == 0 ? nil : resp.response_code
-      {
-        environment: environments[index],
-        service: service.slug,
+      ServiceStatusCheck.create({
+        environment_slug: environments[index],
+        service: service,
         status: code,
         timestamp: Time.now,
         time_taken: resp.total_time,
         url: request.url
-      }
+      })
     end
   end
 end
