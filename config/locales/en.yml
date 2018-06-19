@@ -84,6 +84,8 @@ en:
   services:
     create:
       success: Your new service has been created successfully
+    environment:
+      check_now: 'Check now'
     index:
       actions: Actions
       caption: Your Services
@@ -91,6 +93,11 @@ en:
       name: Service name
       no_services_yet: You don't have any services yet.
       new_service: Create a new service
+    links:
+      config_params: Config Params
+      deployments: Deployments
+      permissions: Permissions
+      urls: URLs
     new:
       heading: New Service
       lede_html:
@@ -104,7 +111,9 @@ en:
       deleting: Deleting...
       edit: Edit
       success: The service "%{service}" was successfully deleted
-
+    show:
+      lede_html:
+        Status of your service in the available environments
   shared:
     errors_intro: There were some errors in that form
   user_sessions:

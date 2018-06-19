@@ -1,0 +1,15 @@
+%tr
+  %th
+    = environment[:environment][:name]
+  %td
+    = link_to(environment[:service][:url], environment[:service][:url])
+  %td
+    - if environment[:service][:status]
+      %span{ class: 'status status-#{environment[:service][:status]}' }
+        = environment[:service][:status]
+    - else
+      \-
+  %td
+    = environment[:service][:status_timestamp] ? localize(environment[:service][:status_timestamp]) : "-"
+  %td
+    = button_to(t('.check_now'), {}, class: 'button')

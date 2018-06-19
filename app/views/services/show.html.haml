@@ -1,5 +1,25 @@
 %h1.heading-xlarge
   = @service.name
 
+%p
+  = render partial: 'links', locals: {service: @service}
 
--# = render partial: 'links', locals: {service: service}
+%p.lede
+  = t('.lede_html')
+
+%table
+  %thead
+    %tr
+      %th
+        = t('.environment')
+      %th
+        = t('.url')
+      %th
+        = t('.status')
+      %th
+        = t('.timestamp')
+      %th
+        = t('.actions')
+
+
+  = render partial: 'environment', collection: @status_by_environment

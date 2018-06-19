@@ -13,6 +13,10 @@ class Service < ActiveRecord::Base
     where(created_by_user_id: user_id)
   end
 
+  def to_param
+    slug
+  end
+
   private
 
   def generate_slug_if_blank!

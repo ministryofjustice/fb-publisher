@@ -1,5 +1,16 @@
+@import 'colours';
+
 #service-links {
-  li {
-    a {}
+  border-bottom: 1px solid $border-colour;
+  padding-bottom: 1em;
+  
+  ul {
+    list-style-type: none;
+    li {
+      display: inline-block;
+      a {
+        padding: 1em;
+      }
+    }
   }
 }

@@ -7,6 +7,10 @@ class ServicePolicy < ApplicationPolicy
     user.present?
   end
 
+  def show?
+    user.id == record.created_by_user_id
+  end
+
   def edit?
     user.id == record.created_by_user_id
   end

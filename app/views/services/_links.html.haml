@@ -1,21 +1,22 @@
-%ul#service-links
-  %li
-    - if current_page?(controller: services, action: show)
-      = t('.urls')
-    - else
-      = link_to t('.urls'), show_service_path(service)
-  %li
-    - if current_page?(controller: config_params, action: index)
-      = t('.config_params')
-    - else
-      = link_to t('.config_params'), service_config_params_index_path(service)
-  %li
-    - if current_page?(controller: permissions, action: show)
-      = t('.permissions')
-    - else
-      = link_to t('.permissions'), service_permissions_index_path(service)
-  %li
-    - if current_page?(controller: services, action: deployments)
-      = t('.deployments')
-    - else
-      = link_to t('.deployments'), service_deployments_index_path(service)
+%nav#service-links
+  %ul
+    %li
+      - if current_action?(controller: :services, action: :show)
+        = t('.urls')
+      - else
+        = link_to t('.urls'), show_service_path(service)
+    %li
+      - if current_action?(controller: :service_config_params, action: :index)
+        = t('.config_params')
+      - else
+        = link_to t('.config_params'), service_config_params_path(service_id: service)
+    %li
+      - if current_action?(controller: :service_permissions, action: :index)
+        = t('.permissions')
+      - else
+        = link_to t('.permissions'), service_permissions_path(service_id: service)
+    %li
+      - if current_action?(controller: :service_deployments, action: :index)
+        = t('.deployments')
+      - else
+        = link_to t('.deployments'), service_deployments_path(service_id: service)
