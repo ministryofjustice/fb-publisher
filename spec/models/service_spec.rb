@@ -65,4 +65,12 @@ describe Service do
       end
     end
   end
+
+  describe '#to_param' do
+    subject { Service.new(slug: 'my-slug') }
+
+    it 'returns the slug' do
+      expect(subject.to_param).to eq(subject.slug)
+    end
+  end
 end

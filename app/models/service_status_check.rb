@@ -10,9 +10,6 @@ class ServiceStatusCheck < ActiveRecord::Base
     self.url = url_from_env_and_service
     start = Time.now
     response = net_http_response(timeout: timeout)
-    puts "*****"
-    puts "response = #{response.inspect}"
-    puts "*****"
     save_response_details!( time_taken: Time.now - start,
                             status: response.try(:code) )
 
@@ -26,7 +23,7 @@ class ServiceStatusCheck < ActiveRecord::Base
   end
 
   def self.execute_many!( service:,
-                          environment_slugs: ServiceEnvironment.all_keys,
+                          environment_slugs: ServiceEnvironment.all_slugs,
                           timeout: 5)
     requests = parallel_requests( service: service,
                                   environment_slugs: environment_slugs,
@@ -40,21 +37,33 @@ class ServiceStatusCheck < ActiveRecord::Base
     end
   end
 
-  private
+  def self.latest(service_id:, environment_slug:)
+    where(  service_id: service_id,
+            environment_slug: environment_slug)
+    .order('timestamp desc')
+    .first
+  end
+
 
   def net_http_response(timeout: 5)
     begin
       uri = URI.parse(self.url)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = (uri.scheme == 'https')
-      http.read_timeout = timeout
-      http.open_timeout = timeout
+      http = setup_http_object(uri: uri, timeout: timeout)
       resp = http.start() do |http|
         http.get(uri.path)
       end
     rescue SocketError, Net::OpenTimeout => e
       nil
     end
+  end
+  private
+
+  def setup_http_object(uri:, timeout: 5)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == 'https')
+    http.read_timeout = timeout
+    http.open_timeout = timeout
+    http
   end
 
   def save_response_details!(time_taken:, status:, timestamp: Time.now )
@@ -86,7 +95,7 @@ class ServiceStatusCheck < ActiveRecord::Base
                               timeout: timeout )
     environment_slugs.map do |slug|
       check = new(service: service, environment_slug: slug)
-      check.parallel_request(timeout: timeout)
+      check.send(:parallel_request, timeout: timeout)
     end
   end
 end
