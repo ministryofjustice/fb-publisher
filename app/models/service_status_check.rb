@@ -6,6 +6,40 @@ class ServiceStatusCheck < ActiveRecord::Base
     env.url_for(self.service)
   end
 
+  def execute!(timeout: 5)
+    self.url = url_from_env_and_service
+
+    start = Time.now
+    response = net_http_response(timeout: timeout)
+    save_response_details!( time_taken: Time.now - start,
+                            status: response.try(:code) )
+
+    self
+  end
+
+  def self.execute!(service:, environment_slug:, timeout: 5)
+    check = new(  service: service,
+                  environment_slug: environment_slug)
+    check.execute!(timeout: timeout)
+  end
+
+  def self.execute_many!( service:,
+                          environment_slugs: ServiceEnvironment.all_keys,
+                          timeout: 5)
+    requests = parallel_requests( service: service,
+                                  environment_slugs: environment_slugs,
+                                  timeout: timeout )
+    hydra = Typhoeus::Hydra.new
+    requests.each { |r| hydra.queue(r) }
+    # 'run' blocks until all requests are completed
+    hydra.run
+    requests.map do |request|
+      request.response.options[:saved_check]
+    end
+  end
+
+  private
+
   def net_http_response(timeout: 5)
     begin
       r = Net::HTTP.get(self.url, timeout: timeout)
@@ -19,17 +53,6 @@ class ServiceStatusCheck < ActiveRecord::Base
     self.status = status
     self.timestamp = timestamp
     save!
-  end
-
-  def execute!(timeout: 5)
-    self.url = url_from_env_and_service
-
-    start = Time.now
-    response = net_http_response(timeout: timeout)
-    save_response_details!( time_taken: Time.now - start,
-                            status: response.try(:code) )
-
-    self
   end
 
   def parallel_request(timeout: 5)
@@ -49,26 +72,12 @@ class ServiceStatusCheck < ActiveRecord::Base
     req
   end
 
-  def self.execute!(service:, environment_slug:, timeout: 5)
-    check = new(  service: service,
-                  environment_slug: environment_slug)
-    check.execute!(timeout: timeout)
-  end
-
-  def self.execute_many!( service:,
-                          environment_slugs: ServiceEnvironment.all_keys,
-                          timeout: 5)
-    hydra = Typhoeus::Hydra.new
-    requests = environment_slugs.map do |slug|
+  def self.parallel_requests( service: service,
+                              environment_slugs: environment_slugs,
+                              timeout: timeout )
+    environment_slugs.map do |slug|
       check = new(service: service, environment_slug: slug)
-      req = check.parallel_request(timeout: timeout)
-      hydra.queue(req)
-      req
-    end
-    # 'run' blocks until all requests are completed
-    hydra.run
-    requests.map do |request|
-      request.response.options[:saved_check]
+      check.parallel_request(timeout: timeout)
     end
   end
 end

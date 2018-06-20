@@ -1,15 +1,15 @@
 %tr
   %th
-    = environment[:environment][:name]
+    = ServiceEnvironment.find(environment.environment_slug).name
   %td
-    = link_to(environment[:service][:url], environment[:service][:url])
+    = link_to(environment.url, environment.url)
   %td
-    - if environment[:service][:status]
-      %span{ class: 'status status-#{environment[:service][:status]}' }
-        = environment[:service][:status]
+    - if environment.status
+      %span{ class: 'status status-#{environment.status}' }
+        = environment.status
     - else
       \-
   %td
-    = environment[:service][:status_timestamp] ? localize(environment[:service][:status_timestamp]) : "-"
+    = environment.timestamp ? localize(environment.timestamp) : "-"
   %td
     = button_to(t('.check_now'), {}, class: 'button')
