@@ -6,8 +6,8 @@ class AddServicePermissions < ActiveRecord::Migration[5.2]
       t.uuid          :created_by_user_id
     end
 
-    add_reference :service_permissions, :services
-    add_reference :service_permissions, :users
+    add_reference :service_permissions, :services, type: :uuid, foreign_key: true
+    add_reference :service_permissions, :users, type: :uuid, foreign_key: true
     add_foreign_key :service_permissions, :users, column: :created_by_user_id
   end
 end

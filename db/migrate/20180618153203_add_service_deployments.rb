@@ -7,7 +7,7 @@ class AddServiceDeployments < ActiveRecord::Migration[5.2]
       t.uuid          :created_by_user_id
     end
 
-    add_reference :service_deployments, :service
+    add_reference :service_deployments, :service, type: :uuid, foreign_key: true
     add_foreign_key :service_deployments, :users, column: :created_by_user_id
   end
 end

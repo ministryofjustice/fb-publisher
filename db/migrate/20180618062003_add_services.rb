@@ -7,6 +7,6 @@ class AddServices < ActiveRecord::Migration[5.2]
       t.uuid          :created_by_user_id
       t.timestamps
     end
-    add_foreign_key :services, :users, column: :created_by_user_id
+    add_foreign_key :services, :users, type: :uuid, foreign_key: true, column: :created_by_user_id
   end
 end
