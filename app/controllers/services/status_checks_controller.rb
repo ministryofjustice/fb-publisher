@@ -13,7 +13,16 @@ class Services::StatusChecksController < ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to service_path(@service)
+        if request.xhr?
+          render   partial:'services/environment',
+                            layout: false,
+                            locals: {environment: @check}
+        else
+          redirect_to service_path(@service)
+        end
+      end
+      format.json do
+        render json: @check
       end
     end
   end

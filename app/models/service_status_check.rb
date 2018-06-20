@@ -8,9 +8,11 @@ class ServiceStatusCheck < ActiveRecord::Base
 
   def execute!(timeout: 5)
     self.url = url_from_env_and_service
-
     start = Time.now
     response = net_http_response(timeout: timeout)
+    puts "*****"
+    puts "response = #{response.inspect}"
+    puts "*****"
     save_response_details!( time_taken: Time.now - start,
                             status: response.try(:code) )
 
@@ -42,8 +44,15 @@ class ServiceStatusCheck < ActiveRecord::Base
 
   def net_http_response(timeout: 5)
     begin
-      r = Net::HTTP.get(self.url, timeout: timeout)
-    rescue SocketError => e
+      uri = URI.parse(self.url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      http.read_timeout = timeout
+      http.open_timeout = timeout
+      resp = http.start() do |http|
+        http.get(uri.path)
+      end
+    rescue SocketError, Net::OpenTimeout => e
       nil
     end
   end

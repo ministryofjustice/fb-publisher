@@ -1,4 +1,4 @@
-%tr
+%tr{ id: environment.environment_slug }
   %th
     = ServiceEnvironment.find(environment.environment_slug).name
   %td
@@ -15,4 +15,6 @@
     = button_to t('.check_now'),
                 service_status_checks_path(environment.service),
                 params: {service_id: environment.service.slug, environment_slug: environment.environment_slug},
-                class: 'button'
+                class: 'button',
+                remote: true,
+                data: {disable_with: t('.checking')}

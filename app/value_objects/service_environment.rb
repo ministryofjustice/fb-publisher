@@ -32,7 +32,8 @@ class ServiceEnvironment
   end
 
   def url_for(service)
-    [protocol, service.slug, '.', url_root].join
+    as_string = [protocol, service.slug, '.', url_root].join
+    URI.join(as_string, '/').to_s
   end
 
   def to_h
