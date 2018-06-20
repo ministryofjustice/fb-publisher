@@ -5,7 +5,7 @@
     = link_to(environment.url, environment.url)
   %td
     - if environment.status
-      %span{ class: 'status status-#{environment.status}' }
+      %span{ class: "status status-#{environment.status.to_s.first}xx" }
         = environment.status
     - else
       \-

@@ -114,6 +114,8 @@ en:
     show:
       lede_html:
         Status of your service in the available environments
+      timestamp: Checked at
+      url: URL
   shared:
     errors_intro: There were some errors in that form
   user_sessions:

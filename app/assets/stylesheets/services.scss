@@ -3,7 +3,7 @@
 #service-links {
   border-bottom: 1px solid $border-colour;
   padding-bottom: 1em;
-  
+
   ul {
     list-style-type: none;
     li {
@@ -13,4 +13,22 @@
       }
     }
   }
+}
+
+.status {
+  color: white;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 2em;
+  text-align: center;
+  width: 3em;
+}
+.status-2xx {
+  background-color: $green;
+}
+.status-3xx {
+  background-color: $yellow;
+}
+.status-4xx, .status-5xx {
+  background-color: $red;
 }

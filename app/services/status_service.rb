@@ -9,7 +9,6 @@ class StatusService
     end
   end
 
-
   # TODO: implement properly when we have services running
   def self.last_status(service:, environment_slug:)
     ServiceStatusCheck.where( service_id: service.id,
