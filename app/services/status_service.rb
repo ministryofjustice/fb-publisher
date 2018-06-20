@@ -1,11 +1,8 @@
 class StatusService
-  def self.service_status(service, environments: ServiceEnvironment.all_keys)
-    environments.map do |env_slug|
+  def self.service_status(service, environment_slugs: ServiceEnvironment.all_keys)
+    environment_slugs.map do |env_slug|
       last_status(service: service, environment_slug: env_slug) || \
-        ServiceStatusCheck.new(
-          environment_slug: env_slug,
-          url: url_from_env_and_service
-        )
+        empty_check(service: service, environment_slug: env_slug)
     end
   end
 
@@ -17,16 +14,16 @@ class StatusService
                       .first
   end
 
-  def self.check(service:, environment:, timeout: 5)
+  def self.check(service:, environment_slug:, timeout: 5)
     ServiceStatusCheck.execute!(
-      environment_slug: environment.slug,
+      environment_slug: environment_slug,
       service: service,
       timeout: timeout
     )
   end
 
   def self.check_in_parallel( service:,
-                              environments: ServiceEnvironment.all_keys,
+                              environment_slugs: ServiceEnvironment.all_keys,
                               timeout: 5)
     ServiceStatusCheck.execute_many!(
       service: service,
@@ -34,5 +31,16 @@ class StatusService
       timeout: timeout
     )
 
+  end
+
+  private
+
+  def self.empty_check(service:, environment_slug:)
+    check = ServiceStatusCheck.new(
+      service: service,
+      environment_slug: env_slug
+    )
+    check.url = check.url_from_env_and_service
+    check
   end
 end

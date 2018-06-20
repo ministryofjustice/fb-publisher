@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resources :teams
   resources :services do
     scope :module => 'services' do
-      resource :status, controller_name: :service_status
+      resources :status_checks
       resources :config_params
       resources :permissions, controller_name: :service_permissions
       resources :deployments, controller_name: :service_deployments
