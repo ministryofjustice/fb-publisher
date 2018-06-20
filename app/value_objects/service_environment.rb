@@ -7,7 +7,7 @@ class ServiceEnvironment
     end
   end
 
-  def self.all_keys
+  def self.all_slugs
     all.map(&:slug)
   end
 
@@ -19,7 +19,7 @@ class ServiceEnvironment
 
   def self.where(attrs)
     all.select do |e|
-      attrs.each do |key, value|
+      attrs.all? do |key, value|
         e.send(key.to_sym) == value
       end
     end

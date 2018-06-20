@@ -85,7 +85,7 @@ en:
     create:
       success: Your new service has been created successfully
     environment:
-      checking: 'Checking...'
+      checking: 'checking...'
       check_now: 'Check now'
     index:
       actions: Actions
