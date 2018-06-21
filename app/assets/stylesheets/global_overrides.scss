@@ -2,6 +2,8 @@
 
 table {
   .actions {
+    white-space: nowrap;
+    
     // line up the links with the button text
     a, .button_to {
       display: inline-block;
@@ -14,8 +16,16 @@ table {
     }
   }
 
+  tr.in-form {
+    td {
+      vertical-align: bottom;
+    }
+  }
+
   td {
     .form-group {
+      margin-bottom: 0;
+
       input[type=text] {
         width: 100%;
       }

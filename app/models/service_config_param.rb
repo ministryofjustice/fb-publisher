@@ -6,7 +6,8 @@ class ServiceConfigParam < ActiveRecord::Base
   validates :name, length: {minimum: 3, maximum: 64},
                    format: {without: /[^A-Z0-9_]/},
                    uniqueness: {scope: [:service_id, :environment_slug], case_sensitive: false}
-                   
+
+  validates :value, length: {maximum: 10485760}                 
   validates :environment_slug, inclusion: {in: ServiceEnvironment.all_slugs.map(&:to_s)}
 
   def self.visible_to(user_or_user_id)

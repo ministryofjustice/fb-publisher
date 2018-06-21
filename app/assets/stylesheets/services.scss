@@ -17,3 +17,12 @@
 .status-4xx, .status-5xx {
   background-color: $red;
 }
+
+#config-params {
+  td.name {
+    width: 35%;
+  }
+  td.actions {
+    width: 20%;
+  }
+}
