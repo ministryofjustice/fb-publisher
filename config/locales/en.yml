@@ -83,6 +83,8 @@ en:
     phase: BETA
   services:
     config_params:
+      form:
+        submit: Save
       index:
         environments: Values for environment
     create:

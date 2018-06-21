@@ -11,6 +11,8 @@ class Services::ConfigParamsController < ApplicationController
                             .where(environment_slug: params[:env])
                             .order(params[:order] || :name)
     @environments = ServiceEnvironment.all
+    @config_param = ServiceConfigParam.new( service: @service,
+                                            environment_slug: params[:env] )
   end
 
   # called (remotely) from the "add" button in index

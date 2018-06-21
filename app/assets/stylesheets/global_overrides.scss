@@ -11,4 +11,12 @@ table {
     .button_to {
     }
   }
+
+  td {
+    .form-group {
+      input[type=text] {
+        width: 100%;
+      }
+    }
+  }
 }

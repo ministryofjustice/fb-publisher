@@ -21,3 +21,5 @@
 
   %tbody
     = render partial: 'config_param', collection: @config_params
+
+    = render partial: 'form', locals: {config_param: @config_param}
