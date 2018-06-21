@@ -22,6 +22,9 @@ class ServicesController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   def destroy
     @service.destroy!
     redirect_to index_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
