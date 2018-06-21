@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_19_145552) do
+ActiveRecord::Schema.define(version: 2018_06_21_083033) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -28,14 +28,13 @@ ActiveRecord::Schema.define(version: 2018_06_19_145552) do
   end
 
   create_table "service_config_params", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "uuid"
-    t.string "environment"
+    t.string "environment_slug"
     t.string "name"
     t.string "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "last_update_by_user_id"
-    t.bigint "service_id"
+    t.uuid "service_id"
     t.index ["service_id"], name: "index_service_config_params_on_service_id"
   end
 
@@ -45,7 +44,8 @@ ActiveRecord::Schema.define(version: 2018_06_19_145552) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "created_by_user_id"
-    t.bigint "service_id"
+    t.uuid "service_id"
+    t.index ["service_id", "environment", "created_at"], name: "ix_serv_deploy_service_env_created"
     t.index ["service_id"], name: "index_service_deployments_on_service_id"
   end
 
@@ -54,8 +54,8 @@ ActiveRecord::Schema.define(version: 2018_06_19_145552) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "created_by_user_id"
-    t.bigint "services_id"
-    t.bigint "users_id"
+    t.uuid "services_id"
+    t.uuid "users_id"
     t.index ["services_id"], name: "index_service_permissions_on_services_id"
     t.index ["users_id"], name: "index_service_permissions_on_users_id"
   end
@@ -89,8 +89,12 @@ ActiveRecord::Schema.define(version: 2018_06_19_145552) do
   end
 
   add_foreign_key "identities", "users"
+  add_foreign_key "service_config_params", "services"
+  add_foreign_key "service_deployments", "services"
   add_foreign_key "service_deployments", "users", column: "created_by_user_id"
+  add_foreign_key "service_permissions", "services", column: "services_id"
   add_foreign_key "service_permissions", "users", column: "created_by_user_id"
+  add_foreign_key "service_permissions", "users", column: "users_id"
   add_foreign_key "service_status_checks", "services"
   add_foreign_key "services", "users", column: "created_by_user_id"
 end

@@ -82,6 +82,9 @@ en:
       will help improve it
     phase: BETA
   services:
+    config_params:
+      index:
+        environments: Values for environment
     create:
       success: Your new service has been created successfully
     environment:
