@@ -9,14 +9,14 @@
       - if current_action?(controller: 'services/config_params', action: :index)
         = t('.config_params')
       - else
-        = link_to t('.config_params'), service_config_params_path(service_id: service)
+        = link_to t('.config_params'), service_config_params_path(service)
     %li
       - if current_action?(controller: 'services/permissions', action: :index)
         = t('.permissions')
       - else
-        = link_to t('.permissions'), service_permissions_path(service_id: service)
+        = link_to t('.permissions'), service_permissions_path(service)
     %li
       - if current_action?(controller: 'services/deployments', action: :index)
         = t('.deployments')
       - else
-        = link_to t('.deployments'), service_deployments_path(service_id: service)
+        = link_to t('.deployments'), service_deployments_path(service)

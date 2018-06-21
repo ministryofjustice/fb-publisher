@@ -25,6 +25,10 @@ class ServiceEnvironment
     end
   end
 
+  def self.name_of(slug)
+    where(slug: slug.to_sym).first.try(:name)
+  end
+
   def initialize(attrs={})
     attrs.each do |key, value|
       self.instance_variable_set("@#{key.to_s}", value) if self.respond_to?(:"#{key.to_s}=")

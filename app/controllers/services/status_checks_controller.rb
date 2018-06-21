@@ -1,7 +1,7 @@
 class Services::StatusChecksController < ApplicationController
   before_action :require_user!
   include Concerns::NestedResourceController
-  nest_under :service, attr_name: :slug, param_name: :service_id
+  nest_under :service, attr_name: :slug, param_name: :service_slug
 
   # called from the "Check now" button in service show
   def create

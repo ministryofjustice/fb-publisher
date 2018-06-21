@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get '/' => 'home#show', as: 'root'
 
   resources :teams
-  resources :services do
+  resources :services, param: :slug do
     scope :module => 'services' do
       resources :status_checks
       resources :config_params

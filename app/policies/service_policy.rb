@@ -15,6 +15,10 @@ class ServicePolicy < ApplicationPolicy
     user.id == record.created_by_user_id
   end
 
+  def update?
+    user.id == record.created_by_user_id
+  end
+
   def create?
     user.id == record.created_by_user_id
   end

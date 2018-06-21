@@ -5,11 +5,12 @@ describe ServiceConfigParam do
     let(:name){ 'VALID_NAME' }
     let(:environment_slug){ 'dev' }
     let(:service){ Service.new }
-
+    let(:user){ User.new }
     before do
       subject.service = service
       subject.name = name
       subject.environment_slug = environment_slug
+      subject.last_updated_by_user = user
     end
 
     describe 'an environment_slug' do

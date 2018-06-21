@@ -83,6 +83,12 @@ en:
     phase: BETA
   services:
     config_params:
+      config_param:
+        delete: Delete
+        deleting: Deleting...
+        delete_confirm: Are you sure you want to delete %{name} in the %{environment} environment?
+      edit:
+        heading: Editing '%{name}' (%{environment})
       form:
         submit: Save
       index:

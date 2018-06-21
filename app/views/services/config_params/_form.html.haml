@@ -1,6 +1,5 @@
-= form_for @config_param do |f|
+= form_with model: @config_param, url: update_or_create(@config_param), local: true do |f|
   = f.hidden_field :environment_slug, value: @config_param.environment_slug
-  = f.hidden_field :service_id, value: @config_param.service_id
   %tr
     %td
       = f.text_field :name, label: nil, required: true, maxlength: 64, size: 32

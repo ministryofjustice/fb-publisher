@@ -1,3 +1,5 @@
+@import 'colours';
+
 table {
   .actions {
     // line up the links with the button text
@@ -16,6 +18,20 @@ table {
     .form-group {
       input[type=text] {
         width: 100%;
+      }
+    }
+  }
+}
+
+main {
+  input[type=submit],button {
+    &.styled-as-link {
+      color: $link-colour;
+      padding: 0.5em;
+
+      &:hover {
+        background-color: none;
+        color: $link-hover-colour;
       }
     }
   }
