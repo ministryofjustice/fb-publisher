@@ -12,6 +12,26 @@ describe ServiceConfigParam do
       subject.environment_slug = environment_slug
     end
 
+    describe 'an environment_slug' do
+      context 'in the list of ServiceEnvironment.all_slugs' do
+        let(:environment_slug){ 'staging' }
+        it 'is valid' do
+          expect(subject.valid?).to eq(true)
+        end
+      end
+      context 'not in the list of ServiceEnvironment.all_slugs' do
+        let(:environment_slug){ 'made_up_slug' }
+        it 'is invalid' do
+          expect(subject.valid?).to eq(false)
+        end
+      end
+      context 'that is blank' do
+        let(:environment_slug){ '' }
+        it 'is invalid' do
+          expect(subject.valid?).to eq(false)
+        end
+      end
+    end
     describe 'a name' do
       context 'of less than 3 characters' do
         let(:name){ 'AB' }
