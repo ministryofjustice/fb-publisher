@@ -9,7 +9,7 @@ module Auth0Helper
   def login_path
     root_path
   end
-  
+
   private
 
   # Is the user signed in?

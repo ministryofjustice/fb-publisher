@@ -54,4 +54,26 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  # "You may want to combine the before(:each) we just added with the
+  # previous one but DON'T. If you combine them, Database Cleaner will
+  # open a transaction before being set to use truncation, which means
+  # Capybara won’t be able to “see” the test database records."
+  # see https://www.devmynd.com/blog/setting-up-rspec-and-capybara-in-rails-5-for-testing/
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
 end

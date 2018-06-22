@@ -1,4 +1,5 @@
 class Auth0Controller < ApplicationController
+  # TODO: method too long, refactor this functionality out
   def callback
     # This stores all the user information that came from Auth0
     # and the IdP
