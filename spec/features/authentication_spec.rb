@@ -5,6 +5,25 @@ describe 'logging in as a particular user' do
     clear_session!
   end
 
+  context 'who does not have a valid email' do
+    let(:user){ User.new(name: 'invalid user', email: 'user@example.com') }
+
+    it 'redirects me to signup_not_allowed' do
+      login_as!(user)
+      expect(page.current_url).to eq(signup_not_allowed_url)
+    end
+
+    it 'tells me I am not allowed to sign up with that email' do
+      login_as!(user)
+      expect(page).to have_content("You can't sign up with that email address")
+    end
+
+    it 'tells me what my email address must be like' do
+      login_as!(user)
+      expect(page).to have_content("you must use an email address that ends in justice.gov.uk")
+    end
+  end
+
   context 'who has a valid email' do
     let(:user){ User.new(name: 'new user', email: 'user@justice.gov.uk') }
 
@@ -37,5 +56,4 @@ describe 'logging in as a particular user' do
       end
     end
   end
-
 end

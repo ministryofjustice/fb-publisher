@@ -6,7 +6,17 @@ class UserService
     ).first.try(:user)
   end
 
-  def self.add_user_identity(user, identity)
-    User.identities << identity
+  def self.create!(identity)
+    new_user = User.create!(
+      name: identity.name,
+      email: identity.email
+    )
+    new_user.identities << Identity.new(
+      name: identity.name,
+      email: identity.email,
+      provider: identity.provider,
+      uid: identity.uid
+    )
+    new_user
   end
 end

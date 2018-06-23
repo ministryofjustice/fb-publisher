@@ -7,14 +7,24 @@ class Auth0UserSession
     'justice.gov.uk'
   ].freeze
 
-  attr_accessor :user_info, :user_id, :created_at
+  attr_accessor :user_info, :user_id, :created_at, :new_user
 
   validate :email_domain_is_valid
 
   def initialize(params = {})
-    self.user_id = params[:user_id]
     self.user_info = params[:user_info]
+    self.user_id = params[:user_id]
     self.created_at = params[:created_at]
+    self.new_user = params[:new_user]
+  end
+
+  def save_to!(actual_session)
+    if valid?
+      save_to(actual_session)
+      self
+    else
+      raise SignupNotAllowedError.new
+    end
   end
 
   def save_to(actual_session)
@@ -29,6 +39,10 @@ class Auth0UserSession
 
   def name
     user_info.try(:[], 'info').try(:[], 'name')
+  end
+
+  def new_user?
+    self.new_user
   end
 
   private
