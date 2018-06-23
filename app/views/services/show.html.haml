@@ -1,8 +1,4 @@
-%h1.heading-xlarge
-  = @service.name
-
-%p
-  = render partial: 'links', locals: {service: @service}
+= render partial: 'services/header', locals: {service: @service}
 
 %p.lede
   = t('.lede_html')

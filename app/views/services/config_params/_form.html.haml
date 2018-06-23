@@ -1,0 +1,9 @@
+= form_with model: @config_param, url: update_or_create(@config_param), local: true do |f|
+  = f.hidden_field :environment_slug, value: @config_param.environment_slug
+  %tr.in-form
+    %td.name
+      = f.text_field :name, label: nil, required: true, maxlength: 64, size: 32
+    %td.value
+      = f.text_field :value, label: nil, maxlength: 1024, size: 64
+    %td.actions
+      = f.submit t('.submit'), class: 'button button-cta'

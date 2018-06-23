@@ -1,0 +1,2 @@
+class SignupNotAllowedError < StandardError
+end

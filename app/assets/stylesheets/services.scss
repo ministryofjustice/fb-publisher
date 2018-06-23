@@ -1,20 +1,5 @@
 @import 'colours';
 
-#service-links {
-  border-bottom: 1px solid $border-colour;
-  padding-bottom: 1em;
-
-  ul {
-    list-style-type: none;
-    li {
-      display: inline-block;
-      a {
-        padding: 1em;
-      }
-    }
-  }
-}
-
 .status {
   color: white;
   display: inline-block;
@@ -31,4 +16,13 @@
 }
 .status-4xx, .status-5xx {
   background-color: $red;
+}
+
+#config-params {
+  td.name {
+    width: 35%;
+  }
+  td.actions {
+    width: 20%;
+  }
 }

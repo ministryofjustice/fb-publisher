@@ -22,7 +22,7 @@ describe 'visiting the home page' do
     end
 
     it 'does not show a link to login' do
-      expect(page).to have_link(I18n.t(:link_text, scope: [:home, :login]))
+      expect(page).to_not have_link(I18n.t(:link_text, scope: [:home, :login]))
     end
   end
 end
@@ -43,17 +43,14 @@ describe 'visiting a page that requires a current user' do
   end
 
   context 'as a logged in user' do
-    let(:user){ instance_double(User, id: 'abc123') }
+    let(:user){ instance_double(User, id: 'abc123', name: 'user name', email: 'user@justice.gov.uk') }
     before do
       login_as!(user)
     end
 
     context 'with a session that has not expired' do
-      before do
-
-      end
       it 'does not redirect to home' do
-        expect(page.current_url).to eq(root_url)
+        expect(page.current_url).to_not eq(root_url)
       end
     end
   end

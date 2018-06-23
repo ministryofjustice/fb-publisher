@@ -1,14 +1,19 @@
 
 
-def auth0_userinfo
-  {
+def auth0_userinfo(user=nil)
+  OmniAuth::AuthHash.new( {
     "provider"=>"auth0",
     "uid"=>"google-oauth2|012345678900123456789",
     "info"=>{
-      "name"=>"John Smith",
-      "email"=>"john.smith@test-only.justice.gov.uk"
+      "name"=> user.try(:name) || "John Smith",
+      "email"=> user.try(:email) || "john.smith@test-only.justice.gov.uk"
     }
-  }
+  } )
+end
+
+def stub_auth0_userinfo(info)
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.add_mock(:auth0, auth0_userinfo(user))
 end
 
 def stub_cookie_variable!(name, value)
@@ -23,9 +28,14 @@ def clear_session!
 end
 
 def login_as!(user)
-  if Capybara.current_driver == :webkit
-    page.driver.browser.set_cookie("stub_user_id=#{user.id}; path=/; domain=127.0.0.1")
-  else
-    stub_cookie_variable!(:user_id, user.id)
-  end
+  # if Capybara.current_driver == :webkit
+  #   page.driver.browser.set_cookie("stub_user_id=#{user.id}; path=/; domain=127.0.0.1")
+  # else
+  #   stub_cookie_variable!(:user_id, user.id)
+  # end
+  stub_auth0_userinfo(user)
+  visit '/'
+  page.find('.auth0-login a').click()
+  #visit auth0_callback_path
+
 end

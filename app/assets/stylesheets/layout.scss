@@ -40,3 +40,18 @@
   background-color: rgba($green, 0.5);
   color: #fff;
 }
+
+.inline-nav {
+  border-bottom: 1px solid $border-colour;
+  padding-bottom: 1em;
+
+  ul {
+    list-style-type: none;
+    li {
+      display: inline-block;
+      a {
+        padding: 1em;
+      }
+    }
+  }
+}

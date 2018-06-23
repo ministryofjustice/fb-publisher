@@ -48,4 +48,27 @@ describe ServiceEnvironment do
       end
     end
   end
+
+  describe '.name_of' do
+    context 'given a slug' do
+      context 'that is a sym which exists' do
+        let(:slug){ :dev }
+        it 'returns the name of the matching environment' do
+          expect(described_class.name_of(slug)).to eq('Development')
+        end
+      end
+      context 'that is a string which exists' do
+        let(:slug){ 'dev' }
+        it 'returns the name of the matching environment' do
+          expect(described_class.name_of(slug)).to eq('Development')
+        end
+      end
+      context 'that does not exist' do
+        let(:slug){ 'made up slug' }
+        it 'returns nil' do
+          expect(described_class.name_of(slug)).to be_nil
+        end
+      end
+    end
+  end
 end

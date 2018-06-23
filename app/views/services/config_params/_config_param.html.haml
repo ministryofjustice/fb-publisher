@@ -1,0 +1,15 @@
+%tr
+  %td
+    = config_param.name
+  %td
+    = config_param.value
+  %td.actions
+    - if can?(:edit, config_param)
+      = link_to t('.edit'), edit_service_config_param_path(config_param.service, config_param)
+    - if can?(:destroy, config_param)
+      = button_to t('.delete'),
+                  service_config_param_path(config_param.service, config_param),
+                  method: :delete,
+                  class: 'styled-as-link',
+                  data: { confirm: t('.delete_confirm', name: config_param.name, environment: ServiceEnvironment.find(config_param.environment_slug).name),
+                          disable_with: t('.deleting') }

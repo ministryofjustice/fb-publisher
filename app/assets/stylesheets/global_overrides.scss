@@ -1,5 +1,9 @@
+@import 'colours';
+
 table {
   .actions {
+    white-space: nowrap;
+    
     // line up the links with the button text
     a, .button_to {
       display: inline-block;
@@ -9,6 +13,36 @@ table {
       padding: 0.5em;
     }
     .button_to {
+    }
+  }
+
+  tr.in-form {
+    td {
+      vertical-align: bottom;
+    }
+  }
+
+  td {
+    .form-group {
+      margin-bottom: 0;
+
+      input[type=text] {
+        width: 100%;
+      }
+    }
+  }
+}
+
+main {
+  input[type=submit],button {
+    &.styled-as-link {
+      color: $link-colour;
+      padding: 0.5em;
+
+      &:hover {
+        background-color: none;
+        color: $link-hover-colour;
+      }
     }
   }
 }

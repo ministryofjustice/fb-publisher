@@ -1,5 +1,7 @@
 class ServiceStatusCheck < ActiveRecord::Base
   belongs_to :service
+  
+  validates :environment_slug, inclusion: {in: ServiceEnvironment.all_slugs.map(&:to_s)}
 
   def url_from_env_and_service
     env = ServiceEnvironment.find(self.environment_slug)

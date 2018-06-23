@@ -1,37 +1,25 @@
 class Auth0Controller < ApplicationController
+  # TODO: method too long, refactor this functionality out
   def callback
     # This stores all the user information that came from Auth0
     # and the IdP
     userinfo = request.env['omniauth.auth']
 
-    # do we have this user already in the system?
-    asserted_identity = AssertedIdentity.from_auth0_userinfo(userinfo)
-    existing_user = UserService.existing_user_with(asserted_identity)
+    begin
+      result = SessionService.process!(userinfo, session)
 
-    auth0_user_session = Auth0UserSession.new(
-      user_id: existing_user.try(:id),
-      user_info: userinfo
-    )
-
-    # if a user already exists with the given identity
-    if existing_user.present?
-      # store them
-      auth0_user_session.save_to(session)
-      # Redirect to the URL you want after successful auth
-      redirect_to dashboard_path,
-                  notice: I18n.t(:welcome_html,
-                                  scope: [:auth, :existing_user],
-                                  user_name: existing_user.name)
-    else
-      # is the user OK to sign up? (ie. has a justice.gov.uk email)
-      if auth0_user_session.valid?
-        new_user = create_user!(auth0_user_session, asserted_identity)
-        auth0_user_session.user_id = new_user.id
-        auth0_user_session.save_to(session)
+      if result.new_user?
         redirect_to welcome_path
       else
-        redirect_to signup_not_allowed_path
+        # Redirect to the URL you want after successful auth
+        redirect_to dashboard_path,
+                    notice: I18n.t(:welcome_html,
+                                    scope: [:auth, :existing_user],
+                                    user_name: User.find(result.user_id).name)
       end
+    rescue SignupNotAllowedError
+      # no new user or existing user, so they weren't allowed to sign up
+      redirect_to signup_not_allowed_path
     end
   end
 
@@ -45,14 +33,6 @@ class Auth0Controller < ApplicationController
 
   private
 
-  def create_user!(user_session, asserted_identity)
-    new_user = User.create(
-      name: user_session.name,
-      email: user_session.email
-    )
-    new_user.identities << asserted_identity.to_identity
-    new_user
-  end
 
 
 end

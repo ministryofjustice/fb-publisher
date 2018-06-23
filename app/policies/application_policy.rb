@@ -38,6 +38,11 @@ class ApplicationPolicy
     Pundit.policy_scope!(user, record.class)
   end
 
+  def policy_for(other_record)
+    policy_class = [other_record.class.name, "Policy"].join.constantize
+    policy_class.new(user, other_record)
+  end
+
   class Scope
     attr_reader :user, :scope
 

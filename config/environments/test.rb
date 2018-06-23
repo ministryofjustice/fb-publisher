@@ -46,4 +46,7 @@ Rails.application.configure do
 
   # we don't want sql logging
   config.log_level = :info
+
+  # see https://github.com/omniauth/omniauth/wiki/Integration-Testing
+  OmniAuth.config.test_mode = true
 end

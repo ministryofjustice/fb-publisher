@@ -44,6 +44,12 @@ en:
           <em>(optional)</em> This will form the first part of your services' initial URL.<br />
           Must contain 3-64 characters, and only letters, numbers and hyphens (-)<br />
           Must be unique. If you leave this blank, we'll generate one for you
+      service_config_param:
+        name_html:
+          Must be 3-64 characters long, and contain only
+          UPPERCASE letters, numbers, and underscores ( _ )
+        value_html:
+          May be 0-10485760 characters long, and contain any characters
     label:
       service:
         git_repo_url: URL of the service config JSON Git repository
@@ -82,8 +88,29 @@ en:
       will help improve it
     phase: BETA
   services:
+    config_params:
+      config_param:
+        delete: Delete
+        deleting: Deleting...
+        delete_confirm: Are you sure you want to delete %{name} in the %{environment} environment?
+        edit: Edit
+      create:
+        success: Config Param '%{name}' (%{environment}) created successfully
+      edit:
+        heading: Editing '%{name}' (%{environment})
+      form:
+        submit: Save
+      index:
+        environments: Values for environment
+        lede_html:
+          These will be passed to your service as environment variables
+      update:
+        success: Config Param '%{name}' (%{environment}) updated successfully
     create:
       success: Your new service has been created successfully
+    edit:
+      heading: Editing '%{name}'
+
     environment:
       checking: 'checking...'
       check_now: 'Check now'

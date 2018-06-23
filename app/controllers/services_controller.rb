@@ -1,5 +1,6 @@
 class ServicesController < ApplicationController
   before_action :require_user!
+  before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy, :show]
 
   def index
     authorize(Service)
@@ -21,20 +22,32 @@ class ServicesController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   def destroy
-    @service = Service.find_by_slug(params[:id])
-    authorize(@service)
     @service.destroy!
     redirect_to index_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
   end
 
+  def update
+    if @service.save
+      redirect_to service_path(@service), notice: t(:success, scope: [:services, :create])
+    else
+      render :edit
+    end
+  end
+
   def show
-    @service = Service.find_by_slug(params[:id])
-    authorize(@service)
     @status_by_environment = StatusService.service_status(@service)
   end
 
   private
+
+  def load_and_authorize_resource!
+    @service = Service.find_by_slug(params[:slug])
+    authorize(@service)
+  end
 
   def service_params
     params[:service].permit([:name, :slug])

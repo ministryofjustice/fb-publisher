@@ -1,0 +1,8 @@
+%h1.heading-xlarge
+  = t('.heading', name: @config_param.name, environment: environment_name(@config_param.environment_slug))
+
+= GovukElementsErrorsHelper.error_summary @config_param,
+    t('.error_message', default: nil),
+    t('.error_description', default: nil)
+%table
+  = render 'form', locals: {config_param: @config_param}

@@ -1,0 +1,27 @@
+= render partial: 'services/header', locals: {service: @service}
+
+%p.lede
+  = t '.lede_html'
+
+%table#config-params
+  %thead
+    %tr
+      %th
+        = t '.name'
+      %th.inline-nav
+        %p= t '.environments'
+        %ul
+          - @environments.each do |env|
+            %li
+              - if params[:env] == env.slug.to_s
+                = env.name
+              - else
+                = link_to env.name, {env: env.slug}
+
+      %th
+        = t '.actions'
+
+  %tbody
+    = render partial: 'config_param', collection: @config_params
+
+    = render partial: 'form', locals: {config_param: @config_param}
