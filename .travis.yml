@@ -1,0 +1,10 @@
+language: ruby
+
+addons:
+  postgresql: "9.5"
+
+before_script:
+  - psql -c 'create database fb-publisher_test;' -U postgres
+
+script:
+  - bundle exec rake spec
