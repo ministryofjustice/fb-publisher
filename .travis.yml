@@ -1,7 +1,7 @@
 language: ruby
 
 addons:
-  postgresql: "10.3"
+  postgresql: 10
   apt:
     packages:
     - postgresql-10
@@ -11,6 +11,15 @@ services:
 
 rvm:
     - 2.5.1
+
+before_install:
+  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
+  - sudo service postgresql restart
+  - sleep 1
+
+before_script:
+  - psql -c 'select version();' # just to check the version, would also allow to check that pg is running
+  - psql -c "select * from pg_settings where name = 'port';" # check port settings
 
 script:
     - bundle exec rails db:reset db:setup db:migrate RAILS_ENV=test
