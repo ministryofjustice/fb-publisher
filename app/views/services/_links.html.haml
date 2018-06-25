@@ -19,4 +19,4 @@
       - if current_action?(controller: 'services/deployments')
         %span= t('.deployments')
       - else
-        = link_to t('.deployments'), service_deployments_path(service)
+        = link_to t('.deployments'), status_service_deployments_path(service)

@@ -35,7 +35,6 @@ module Concerns
                             .to_h\
                             .merge(options)
         options[:parent_action] ||= :show
-
         parent = load_parent_resource!(options[:resource_class],
                                        attr_name: options[:attr_name],
                                        param_name: options[:param_name])

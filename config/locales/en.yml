@@ -50,11 +50,17 @@ en:
           UPPERCASE letters, numbers, and underscores ( _ )
         value_html:
           May be 0-10485760 characters long, and contain any characters
+      service_deployment:
+        commit_sha_html:
+          <em>(optional)</em> Enter a commit SHA or branch/tag name to deploy<br />
+          Or leave it blank, and we'll deploy HEAD (the latest commit)
     label:
       service:
         git_repo_url: URL of the service config JSON Git repository
         name: Service name
         slug: Service "slug"
+      service_deployment:
+        commit_sha: Commit SHA, branch, or tag
   auth:
     existing_user:
       welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
@@ -108,8 +114,16 @@ en:
         success: Config Param '%{name}' (%{environment}) updated successfully
     deployments:
       index:
+        all_envs_status: '(all)'
+        completed_at: Finished at
+        created_at: Job created at
         environments: 'Deployments in'
-        status: '(all)'
+        status: 'Status'
+      new:
+        heading: Deploy '%{service}' to %{environment}
+        lede_html:
+          Your JSON is at <strong><a href='%{git_repo_url}'>%{git_repo_url}</a></strong>
+        submit: Deploy now
       status:
         lede_html:
           Latest deployments for each environment
@@ -151,6 +165,8 @@ en:
         Status of your service in the available environments
       timestamp: Checked at
       url: URL
+    update:
+      success: Service "%{service}" updated successfully
   shared:
     errors_intro: There were some errors in that form
   user_sessions:

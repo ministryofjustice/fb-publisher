@@ -25,6 +25,6 @@ Rails.application.routes.draw do
   end
 
 
-  resource :user, only: [:edit, :update, :destroy]
+  resource :user
   resource :user_session, only: [:destroy]
 end

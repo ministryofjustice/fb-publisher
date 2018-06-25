@@ -1,9 +1,22 @@
 %tr
   %td
-    = l(deployment.completed_at)
+    - if deployment.created_at.present?
+      = l(deployment.created_at)
+    - else
+      \-
+  %td
+    - if deployment.completed_at.present?
+      = l(deployment.completed_at)
+    - else
+      \-
   %td
     = deployment.commit_sha
   %td
     = deployment.status
+  %td
+    - if can?(:show, deployment.created_by_user)
+      = link_to deployment.created_by_user.name, user_path(deployment.created_by_user)
+    - else
+      = deployment.created_by_user.name
   %td
     = link_to t('.view_log'), service_deployment_path(@service, deployment)

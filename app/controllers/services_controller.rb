@@ -31,8 +31,8 @@ class ServicesController < ApplicationController
   end
 
   def update
-    if @service.save
-      redirect_to service_path(@service), notice: t(:success, scope: [:services, :create])
+    if @service.update(service_params)
+      redirect_to service_path(@service), notice: t(:success, scope: [:services, :update])
     else
       render :edit
     end
@@ -50,6 +50,6 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params[:service].permit([:name, :slug])
+    params[:service].permit([:git_repo_url, :name, :slug])
   end
 end
