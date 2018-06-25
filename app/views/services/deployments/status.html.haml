@@ -1,7 +1,7 @@
 = render partial: 'services/header', locals: {service: @service}
 
 %p.lede
-  = t('.lede_html')
+  = t '.lede_html'
 
 %table
   %thead
@@ -9,13 +9,13 @@
       %th
         = t('.environment')
       %th
-        = t('.url')
+        = t('.commit')
+      %th
+        = t('.completed_at')
       %th
         = t('.status')
-      %th
-        = t('.timestamp')
       %th
         = t('.actions')
 
   %tbody
-    = render partial: 'environment', collection: @status_by_environment
+    = render partial: 'environment', collection: @deployments_by_environment

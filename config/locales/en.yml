@@ -106,6 +106,10 @@ en:
           These will be passed to your service as environment variables
       update:
         success: Config Param '%{name}' (%{environment}) updated successfully
+    deployments:
+      status:
+        lede_html:
+          Latest deployments for each environment
     create:
       success: Your new service has been created successfully
     edit:

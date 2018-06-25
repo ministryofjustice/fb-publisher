@@ -16,7 +16,7 @@
       - else
         = link_to t('.permissions'), service_permissions_path(service)
     %li
-      - if current_action?(controller: 'services/deployments', action: :index)
+      - if current_action?(controller: 'services/deployments')
         = t('.deployments')
       - else
         = link_to t('.deployments'), service_deployments_path(service)

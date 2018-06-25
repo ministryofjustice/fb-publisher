@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_21_100517) do
+ActiveRecord::Schema.define(version: 2018_06_25_111505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -40,12 +40,15 @@ ActiveRecord::Schema.define(version: 2018_06_21_100517) do
 
   create_table "service_deployments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "commit_sha"
-    t.string "environment"
+    t.string "environment_slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "created_by_user_id"
     t.uuid "service_id"
-    t.index ["service_id", "environment", "created_at"], name: "ix_serv_deploy_service_env_created"
+    t.datetime "completed_at"
+    t.string "status"
+    t.index ["service_id", "environment_slug", "completed_at"], name: "ix_deployments_service_env_completed"
+    t.index ["service_id", "environment_slug", "created_at"], name: "ix_serv_deploy_service_env_created"
     t.index ["service_id"], name: "index_service_deployments_on_service_id"
   end
 
