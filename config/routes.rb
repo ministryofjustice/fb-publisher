@@ -18,7 +18,8 @@ Rails.application.routes.draw do
       resources :config_params
       resources :permissions, controller_name: :service_permissions
       resources :deployments, controller_name: :service_deployments do
-        get :status, on: :collection
+        get 'status', on: :collection, to: 'deployments#status'
+        get '(/:env)', on: :collection, to: 'deployments#index'
       end
     end
   end

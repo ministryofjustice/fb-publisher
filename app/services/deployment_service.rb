@@ -12,6 +12,16 @@ class DeploymentService
                               environment_slug: environment_slug)
   end
 
+  def self.list(service:, environment_slug:, limit: 10, offset: 0, order: 'created_at', dir: 'desc')
+    ServiceDeployment.where(
+      service_id: service.id,
+      environment_slug: environment_slug
+    )
+    .order([order, dir].join(' '))
+    .limit(limit)
+    .offset(offset)
+  end
+
   private
 
   def self.empty_deployment(service:, environment_slug:)

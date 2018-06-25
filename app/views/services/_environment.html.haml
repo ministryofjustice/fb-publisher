@@ -11,7 +11,7 @@
       \-
   %td
     = environment.timestamp ? localize(environment.timestamp) : "-"
-  %td
+  %td.actions
     = button_to t('.check_now'),
                 service_status_checks_path(environment.service),
                 params: {service_id: environment.service.slug, environment_slug: environment.environment_slug},
