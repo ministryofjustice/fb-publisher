@@ -51,6 +51,10 @@ gem 'rails', '~> 5.2.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 
+# must explicitly mention sprockets with this version to get round
+# https://blog.heroku.com/rails-asset-pipeline-vulnerability
+gem 'sprockets', '~>3.7.2'
+
 # parallel HTTP requests
 gem 'typhoeus'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
