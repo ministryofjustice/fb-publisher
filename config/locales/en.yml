@@ -169,6 +169,13 @@ en:
       success: Service "%{service}" updated successfully
   shared:
     errors_intro: There were some errors in that form
+    service_deployments:
+      status:
+        completed: Completed
+        failed: Failed
+        running: Running
+        scheduled: Scheduled
+
   user_sessions:
     destroy:
       success: "Signed out successfully"

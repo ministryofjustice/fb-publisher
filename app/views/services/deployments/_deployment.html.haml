@@ -12,7 +12,8 @@
   %td
     = deployment.commit_sha
   %td
-    = deployment.status
+    %span{ class: ['status', ['status', deployment.status].join('-')].join(' ') }
+      = t( deployment.status, scope: [:shared, :service_deployments, :status] )
   %td
     - if can?(:show, deployment.created_by_user)
       = link_to deployment.created_by_user.name, user_path(deployment.created_by_user)

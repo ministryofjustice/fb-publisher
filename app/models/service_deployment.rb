@@ -12,11 +12,11 @@ class ServiceDeployment < ActiveRecord::Base
     completed: 'completed',
     failed: 'failed',
     scheduled: 'scheduled',
-    started: 'started'
+    running: 'running'
   }.freeze
 
   validates :status, inclusion: {in: STATUS.values}
-  
+
   def self.latest(service_id:, environment_slug:)
     where(  service_id: service_id,
             environment_slug: environment_slug)
