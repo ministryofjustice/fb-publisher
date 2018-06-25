@@ -1,12 +1,12 @@
 %tr
   %td
     - if deployment.created_at.present?
-      = l(deployment.created_at)
+      = l(deployment.created_at, format: :short)
     - else
       \-
   %td
     - if deployment.completed_at.present?
-      = l(deployment.completed_at)
+      = l(deployment.completed_at, format: :short)
     - else
       \-
   %td
