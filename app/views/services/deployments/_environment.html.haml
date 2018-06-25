@@ -1,0 +1,21 @@
+%tr{ id: environment.environment_slug }
+  %th
+    = ServiceEnvironment.find(environment.environment_slug).name
+  %td
+    - if environment.commit_sha.present?
+      = link_to(environment.commit_sha, environment.commit_sha)
+    - else
+      \-
+  %td
+    = environment.completed_at ? localize(environment.completed_at) : "-"
+  %td
+    - if environment.status
+      %span{ class: "status status-#{environment.status.to_s.first}xx" }
+        = environment.status
+    - else
+      \-
+  %td
+    = link_to t('.deploy_now'),
+                new_service_deployment_path(environment.service),
+                params: {environment_slug: environment.environment_slug},
+                class: 'button'

@@ -1,7 +1,7 @@
 module ApplicationHelper
-  def current_action?(controller:, action:)
+  def current_action?(controller:, action: nil)
     controller.to_s == params[:controller].to_s \
-      && action.to_s == params[:action].to_s
+      && (action.blank? || action.to_s == params[:action].to_s)
   end
 
   # provide a cancan-like interface for authorizing actions in views
