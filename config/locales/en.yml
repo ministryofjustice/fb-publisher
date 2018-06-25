@@ -107,6 +107,9 @@ en:
       update:
         success: Config Param '%{name}' (%{environment}) updated successfully
     deployments:
+      index:
+        environments: 'Deployments in'
+        status: '(all)'
       status:
         lede_html:
           Latest deployments for each environment

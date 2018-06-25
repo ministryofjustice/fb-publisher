@@ -2,21 +2,21 @@
   %ul
     %li
       - if current_action?(controller: :services, action: :show)
-        = t('.urls')
+        %span= t('.urls')
       - else
         = link_to t('.urls'), service_path(service)
     %li
       - if current_action?(controller: 'services/config_params', action: :index)
-        = t('.config_params')
+        %span= t('.config_params')
       - else
         = link_to t('.config_params'), service_config_params_path(service)
     %li
-      - if current_action?(controller: 'services/permissions', action: :index)
-        = t('.permissions')
+      - if current_action?(controller: 'services/permissions')
+        %span= t('.permissions')
       - else
         = link_to t('.permissions'), service_permissions_path(service)
     %li
       - if current_action?(controller: 'services/deployments')
-        = t('.deployments')
+        %span= t('.deployments')
       - else
         = link_to t('.deployments'), service_deployments_path(service)

@@ -1,0 +1,31 @@
+= render partial: 'services/header', locals: {service: @service}
+
+
+.inline-nav
+  %ul
+    %li
+      = t '.environments'
+    - @environments.each do |env|
+      %li
+        - if params[:env] == env.slug.to_s
+          %span
+            = env.name
+        - else
+          = link_to env.name, {env: env.slug}
+    %li
+      = link_to t('.status'), status_service_deployments_path(@service)
+
+%table#deployments
+  %thead
+    %tr
+      %th
+        = t '.completed_at'
+      %th
+        = t '.commit'
+      %th
+        = t '.status'
+      %th
+        = t '.actions'
+
+  %tbody
+    = render partial: 'deployment', collection: @deployments

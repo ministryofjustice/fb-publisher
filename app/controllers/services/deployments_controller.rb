@@ -7,6 +7,24 @@ class Services::DeploymentsController < ApplicationController
 
   before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy]
 
+  def index
+    params[:limit] ||= 10
+    params[:offset] ||= 0
+    params[:order] ||= 'created_at'
+    params[:dir] ||= 'desc'
+
+    @environments = ServiceEnvironment.all
+    @deployments = DeploymentService.list(
+      service: @service,
+      environment_slug: params[:env],
+      limit: params[:per_page],
+      offset: params[:offset],
+      order: params[:order],
+      dir: params[:dir]
+    )
+    @deployment = ServiceDeployment.new(service: @service, environment_slug: params[:env])
+  end
+
   def status
     @environments = ServiceEnvironment.all
     @deployments_by_environment = DeploymentService.service_status(@service)

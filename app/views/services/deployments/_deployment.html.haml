@@ -1,0 +1,9 @@
+%tr
+  %td
+    = l(deployment.completed_at)
+  %td
+    = deployment.commit_sha
+  %td
+    = deployment.status
+  %td
+    = link_to t('.view_log'), service_deployment_path(@service, deployment)
