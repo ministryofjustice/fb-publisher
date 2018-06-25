@@ -47,4 +47,10 @@ class ServiceEnvironment
     end
     h
   end
+
+  class RoutingConstraint
+    def matches?(request)
+      ServiceEnvironment.find(request.params[:env]).present?
+    end
+  end
 end

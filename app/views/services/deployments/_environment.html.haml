@@ -19,6 +19,5 @@
       = link_to t('.history'), service_deployments_path(environment.service, params: {env: environment.environment_slug})
     - if can?(:new, ServiceDeployment.new(service: environment.service, environment_slug: environment.environment_slug))
       = link_to t('.deploy_now'),
-                  new_service_deployment_path(environment.service),
-                  params: {env: environment.environment_slug},
+                  new_service_deployment_path(environment.service, env: environment.environment_slug),
                   class: 'button'

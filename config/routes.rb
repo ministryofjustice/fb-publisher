@@ -19,12 +19,12 @@ Rails.application.routes.draw do
       resources :permissions, controller_name: :service_permissions
       resources :deployments, controller_name: :service_deployments do
         get 'status', on: :collection, to: 'deployments#status'
-        get '(/:env)', on: :collection, to: 'deployments#index'
+        get '(/:env)', on: :collection, to: 'deployments#index', constraints: ServiceEnvironment::RoutingConstraint.new
       end
     end
   end
 
 
-  resource :user, only: [:edit, :update, :destroy]
+  resource :user
   resource :user_session, only: [:destroy]
 end

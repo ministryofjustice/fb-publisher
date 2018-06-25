@@ -5,8 +5,9 @@
   display: inline-block;
   font-weight: bold;
   line-height: 2em;
+  min-width: 3em;
   text-align: center;
-  width: 3em;
+  padding: 0 0.2em;
 }
 .status-2xx {
   background-color: $green;

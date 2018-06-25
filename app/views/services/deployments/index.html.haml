@@ -13,17 +13,21 @@
         - else
           = link_to env.name, {env: env.slug}
     %li
-      = link_to t('.status'), status_service_deployments_path(@service)
+      = link_to t('.all_envs_status'), status_service_deployments_path(@service)
 
 %table#deployments
   %thead
     %tr
+      %th
+        = t '.created_at'
       %th
         = t '.completed_at'
       %th
         = t '.commit'
       %th
         = t '.status'
+      %th
+        = t '.user'
       %th
         = t '.actions'
 

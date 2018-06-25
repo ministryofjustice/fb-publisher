@@ -35,14 +35,16 @@ class Services::DeploymentsController < ApplicationController
     @deployment = ServiceDeployment.new(
       deployments_params.merge(
         service: @service,
-        created_by_user: @current_user
+        created_by_user: @current_user,
+        status: ServiceDeployment::STATUS[:scheduled]
       )
     )
     authorize(@deployment)
 
     if @deployment.save
-      redirect_to action: :index, service_id: @service, env: @deployment.environment_slug
+      redirect_to action: :index, service_slug: @service, env: @deployment.environment_slug
     else
+      @environment = ServiceEnvironment.find(@deployment.environment_slug)
       render :new
     end
   end
@@ -55,23 +57,10 @@ class Services::DeploymentsController < ApplicationController
     end
   end
 
-  def update
-    if @deployment.update(
-      deployments_params.merge(created_by_user: current_user)
-    )
-      flash[:notice] = t(
-        :success,
-        scope: [:services, :deployments, :update],
-        name: @deployment.name,
-        environment: ServiceEnvironment.name_of(@deployment.environment_slug)
-      )
-      redirect_to action: :index,
-                  env: @deployment.environment_slug
-    else
-      render :edit
-    end
+  def new
+    @deployment = ServiceDeployment.new(service: @service, environment_slug: params[:env])
+    @environment = ServiceEnvironment.find(params[:env])
   end
-
 
   def destroy
     @deployment.destroy!
