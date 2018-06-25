@@ -4,7 +4,7 @@ addons:
   postgresql: "10.3"
 
 before_script:
-  - psql -c 'create database fb-publisher_test;' -U postgres
+  - psql -c 'create database travis_ci_test;' -U postgres
 
 script:
   - bundle exec rake spec
