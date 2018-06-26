@@ -76,4 +76,13 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+
+  config.before(:each, type: :feature) do
+    WebMock.allow_net_connect!
+  end
+  config.after(:each, type: :feature) do
+    WebMock.disable_net_connect!
+  end
+
 end
