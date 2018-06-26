@@ -17,7 +17,6 @@ describe 'signing out' do
 
     context 'clicking the Sign Out link' do
       before do
-        save_and_open_page
         page.find("input[value='Sign out']").click()
       end
 

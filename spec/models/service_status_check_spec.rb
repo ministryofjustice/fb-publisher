@@ -93,8 +93,8 @@ describe ServiceStatusCheck do
   describe '.latest' do
     context 'with matching records' do
       let!(:user){ User.create!(name: 'test user', email: 'test@user.com')}
-      let!(:service_1){ Service.create!(name: 'My Service 1', created_by_user: user) }
-      let!(:service_2){ Service.create!(name: 'My Service 2', created_by_user: user) }
+      let!(:service_1){ Service.create!(name: 'My Service 1', created_by_user: user, git_repo_url: 'git://example.com/example1.git') }
+      let!(:service_2){ Service.create!(name: 'My Service 2', created_by_user: user, git_repo_url: 'git://example.com/example2.git') }
 
       let!(:new_check){ ServiceStatusCheck.create!(service_id: service_1.id, environment_slug: 'dev', timestamp: Time.now - 1.second) }
       let!(:old_check){ ServiceStatusCheck.create!(service_id: service_1.id, environment_slug: 'dev', timestamp: Time.now - 1.hour) }
