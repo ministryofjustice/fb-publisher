@@ -27,12 +27,12 @@ class ServicesController < ApplicationController
 
   def destroy
     @service.destroy!
-    redirect_to index_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
+    redirect_to services_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
   end
 
   def update
     if @service.update(service_params)
-      redirect_to service_path(@service), notice: t(:success, scope: [:services, :update])
+      redirect_to service_path(@service), notice: t(:success, scope: [:services, :update], service: @service.name)
     else
       render :edit
     end

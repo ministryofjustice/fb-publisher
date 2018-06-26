@@ -1,10 +1,10 @@
 class Service < ActiveRecord::Base
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by_user_id
 
-  has_many :service_status_checks
-  has_many :service_config_params
-  has_many :service_permissions
-  has_many :service_deployments
+  has_many :service_status_checks, dependent: :destroy
+  has_many :service_config_params, dependent: :destroy
+  #has_many :service_permissions, dependent: :destroy
+  has_many :service_deployments, dependent: :destroy
 
   before_validation :generate_slug_if_blank!
 
