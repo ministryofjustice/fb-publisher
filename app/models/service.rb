@@ -10,6 +10,7 @@ class Service < ActiveRecord::Base
 
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
   validates :slug, length: {maximum: 64, minimum: 3}, uniqueness: true
+  validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
 
   # Naive first impl - just services created by the given user
   # TODO: revisit once we have concept of teams
