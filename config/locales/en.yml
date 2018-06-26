@@ -129,6 +129,8 @@ en:
           Latest deployments for each environment
     create:
       success: Your new service has been created successfully
+    destroy:
+      success: Service "%{service}" deleted successfully
     edit:
       heading: Editing '%{name}'
 

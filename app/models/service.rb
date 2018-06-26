@@ -1,15 +1,16 @@
 class Service < ActiveRecord::Base
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by_user_id
 
-  has_many :service_status_checks
-  has_many :service_config_params
-  has_many :service_permissions
-  has_many :service_deployments
+  has_many :service_status_checks, dependent: :destroy
+  has_many :service_config_params, dependent: :destroy
+  #has_many :service_permissions, dependent: :destroy
+  has_many :service_deployments, dependent: :destroy
 
   before_validation :generate_slug_if_blank!
 
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
   validates :slug, length: {maximum: 64, minimum: 3}, uniqueness: true
+  validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
 
   # Naive first impl - just services created by the given user
   # TODO: revisit once we have concept of teams
