@@ -17,6 +17,8 @@ class ServiceDeployment < ActiveRecord::Base
 
   validates :status, inclusion: {in: STATUS.values}
 
+  
+
   def self.latest(service_id:, environment_slug:)
     where(  service_id: service_id,
             environment_slug: environment_slug)

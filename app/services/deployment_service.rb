@@ -22,6 +22,48 @@ class DeploymentService
     .offset(offset)
   end
 
+  def self.adapter_for(environment_slug)
+    name = ServiceEnvironment.find(environment_slug).deployment_adapter
+    name.classify.constantize
+  end
+
+  def self.service_tag(environment_slug:, service:, version: 'latest')
+    (['fb', service.slug, environment_slug].join('-'), version].join(':')
+  end
+
+  def self.build(environment_slug:, service:, json_dir:)
+    tag = service_tag(environment_slug: environment_slug, service: service)
+    LocalDockerService.build(
+      environment_slug: deployment.environment_slug,
+      tag: tag,
+      json_dir: json_dir
+    )
+    {tag: tag}
+  end
+
+  def self.push(environment_slug:, tag:)
+    adapter = adapter_for(environment_slug)
+    adapter.import_image(
+      environment_slug: environment_slug,
+      tag: built_service[:tag]
+    )
+  end
+
+  def self.configure(environment_slug:, service:)
+    adapter.configure(
+      environment_slug: environment_slug,
+      service: service
+    )
+  end
+
+  def self.start(environment_slug:, service:, tag:)
+    adapter.start(
+      environment_slug: environment_slug,
+      service: service,
+      tag: built_service[:tag]
+    )
+  end
+
   private
 
   def self.empty_deployment(service:, environment_slug:)
