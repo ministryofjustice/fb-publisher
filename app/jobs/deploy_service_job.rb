@@ -13,16 +13,16 @@ class DeployServiceJob < ApplicationJob
       json_dir: json_dir
     )
     DeploymentService.push(
-      environment_slug: environment_slug,
-      tag: built_service[:tag]
+      image: built_service[:tag],
+      environment_slug: deployment.environment_slug
     )
     DeploymentService.configure(
-      environment_slug: environment_slug,
-      service: service
+      environment_slug: deployment.environment_slug,
+      service: deployment.service
     )
     DeploymentService.start(
-      environment_slug: environment_slug,
-      service: service,
+      environment_slug: deployment.environment_slug,
+      service: deployment.service,
       tag: built_service[:tag]
     )
 

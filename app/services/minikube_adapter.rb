@@ -1,7 +1,5 @@
-require 'adapters/shell_adapter'
-
 class MinikubeAdapter
-  def self.import_image(environment_slug:, image:, private_key_path: default_private_key_path)
+  def self.import_image(image:, private_key_path: default_private_key_path)
     cmd = ShellAdapter.build_cmd(
       executable: 'docker',
       args: ['save', image],

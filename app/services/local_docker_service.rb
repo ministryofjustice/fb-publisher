@@ -1,8 +1,6 @@
-require 'adapters/shell_adapter'
-
 class LocalDockerService
   def self.build(tag:, json_dir:, runner_image_ref: default_runner_image_ref)
-    Dir.cwd(File.join(json_dir, '..')) do
+    Dir.chdir(File.join(json_dir, '..')) do
       ShellAdapter.exec(docker_binary,
                         'build',
                         "--build-arg RUNNER_IMAGE=#{runner_image_ref}",

@@ -1,12 +1,10 @@
-require 'adapters/shell_adapter'
-
 class GitService
   def self.clone_repo(repo_url:, to_dir: dir)
-    ShellAdapter.exec(git_binary, 'clone', [repo_url, to_dir])
+    ShellAdapter.exec(git_binary, 'clone', repo_url, to_dir)
   end
 
   def self.checkout(ref: nil, dir:)
-    Dir.cwd(dir) do
+    Dir.chdir(dir) do
       ShellAdapter.exec(git_binary, 'checkout', ref)
     end
   end

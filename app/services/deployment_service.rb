@@ -24,32 +24,31 @@ class DeploymentService
 
   def self.adapter_for(environment_slug)
     name = ServiceEnvironment.find(environment_slug).deployment_adapter
-    name.classify.constantize
+    [name, 'adapter'].join('_').classify.constantize
   end
 
   def self.service_tag(environment_slug:, service:, version: 'latest')
-    (['fb', service.slug, environment_slug].join('-'), version].join(':')
+    [['fb', service.slug, environment_slug].join('-'), version].join(':')
   end
 
   def self.build(environment_slug:, service:, json_dir:)
     tag = service_tag(environment_slug: environment_slug, service: service)
     LocalDockerService.build(
-      environment_slug: deployment.environment_slug,
       tag: tag,
       json_dir: json_dir
     )
     {tag: tag}
   end
 
-  def self.push(environment_slug:, tag:)
+  def self.push(image:, environment_slug:)
     adapter = adapter_for(environment_slug)
     adapter.import_image(
-      environment_slug: environment_slug,
-      tag: built_service[:tag]
+      image: image
     )
   end
 
   def self.configure(environment_slug:, service:)
+    adapter = adapter_for(environment_slug)
     adapter.configure(
       environment_slug: environment_slug,
       service: service
