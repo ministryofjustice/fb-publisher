@@ -12,7 +12,7 @@ class Auth0Controller < ApplicationController
         redirect_to welcome_path
       else
         # Redirect to the URL you want after successful auth
-        redirect_to dashboard_path,
+        redirect_to services_path,
                     notice: I18n.t(:welcome_html,
                                     scope: [:auth, :existing_user],
                                     user_name: User.find(result.user_id).name)
