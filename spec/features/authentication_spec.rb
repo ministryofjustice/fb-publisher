@@ -45,9 +45,9 @@ describe 'logging in as a particular user' do
         user.identities << Identity.new(provider: 'auth0', uid: 'google-oauth2|012345678900123456789', email: user.email, name: user.name)
       end
 
-      it 'redirects me to the dashboard' do
+      it 'redirects me to the services page' do
         login_as!(user)
-        expect(page.current_url).to eq(dashboard_url)
+        expect(page.current_url).to eq(services_url)
       end
 
       it 'shows me a welcome back message with my name' do

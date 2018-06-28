@@ -30,7 +30,7 @@ end
 
 describe 'visiting a page that requires a current user' do
   before do
-    visit '/dashboard'
+    visit '/services'
   end
   context 'when not logged in' do
     before do
