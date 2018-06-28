@@ -47,19 +47,22 @@ class DeploymentService
     )
   end
 
-  def self.configure(environment_slug:, service:)
+  def self.configure(environment_slug:, service:, config_dir:)
+    FileUtils.mkdir_p(config_dir)
     adapter = adapter_for(environment_slug)
     adapter.configure(
+      config_dir: config_dir,
       environment_slug: environment_slug,
-      service: service
+      service: service,
     )
   end
 
   def self.start(environment_slug:, service:, tag:)
+    adapter = adapter_for(environment_slug)
     adapter.start(
       environment_slug: environment_slug,
       service: service,
-      tag: built_service[:tag]
+      tag: tag
     )
   end
 

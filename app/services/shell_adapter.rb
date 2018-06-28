@@ -1,6 +1,7 @@
 class ShellAdapter
   def self.exec(binary, *args)
     cmd_line = build_cmd( executable: binary, args: args )
+    Rails.logger.info "executing cmd #{cmd_line}"
     %x[#{cmd_line}]
   end
 

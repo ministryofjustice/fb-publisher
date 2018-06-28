@@ -5,6 +5,7 @@ class DeployServiceJob < ApplicationJob
     # Check out the code
     deployment = ServiceDeployment.find(service_deployment_id)
     json_dir = File.join(temp_dir, 'json')
+    config_dir = File.join(temp_dir, 'config')
     GitService.clone_repo(repo_url: deployment.service.git_repo_url, to_dir: json_dir)
 
     built_service = DeploymentService.build(
@@ -17,6 +18,7 @@ class DeployServiceJob < ApplicationJob
       environment_slug: deployment.environment_slug
     )
     DeploymentService.configure(
+      config_dir: config_dir,
       environment_slug: deployment.environment_slug,
       service: deployment.service
     )

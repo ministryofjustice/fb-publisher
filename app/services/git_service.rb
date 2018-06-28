@@ -9,6 +9,7 @@ class GitService
     end
   end
 
+
   private
 
   def self.git_binary
