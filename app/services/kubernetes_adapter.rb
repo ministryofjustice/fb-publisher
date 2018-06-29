@@ -13,11 +13,17 @@ class KubernetesAdapter
       name: config_map_name(service: service),
       namespace: namespace
     )
-    patch_deployment(
+    if deployment_exists?(
       context: environment.kubectl_context,
       name: deployment_name(service: service, environment_slug: environment_slug),
       namespace: namespace
     )
+      patch_deployment(
+        context: environment.kubectl_context,
+        name: deployment_name(service: service, environment_slug: environment_slug),
+        namespace: namespace
+      )
+    end
   end
 
   def self.namespace_exists?(namespace:, context:)
@@ -36,11 +42,21 @@ class KubernetesAdapter
   end
 
   def self.configmap_exists?(name:, namespace:, context:)
+    exists_in_namespace?( name: name, type: 'configmap',
+                          namespace: namespace, context: context)
+  end
+
+  def self.deployment_exists?(name:, namespace:, context:)
+    exists_in_namespace?( name: name, type: 'deployment',
+                          namespace: namespace, context: context)
+  end
+
+  def self.exists_in_namespace?(name:, type:, namespace:, context:)
     begin
       ShellAdapter.exec(
         kubectl_binary,
         'get',
-        'configmaps',
+        type,
         name,
         std_args(namespace: namespace, context: context)
       )
@@ -74,13 +90,17 @@ class KubernetesAdapter
       "--from-file=#{file}",
       std_args(namespace: namespace, context: context)
     ]
-    pipe = nil
 
     if configmap_exists?(name: name, namespace: namespace, context: context)
-      args += ['--dry-run', '-o', 'yaml']
-      pipe = "kubectl replace -f -"
+      ShellAdapter.exec(
+        kubectl_binary,
+        'delete',
+        'configmap',
+        name,
+        std_args(namespace: namespace, context: context),
+      )
     end
-    cmd = ShellAdapter.build_cmd(executable: kubectl_binary, args: args, pipe_to: pipe)
+    cmd = ShellAdapter.build_cmd(executable: kubectl_binary, args: args)
     ShellAdapter.exec(cmd)
   end
 
