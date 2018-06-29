@@ -23,6 +23,10 @@ gem 'coffee-rails', '~> 4.2'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]
 
+# Git integration
+gem 'git'
+
+# Gov.uk styling (TODO: upgrade to use new Design System) 
 gem 'govuk_frontend_toolkit', '~> 6.0.0'
 gem 'govuk_elements_rails', '~> 3.0.0'
 gem 'govuk_elements_form_builder',  '~>1.0.0'
@@ -48,6 +52,8 @@ gem 'pundit'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
+
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 

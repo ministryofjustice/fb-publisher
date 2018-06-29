@@ -7,11 +7,19 @@ class ServiceConfigParam < ActiveRecord::Base
                    format: {without: /[^A-Z0-9_]/},
                    uniqueness: {scope: [:service_id, :environment_slug], case_sensitive: false}
 
-  validates :value, length: {maximum: 10485760}                 
+  validates :value, length: {maximum: 10485760}
   validates :environment_slug, inclusion: {in: ServiceEnvironment.all_slugs.map(&:to_s)}
 
   def self.visible_to(user_or_user_id)
     user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
     joins(:service).where(services: {created_by_user_id: user_id})
   end
+
+  def self.key_value_pairs(scope)
+    scope.index_by(&:name).inject({}) do |hash, val|
+      hash[val.first] = val.last.value
+      hash
+    end
+  end
+
 end
