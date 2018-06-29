@@ -2,7 +2,10 @@ class ShellAdapter
   def self.exec(binary, *args)
     cmd_line = build_cmd( executable: binary, args: args )
     Rails.logger.info "executing cmd #{cmd_line}"
-    %x[#{cmd_line}]
+    # TODO: maybe use Open3.popen2e instead, so that we
+    # can get streaming output as well as exit code?
+    result = Kernel.system(cmd_line)
+    raise CmdFailedError.new(cause: "#{$?}", message: "failing cmd: #{cmd_line}") unless result
   end
 
   def self.build_cmd(executable:, args: [], redirect_to: nil, pipe_to: nil)

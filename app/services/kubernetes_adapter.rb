@@ -21,23 +21,31 @@ class KubernetesAdapter
   end
 
   def self.namespace_exists?(namespace:, context:)
-    not ShellAdapter.exec(
-      kubectl_binary,
-      'get',
-      'namespaces',
-      namespace,
-      "--context=#{context}"
-    ).empty?
+    begin
+      ShellAdapter.exec(
+        kubectl_binary,
+        'get',
+        'namespaces',
+        namespace,
+        "--context=#{context}"
+      )
+    rescue CmdFailedError => e
+      false
+    end
   end
 
   def self.configmap_exists?(name:, namespace:, context:)
-    not ShellAdapter.exec(
-      kubectl_binary,
-      'get',
-      'configmaps',
-      name,
-      std_args(namespace: namespace, context: context)
-    ).empty?
+    begin
+      ShellAdapter.exec(
+        kubectl_binary,
+        'get',
+        'configmaps',
+        name,
+        std_args(namespace: namespace, context: context)
+      )
+    rescue CmdFailedError => e
+      false
+    end
   end
 
   # just writes an updated timestamp annotation -
@@ -104,7 +112,11 @@ class KubernetesAdapter
   end
 
   def self.deployment_name(service:, environment_slug:)
-    ['fb', service.slug, 'dpl'].join('-')
+    # ['fb', service.slug, 'dpl'].join('-')
+
+    # if we're using kubectl run shorthand, then the
+    # deployment name is the service name
+    service.slug
   end
 
   private
