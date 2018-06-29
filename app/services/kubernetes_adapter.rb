@@ -29,6 +29,7 @@ class KubernetesAdapter
         namespace,
         "--context=#{context}"
       )
+      true
     rescue CmdFailedError => e
       false
     end
@@ -43,6 +44,7 @@ class KubernetesAdapter
         name,
         std_args(namespace: namespace, context: context)
       )
+      true
     rescue CmdFailedError => e
       false
     end
