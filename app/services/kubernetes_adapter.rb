@@ -66,6 +66,9 @@ class KubernetesAdapter
     end
   end
 
+  def self.set_image( deployment_name:, container_name:, image:)
+  end
+
   # just writes an updated timestamp annotation -
   # quickest, smoothest and easiest way to refresh a deployment
   # so that it can pick up new configmaps, etc
@@ -77,7 +80,7 @@ class KubernetesAdapter
       name,
       std_args(namespace: namespace, context: context),
       '-p',
-      timestamp_annotation
+      "'#{timestamp_annotation}'"
     )
   end
 
@@ -139,6 +142,27 @@ class KubernetesAdapter
     # if we're using kubectl run shorthand, then the
     # deployment name is the service name
     service.slug
+  end
+
+  # given a deployed service, what is the URL defined in the actual
+  # ingress rule?
+  def self.service_url(service:, environment_slug:, namespace:, context:)
+    services = JSON.parse(
+      ShellAdapter.output_of(
+        kubectl_binary,
+        'get',
+        'ing',
+        std_args(namespace: namespace, context: context),
+        '-o',
+        'json'
+      )
+    )
+    service_item = services['items'].find do |item|
+      rule = item['spec']['rules'].find do |rule|
+        rule['http']['paths']['backend']['serviceName'] == service.slug
+      end
+      rule['host']
+    end
   end
 
   private

@@ -25,20 +25,47 @@ class MinikubeAdapter
   def self.start(environment_slug:, service:, tag:, container_port: 3000, host_port: 8080)
     environment = ServiceEnvironment.find(environment_slug)
 
-    KubernetesAdapter.run(
-      tag: tag,
+    if KubernetesAdapter.exists_in_namespace?(
       name: service.slug,
+      type: 'deployment',
       namespace: environment.namespace,
-      context: environment.kubectl_context,
-      port: container_port
+      context: environment.kubectl_context
     )
+      KubernetesAdapter.set_image(
+        deployment_name: service.slug,
+        container_name: service.slug,
+        image: tag
+      )
+    else
+      KubernetesAdapter.run(
+        tag: tag,
+        name: service.slug,
+        namespace: environment.namespace,
+        context: environment.kubectl_context,
+        port: container_port
+      )
 
-    KubernetesAdapter.expose_node_port(
-      name: service.slug,
-      namespace: environment.namespace,
-      context: environment.kubectl_context,
-      container_port: container_port,
-      host_port: host_port
+      KubernetesAdapter.expose_node_port(
+        name: service.slug,
+        namespace: environment.namespace,
+        context: environment.kubectl_context,
+        container_port: container_port,
+        host_port: host_port
+      )
+    end
+  end
+
+  # we don't set up ingress for minikube, we just use node ports
+  # so we have to query for the actual urls
+  def self.url_for(service:, environment_slug:)
+    environment = ServiceEnvironment.find(environment_slug)
+    ShellAdapter.output_of(
+      'minikube',
+      'service',
+      service.slug,
+      '--namespace',
+      environment.namespace,
+      '--url'
     )
   end
 

@@ -31,8 +31,13 @@ class DeploymentService
     [['fb', service.slug, environment_slug].join('-'), version].join(':')
   end
 
-  def self.build(environment_slug:, service:, json_dir:)
-    tag = service_tag(environment_slug: environment_slug, service: service)
+  # TODO: better version mgmt! Something semantic, or the hash?
+  def self.build(environment_slug:, service:, json_dir:, tag: nil)
+
+    tag ||= service_tag(environment_slug: environment_slug,
+                        service: service,
+                        version: GitService.current_commit_sha(dir: json_dir))
+
     LocalDockerService.build(
       tag: tag,
       json_dir: json_dir
@@ -63,6 +68,14 @@ class DeploymentService
       environment_slug: environment_slug,
       service: service,
       tag: tag
+    )
+  end
+
+  def self.url_for(environment_slug:, service:)
+    adapter = adapter_for(environment_slug)
+    adapter.url_for(
+      environment_slug: environment_slug,
+      service: service
     )
   end
 
