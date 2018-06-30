@@ -2,7 +2,10 @@
   %th
     = ServiceEnvironment.find(environment.environment_slug).name
   %td
-    = link_to(environment.url, environment.url)
+    - if environment.url.present?
+      = link_to(environment.url, environment.url)
+    - else
+      \-
   %td
     - if environment.status
       %span{ class: "status status-#{environment.status.to_s.first}xx" }

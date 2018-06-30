@@ -93,8 +93,9 @@ describe StatusService do
       it 'has the given environment_slug as a string' do
         expect(return_value.environment_slug).to eq('dev')
       end
-      it 'has url populated' do
-        expect(return_value.url).to_not be_empty
+
+      it 'has nil url' do
+        expect(return_value.url).to be_nil
       end
     end
   end

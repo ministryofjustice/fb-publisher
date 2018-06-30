@@ -19,7 +19,7 @@ class ShellAdapter
         output << line
       end
       unless wait_thread.value.success?
-        build_cmd( executable: binary, args: args )
+        cmd_line = build_cmd( executable: args[0], args: args[1..-1] )
         raise CmdFailedError.new(cause: "#{$?}", message: "failing cmd: #{cmd_line}")
       end
     end

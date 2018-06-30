@@ -27,8 +27,9 @@ describe ServiceStatusCheck do
     let(:dev_response) { {status: 200} }
     let(:staging_response) { {status: 404} }
     before do
-      WebMock.stub_request(:get, "my-service.minikube.local").to_return(dev_response)
-      WebMock.stub_request(:get, "https://my-service.apps.non-production.k8s.integration.dsd.io/").to_return(staging_response)
+      WebMock.stub_request(:get, "url1").to_return(dev_response)
+      WebMock.stub_request(:get, "url2").to_return(staging_response)
+      # WebMock.stub_request(:get, "https://my-service.apps.non-production.k8s.integration.dsd.io/").to_return(staging_response)
       allow_any_instance_of(ServiceStatusCheck).to receive(:save!)
     end
 
@@ -37,6 +38,10 @@ describe ServiceStatusCheck do
       let(:envs){ [:dev, :staging] }
       let(:result) do
         described_class.execute_many!(service: service, environment_slugs: envs)
+      end
+      before do
+        allow(DeploymentService).to receive(:url_for).with(service: service, environment_slug: 'dev').and_return('url1')
+        allow(DeploymentService).to receive(:url_for).with(service: service, environment_slug: 'staging').and_return('url2')
       end
 
       it 'returns an array of checks' do
