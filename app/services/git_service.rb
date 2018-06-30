@@ -9,11 +9,17 @@ class GitService
     end
   end
 
+  def self.current_commit_sha(dir:, short: true)
+    short_arg = (short ? '--short' : '')
+    Dir.chdir(dir) do
+      ShellAdapter.output_of(git_binary, 'rev-parse', short_arg, 'HEAD')
+    end
+  end
 
   private
 
   def self.git_binary
-    "$(which git)"
+    @git_binary ||= ShellAdapter.output_of("which git")
   end
 
 end
