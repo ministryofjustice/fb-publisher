@@ -4,6 +4,10 @@ require 'webmock/rspec'
 describe ServiceStatusCheck do
   let(:mock_response) { double('response', code: 404) }
 
+  before do
+    allow(DeploymentService).to receive(:url_for).and_return('url.test')
+  end
+
   describe '.execute!' do
     before do
       allow_any_instance_of(described_class).to receive(:net_http_response).and_return(mock_response)

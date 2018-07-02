@@ -1,6 +1,10 @@
 require 'capybara_helper'
 
 describe 'visiting /services' do
+  before do
+    allow(DeploymentService).to receive(:url_for).and_return('url.test')
+  end
+  
   context 'as a logged in user' do
     let(:user){ User.create(id: 'abc123', name: 'test user', email: 'test@example.justice.gov.uk') }
     before do
