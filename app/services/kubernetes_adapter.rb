@@ -25,11 +25,15 @@ class KubernetesAdapter
       name: deployment_name(service: service, environment_slug: environment_slug),
       namespace: namespace
     )
-      patch_deployment(
-        context: environment.kubectl_context,
-        name: deployment_name(service: service, environment_slug: environment_slug),
-        namespace: namespace
-      )
+      begin
+        patch_deployment(
+          context: environment.kubectl_context,
+          name: deployment_name(service: service, environment_slug: environment_slug),
+          namespace: namespace
+        )
+      rescue CmdFailedError => e
+        puts 'could not patch deployment - this may not be a problem?'
+      end
     end
   end
 
@@ -73,8 +77,15 @@ class KubernetesAdapter
     end
   end
 
-  def self.set_image( deployment_name:, container_name:, image:)
-    raise NotImplementedError.new
+  def self.set_image( deployment_name:, container_name:, image:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'set',
+      'image',
+      "deployment/#{deployment_name}",
+      "#{container_name}=#{image}",
+      std_args(namespace: namespace, context: context)
+    )
   end
 
   def self.delete_service(name:, namespace:, context:)
@@ -82,6 +93,16 @@ class KubernetesAdapter
       kubectl_binary,
       'delete',
       'service',
+      name,
+      std_args(namespace: namespace, context: context)
+    )
+  end
+
+  def self.delete_deployment(name:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'delete',
+      'deployment',
       name,
       std_args(namespace: namespace, context: context)
     )

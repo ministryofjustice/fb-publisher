@@ -71,6 +71,20 @@ class DeploymentService
       stop(environment_slug: environment_slug, service: service)
     end
 
+    if adapter.deployment_exists?(
+      environment_slug: environment_slug,
+      service: service
+    )
+      begin
+        adapter.delete_deployment(
+          environment_slug: environment_slug,
+          service: service
+        )
+      rescue CmdFailedError => e
+        false
+      end
+    end
+
     start(environment_slug: environment_slug, service: service, tag: tag)
   end
 

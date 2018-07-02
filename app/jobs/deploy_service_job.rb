@@ -25,16 +25,16 @@ class DeployServiceJob < ApplicationJob
       image: built_service[:tag],
       environment_slug: deployment.environment_slug
     )
-    DeploymentService.configure(
-      config_dir: config_dir,
-      environment_slug: deployment.environment_slug,
-      service: deployment.service
-    )
     DeploymentService.restart(
       environment_slug: deployment.environment_slug,
       service: deployment.service,
       tag: built_service[:tag]
     )
 
+    DeploymentService.configure(
+      config_dir: config_dir,
+      environment_slug: deployment.environment_slug,
+      service: deployment.service
+    )
   end
 end
