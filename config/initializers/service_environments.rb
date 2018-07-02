@@ -1,12 +1,4 @@
 ALL_ENVS = {
-  dev: {
-    deployment_adapter: 'minikube',
-    kubectl_context: 'minikube',
-    name: 'Development',
-    namespace: 'formbuilder-services-dev',
-    protocol: 'http://',
-    url_root: 'minikube.local'
-  },
   staging: {
     deployment_adapter: 'cloud_platform',
     kubectl_context: 'cp-non-prod',
@@ -24,4 +16,18 @@ ALL_ENVS = {
     url_root: 'apps.production.k8s.integration.dsd.io'
   }
 }
-Rails.configuration.x.service_environments = ALL_ENVS
+# only use minikube on local machines - i.e. dev
+envs = ALL_ENVS
+# Note: Rails.environment is not set up at this point in the initialization
+if ENV['RAILS_ENV'] == 'development'
+  envs[:dev] = {
+    deployment_adapter: 'minikube',
+    kubectl_context: 'minikube',
+    name: 'Development',
+    namespace: 'formbuilder-services-dev',
+    protocol: 'http://',
+    url_root: 'minikube.local'
+  }
+end
+
+Rails.configuration.x.service_environments = envs
