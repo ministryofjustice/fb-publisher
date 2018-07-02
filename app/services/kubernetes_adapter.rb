@@ -13,6 +13,13 @@ class KubernetesAdapter
       name: config_map_name(service: service),
       namespace: namespace
     )
+    apply_config_map(
+      name: config_map_name(service: service),
+      deployment_name: service.slug,
+      namespace: namespace,
+      context: environment.kubectl_context
+    )
+    # This doesn't seem to have any effect on minikube
     if deployment_exists?(
       context: environment.kubectl_context,
       name: deployment_name(service: service, environment_slug: environment_slug),
@@ -67,6 +74,17 @@ class KubernetesAdapter
   end
 
   def self.set_image( deployment_name:, container_name:, image:)
+    raise NotImplementedError.new
+  end
+
+  def self.delete_service(name:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'delete',
+      'service',
+      name,
+      std_args(namespace: namespace, context: context)
+    )
   end
 
   # just writes an updated timestamp annotation -
@@ -84,15 +102,21 @@ class KubernetesAdapter
     )
   end
 
+  # see https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-env-em-
+  # "Import environment from a config map with a prefix"
+  def self.apply_config_map(name:, deployment_name:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'set',
+      'env',
+      "--from=configmap/#{name}",
+      std_args(namespace: namespace, context: context),
+      "deployment/#{deployment_name}"
+    )
+  end
+
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
   def self.create_or_update_config_map(file:, name:, namespace:, context:)
-    args = [
-      'create',
-      'configmap',
-      name,
-      "--from-file=#{file}",
-      std_args(namespace: namespace, context: context)
-    ]
 
     if configmap_exists?(name: name, namespace: namespace, context: context)
       ShellAdapter.exec(
@@ -103,8 +127,15 @@ class KubernetesAdapter
         std_args(namespace: namespace, context: context),
       )
     end
-    cmd = ShellAdapter.build_cmd(executable: kubectl_binary, args: args)
-    ShellAdapter.exec(cmd)
+
+    ShellAdapter.exec(
+      kubectl_binary,
+      'create',
+      'configmap',
+      name,
+      "--from-file=#{file}",
+      std_args(namespace: namespace, context: context)
+    )
   end
 
   def self.run(tag:, name:, namespace:, context:, port: 3000)

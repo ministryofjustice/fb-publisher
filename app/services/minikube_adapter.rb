@@ -1,3 +1,5 @@
+# Takes advantage of the sometimes-more-friendly minikube layer
+# where possible, delegates to KubernetesAdapter where needed
 class MinikubeAdapter
   def self.import_image(image:, private_key_path: default_private_key_path)
     cmd = ShellAdapter.build_cmd(
@@ -19,6 +21,17 @@ class MinikubeAdapter
       service: service,
       config_dir: config_dir,
       environment_slug: environment_slug
+    )
+  end
+
+  # TODO: find a less brute-force way of doing this!
+  # We want rolling zero-downtime updates, and this is
+  # definitely not that
+  def self.stop(environment_slug:, service:)
+    KubernetesAdapter.delete_service(
+      name: service.slug,
+      namespace: environment.namespace,
+      context: environment.kubectl_context
     )
   end
 
@@ -66,6 +79,16 @@ class MinikubeAdapter
       '--namespace',
       environment.namespace,
       '--url'
+    )
+  end
+
+  def self.service_is_running?(environment_slug:, service:)
+    environment = ServiceEnvironment.find(environment_slug)
+    KubernetesAdapter.exists_in_namespace?(
+      name: service.slug,
+      type: 'service',
+      namespace: environment.namespace,
+      context: environment.kubectl_context
     )
   end
 

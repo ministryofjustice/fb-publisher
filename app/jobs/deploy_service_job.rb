@@ -30,7 +30,7 @@ class DeployServiceJob < ApplicationJob
       environment_slug: deployment.environment_slug,
       service: deployment.service
     )
-    DeploymentService.start(
+    DeploymentService.restart(
       environment_slug: deployment.environment_slug,
       service: deployment.service,
       tag: built_service[:tag]

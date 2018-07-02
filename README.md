@@ -3,11 +3,18 @@ Form Builder Publisher Web application
 
 # Pre-requisites
 
+### To run the web app only
 * ruby (2.5.0)
 * [rubygems](https://rubygems.org/)
 * [bundler](https://bundler.io/)
 * [postgresql](https://www.postgresql.org/) - v10.3+
-* (optional) [Docker](https://docker.com/) - tested on 18.03.1
+
+### To perform deployments
+* [Docker](https://docker.com/) - tested on 18.03.1
+* [Kubernetes](https://kubernetes.io/) - Homebrew package `kubernetes-cli` v1.11+
+
+### To run deployed services locally
+* [Minikube](https://github.com/kubernetes/minikube) - v0.26.1+
 
 # Setup
 

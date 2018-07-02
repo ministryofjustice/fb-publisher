@@ -62,6 +62,26 @@ class DeploymentService
     )
   end
 
+  def self.restart(environment_slug:, service:, tag:)
+    adapter = adapter_for(environment_slug)
+    if adapter.service_is_running?(
+      environment_slug: environment_slug,
+      service: service
+    )
+      stop(environment_slug: environment_slug, service: service)
+    end
+
+    start(environment_slug: environment_slug, service: service, tag: tag)
+  end
+
+  def self.stop(environment_slug:, service:)
+    adapter = adapter_for(environment_slug)
+    adapter.stop(
+      environment_slug: environment_slug,
+      service: service
+    )
+  end
+
   def self.start(environment_slug:, service:, tag:)
     adapter = adapter_for(environment_slug)
     adapter.start(

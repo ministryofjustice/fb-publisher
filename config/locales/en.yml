@@ -54,6 +54,9 @@ en:
         commit_sha_html:
           <em>(optional)</em> Enter a commit SHA or branch/tag name to deploy<br />
           Or leave it blank, and we'll deploy HEAD (the latest commit)
+        json_sub_dir_html:
+          <em>(optional)</em> If the JSON you want to deploy is in a sub-directory
+          of the repository shown above, please enter the relative path to it here.
     label:
       service:
         git_repo_url: URL of the service config JSON Git repository
@@ -61,6 +64,7 @@ en:
         slug: Service "slug"
       service_deployment:
         commit_sha: Commit SHA, branch, or tag
+        json_sub_dir: Relative path to your service's JSON
   auth:
     existing_user:
       welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
@@ -122,7 +126,7 @@ en:
       new:
         heading: Deploy '%{service}' to %{environment}
         lede_html:
-          Your JSON is at <strong><a href='%{git_repo_url}'>%{git_repo_url}</a></strong>
+          Your JSON repository is at <strong><a href='%{git_repo_url}'>%{git_repo_url}</a></strong>
         submit: Deploy now
       status:
         lede_html:
