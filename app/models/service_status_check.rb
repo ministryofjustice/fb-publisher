@@ -1,11 +1,12 @@
 class ServiceStatusCheck < ActiveRecord::Base
   belongs_to :service
-  
+
   validates :environment_slug, inclusion: {in: ServiceEnvironment.all_slugs.map(&:to_s)}
 
   def url_from_env_and_service
-    env = ServiceEnvironment.find(self.environment_slug)
-    env.url_for(self.service)
+    DeploymentService.url_for(service: self.service, environment_slug: self.environment_slug)
+    # env = ServiceEnvironment.find(self.environment_slug)
+    # env.url_for(self.service)
   end
 
   def execute!(timeout: 5)
@@ -50,6 +51,8 @@ class ServiceStatusCheck < ActiveRecord::Base
   def net_http_response(timeout: 5)
     begin
       uri = URI.parse(self.url)
+      # minikube doesn't put the / on the end of urls
+      uri.path = '/' if uri.path.blank?
       http = setup_http_object(uri: uri, timeout: timeout)
       resp = http.start() do |http|
         http.get(uri.path)

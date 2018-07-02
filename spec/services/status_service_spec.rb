@@ -5,6 +5,10 @@ describe StatusService do
   let(:check_dev){ double(ServiceStatusCheck) }
   let(:check_staging){ double(ServiceStatusCheck) }
 
+  before do
+    allow(DeploymentService).to receive(:url_for).and_return('url.test')
+  end
+
 
   describe '.service_status' do
     describe 'given multiple environment_slugs' do
@@ -93,8 +97,9 @@ describe StatusService do
       it 'has the given environment_slug as a string' do
         expect(return_value.environment_slug).to eq('dev')
       end
-      it 'has url populated' do
-        expect(return_value.url).to_not be_empty
+
+      it 'has whatever url is returned from the deployment service' do
+        expect(return_value.url).to eq('url.test')
       end
     end
   end

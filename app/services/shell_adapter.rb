@@ -1,3 +1,5 @@
+require 'open3'
+
 class ShellAdapter
   def self.exec(binary, *args)
     cmd_line = build_cmd( executable: binary, args: args )
@@ -6,6 +8,22 @@ class ShellAdapter
     # can get streaming output as well as exit code?
     result = Kernel.system(cmd_line)
     raise CmdFailedError.new(cause: "#{$?}", message: "failing cmd: #{cmd_line}") unless result
+  end
+
+  # NOTE: concatenates a streaming buffer into one string to return
+  # - not scalable to long output!
+  def self.output_of(*args)
+    output = []
+    exit_code = Open3.popen2e(*args) do |stdin, stdout_and_stderr, wait_thread|
+      stdout_and_stderr.each_line do |line|
+        output << line
+      end
+      unless wait_thread.value.success?
+        cmd_line = build_cmd( executable: args[0], args: args[1..-1] )
+        raise CmdFailedError.new(cause: "#{$?}", message: "failing cmd: #{cmd_line}")
+      end
+    end
+    output.join('\n').strip
   end
 
   def self.build_cmd(executable:, args: [], redirect_to: nil, pipe_to: nil)

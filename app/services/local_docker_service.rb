@@ -19,10 +19,10 @@ class LocalDockerService
 
   def self.default_runner_image_ref
     # old c100 prototype runner
-    "aldavidson/fb-sample-runner:latest"
+    # "aldavidson/fb-sample-runner:latest"
 
     # shiny new general-purpose runner:
-    # "aldavidson/fb-runner-node:latest"
+    "aldavidson/fb-runner-node:latest"
   end
 
   def self.service_dockerfile_path

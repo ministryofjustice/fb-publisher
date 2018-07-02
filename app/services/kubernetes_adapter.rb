@@ -13,11 +13,28 @@ class KubernetesAdapter
       name: config_map_name(service: service),
       namespace: namespace
     )
-    patch_deployment(
+    apply_config_map(
+      name: config_map_name(service: service),
+      deployment_name: service.slug,
+      namespace: namespace,
+      context: environment.kubectl_context
+    )
+    # This doesn't seem to have any effect on minikube
+    if deployment_exists?(
       context: environment.kubectl_context,
       name: deployment_name(service: service, environment_slug: environment_slug),
       namespace: namespace
     )
+      begin
+        patch_deployment(
+          context: environment.kubectl_context,
+          name: deployment_name(service: service, environment_slug: environment_slug),
+          namespace: namespace
+        )
+      rescue CmdFailedError => e
+        puts 'could not patch deployment - this may not be a problem?'
+      end
+    end
   end
 
   def self.namespace_exists?(namespace:, context:)
@@ -36,11 +53,21 @@ class KubernetesAdapter
   end
 
   def self.configmap_exists?(name:, namespace:, context:)
+    exists_in_namespace?( name: name, type: 'configmap',
+                          namespace: namespace, context: context)
+  end
+
+  def self.deployment_exists?(name:, namespace:, context:)
+    exists_in_namespace?( name: name, type: 'deployment',
+                          namespace: namespace, context: context)
+  end
+
+  def self.exists_in_namespace?(name:, type:, namespace:, context:)
     begin
       ShellAdapter.exec(
         kubectl_binary,
         'get',
-        'configmaps',
+        type,
         name,
         std_args(namespace: namespace, context: context)
       )
@@ -48,6 +75,37 @@ class KubernetesAdapter
     rescue CmdFailedError => e
       false
     end
+  end
+
+  def self.set_image( deployment_name:, container_name:, image:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'set',
+      'image',
+      "deployment/#{deployment_name}",
+      "#{container_name}=#{image}",
+      std_args(namespace: namespace, context: context)
+    )
+  end
+
+  def self.delete_service(name:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'delete',
+      'service',
+      name,
+      std_args(namespace: namespace, context: context)
+    )
+  end
+
+  def self.delete_deployment(name:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'delete',
+      'deployment',
+      name,
+      std_args(namespace: namespace, context: context)
+    )
   end
 
   # just writes an updated timestamp annotation -
@@ -61,27 +119,44 @@ class KubernetesAdapter
       name,
       std_args(namespace: namespace, context: context),
       '-p',
-      timestamp_annotation
+      "'#{timestamp_annotation}'"
+    )
+  end
+
+  # see https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-env-em-
+  # "Import environment from a config map with a prefix"
+  def self.apply_config_map(name:, deployment_name:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'set',
+      'env',
+      "--from=configmap/#{name}",
+      std_args(namespace: namespace, context: context),
+      "deployment/#{deployment_name}"
     )
   end
 
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
   def self.create_or_update_config_map(file:, name:, namespace:, context:)
-    args = [
+
+    if configmap_exists?(name: name, namespace: namespace, context: context)
+      ShellAdapter.exec(
+        kubectl_binary,
+        'delete',
+        'configmap',
+        name,
+        std_args(namespace: namespace, context: context),
+      )
+    end
+
+    ShellAdapter.exec(
+      kubectl_binary,
       'create',
       'configmap',
       name,
       "--from-file=#{file}",
       std_args(namespace: namespace, context: context)
-    ]
-    pipe = nil
-
-    if configmap_exists?(name: name, namespace: namespace, context: context)
-      args += ['--dry-run', '-o', 'yaml']
-      pipe = "kubectl replace -f -"
-    end
-    cmd = ShellAdapter.build_cmd(executable: kubectl_binary, args: args, pipe_to: pipe)
-    ShellAdapter.exec(cmd)
+    )
   end
 
   def self.run(tag:, name:, namespace:, context:, port: 3000)
@@ -119,6 +194,27 @@ class KubernetesAdapter
     # if we're using kubectl run shorthand, then the
     # deployment name is the service name
     service.slug
+  end
+
+  # given a deployed service, what is the URL defined in the actual
+  # ingress rule?
+  def self.service_url(service:, environment_slug:, namespace:, context:)
+    services = JSON.parse(
+      ShellAdapter.output_of(
+        kubectl_binary,
+        'get',
+        'ing',
+        std_args(namespace: namespace, context: context),
+        '-o',
+        'json'
+      )
+    )
+    service_item = services['items'].find do |item|
+      rule = item['spec']['rules'].find do |rule|
+        rule['http']['paths']['backend']['serviceName'] == service.slug
+      end
+      rule['host']
+    end
   end
 
   private
