@@ -106,7 +106,6 @@ class DeploymentService
   end
 
   def self.url_for(environment_slug:, service:)
-    BLAH
     adapter = adapter_for(environment_slug)
     begin
       adapter.url_for(
