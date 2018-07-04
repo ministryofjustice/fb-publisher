@@ -136,16 +136,42 @@ class KubernetesAdapter
     )
   end
 
+  def self.apply_file(file:, namespace:, context:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      '-f',
+      file,
+      std_args(namespace: namespace, context: context)
+    )
+  end
+
+  def self.create_ingress_rule(
+    config_dir:,
+    service_slug:,
+    hostname:,
+    container_port: 3000,
+    context:,
+    namespace:
+  )
+    file_path = File.join(config_dir, 'config-map.yml')
+    File.open(config_file_path, 'w+') do |f|
+      f << ingress_rule(service_slug: service_slug,
+                        hostname: hostname,
+                        container_port: 3000)
+    end
+
+    apply_file(file: file_path, std_args(namespace: namespace, context: context))
+  end
+
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
   def self.create_or_update_config_map(file:, name:, namespace:, context:)
-
     if configmap_exists?(name: name, namespace: namespace, context: context)
       ShellAdapter.exec(
         kubectl_binary,
         'delete',
         'configmap',
         name,
-        std_args(namespace: namespace, context: context),
+        std_args(namespace: namespace, context: context)
       )
     end
 
@@ -240,6 +266,27 @@ class KubernetesAdapter
       namespace: #{namespace}
     data:
       #{vars.map {|k,v| "  #{k}: #{v}" }.join('\n')}
+    ENDHEREDOC
+  end
+
+  def self.ingress_rule(service_slug:, hostname:, container_port: 3000)
+    <<~ENDHEREDOC
+    apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      name: #{service_slug}-ingress
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    spec:
+      rules:
+      - host: #{hostname}
+        http:
+          paths:
+          - path: /
+            backend:
+              serviceName: #{service_slug}
+              servicePort: #{container_port}
     ENDHEREDOC
   end
 end

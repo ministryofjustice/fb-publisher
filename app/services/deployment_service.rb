@@ -27,8 +27,10 @@ class DeploymentService
     [name, 'adapter'].join('_').classify.constantize
   end
 
-  def self.service_tag(environment_slug:, service:, version: 'latest')
-    [['fb', service.slug, environment_slug].join('-'), version].join(':')
+  def self.service_tag(environment_slug:, service:, version: 'latest', repository_scope: ENV['REMOTE_DOCKER_USERNAME'])
+    name = ['fb', service.slug, environment_slug].join('-')
+    scoped = [repository_scope, name].join('/')
+    versionned= [scoped, version].join(':')
   end
 
   # TODO: better version mgmt! Something semantic, or the hash?
@@ -58,7 +60,7 @@ class DeploymentService
     adapter.configure(
       config_dir: config_dir,
       environment_slug: environment_slug,
-      service: service,
+      service: service
     )
   end
 
@@ -106,7 +108,6 @@ class DeploymentService
   end
 
   def self.url_for(environment_slug:, service:)
-    BLAH
     adapter = adapter_for(environment_slug)
     begin
       adapter.url_for(
