@@ -10,3 +10,4 @@ ARG JSON_DIR=./json
 # 'gotcha' when asking users for json_sub_dir
 COPY $JSON_DIR /usr/app/metadata/
 ENV SERVICEDATA=/usr/app/
+ENV BIND_IP="0.0.0.0"
