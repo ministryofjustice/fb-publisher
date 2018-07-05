@@ -1,7 +1,7 @@
 class DeployServiceJob < ApplicationJob
   queue_as :default
 
-  def perform(service_deployment_id:, json_sub_dir: nil)
+  def perform(service_deployment_id:)
     deployment = ServiceDeployment.find(service_deployment_id)
 
     # Check out the code
@@ -16,7 +16,7 @@ class DeployServiceJob < ApplicationJob
 
     # if the json we want is not in the root of the repo,
     # from now on we need to work in that sub dir
-    json_dir = File.join(json_dir, json_sub_dir) if json_sub_dir.present?
+    json_dir = File.join(json_dir, deployment.json_sub_dir) if deployment.json_sub_dir.present?
 
     built_service_tag = DeploymentService.build(
       environment_slug: deployment.environment_slug,

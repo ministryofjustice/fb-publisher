@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_25_111505) do
+ActiveRecord::Schema.define(version: 2018_07_05_132337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2018_06_25_111505) do
     t.uuid "service_id"
     t.datetime "completed_at"
     t.string "status"
+    t.string "json_sub_dir"
     t.index ["service_id", "environment_slug", "completed_at"], name: "ix_deployments_service_env_completed"
     t.index ["service_id", "environment_slug", "created_at"], name: "ix_serv_deploy_service_env_created"
     t.index ["service_id"], name: "index_service_deployments_on_service_id"

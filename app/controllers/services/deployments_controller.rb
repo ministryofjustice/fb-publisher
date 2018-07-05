@@ -79,7 +79,8 @@ class Services::DeploymentsController < ApplicationController
       :environment_slug,
       :name,
       :service_id,
-      :value
+      :value,
+      :json_sub_dir
     )
   end
 end
