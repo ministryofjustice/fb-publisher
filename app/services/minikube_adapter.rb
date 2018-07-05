@@ -90,15 +90,19 @@ class MinikubeAdapter
 
   # we don't set up ingress for minikube, we just use node ports
   # so we have to query for the actual urls
-  def self.url_for(service:, environment_slug:)
+  def self.url_for(service:, environment_slug:, timeout: 2)
     environment = ServiceEnvironment.find(environment_slug)
     ShellAdapter.output_of(
       'minikube',
       'service',
+      '--url',
+      '--wait',
+      timeout,
+      '--interval',
+      1,
       service.slug,
       '--namespace',
-      environment.namespace,
-      '--url'
+      environment.namespace
     )
   end
 

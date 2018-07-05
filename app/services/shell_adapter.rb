@@ -12,7 +12,7 @@ class ShellAdapter
 
   # NOTE: concatenates a streaming buffer into one string to return
   # - not scalable to long output!
-  def self.output_of(*args)
+  def self._output_of(*args)
     output = []
     exit_code = Open3.popen2e(*args) do |stdin, stdout_and_stderr, wait_thread|
       stdout_and_stderr.each_line do |line|
@@ -26,7 +26,11 @@ class ShellAdapter
     output.join('\n').strip
   end
 
-  def self.capture_with_stdin(cmd: [], stdin:)
+  def self.output_of(*args)
+    capture_with_stdin(cmd: args).strip
+  end
+
+  def self.capture_with_stdin(cmd: [], stdin: nil)
     cmd_line = build_cmd( executable: cmd[0], args: cmd[1..-1] )
 
     stdout_str, status = Open3.capture2(cmd_line, stdin_data: stdin)
