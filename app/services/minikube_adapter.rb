@@ -25,6 +25,8 @@ class MinikubeAdapter
     )
   end
 
+
+
   # TODO: find a less brute-force way of doing this!
   # We want rolling zero-downtime updates, and this is
   # definitely not that

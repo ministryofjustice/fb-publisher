@@ -2,7 +2,10 @@ class CloudPlatformAdapter
   def self.start(environment_slug:, service:, tag:)
   end
 
-  def self.import_image(image:, repository_scope: ENV['REMOTE_DOCKER_USERNAME'])
+  def self.import_image(
+    image:,
+    repository_scope: ENV['REMOTE_DOCKER_USERNAME']
+  )
     LocalDockerService.push_to_dockerhub(
       tag: image,
       repository_scope: repository_scope
@@ -21,18 +24,27 @@ class CloudPlatformAdapter
       .order(:name)
     )
 
-    KubernetesAdapter.set_environment_vars(
-      vars: env_vars.merge(system_config),
-      service: service,
-      config_dir: config_dir,
-      environment_slug: environment_slug
-    )
+    begin
+      KubernetesAdapter.set_environment_vars(
+        vars: env_vars.merge(system_config),
+        service: service,
+        config_dir: config_dir,
+        environment_slug: environment_slug
+      )
+    rescue CmdFailedError => e
+      Rails.logger.info "set_environment_vars failed: #{e}\nIgnoring"
+    end
 
-    # this is the only bit that's different for Cloud Platform vs Minikube
+
+    url = url_for(service: service, environment_slug: environment_slug)
+    environment = ServiceEnvironment.find(environment_slug)
+
     KubernetesAdapter.create_ingress_rule(
-      service: service,
+      service_slug: service.slug,
       config_dir: config_dir,
-      environment_slug: environment_slug
+      hostname: URI.parse(url).host,
+      context: environment.kubectl_context,
+      namespace: environment.namespace
     )
   end
 

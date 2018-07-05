@@ -139,6 +139,7 @@ class KubernetesAdapter
   def self.apply_file(file:, namespace:, context:)
     ShellAdapter.exec(
       kubectl_binary,
+      'apply',
       '-f',
       file,
       std_args(namespace: namespace, context: context)
@@ -154,13 +155,13 @@ class KubernetesAdapter
     namespace:
   )
     file_path = File.join(config_dir, 'config-map.yml')
-    File.open(config_file_path, 'w+') do |f|
+    File.open(file_path, 'w+') do |f|
       f << ingress_rule(service_slug: service_slug,
                         hostname: hostname,
                         container_port: 3000)
     end
 
-    apply_file(file: file_path, std_args(namespace: namespace, context: context))
+    apply_file(file: file_path, namespace: namespace, context: context)
   end
 
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
