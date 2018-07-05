@@ -74,4 +74,8 @@ describe ServiceConfigParam do
       end
     end
   end
+
+  describe '#key_value_pairs' do
+    
+  end
 end
