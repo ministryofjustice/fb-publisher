@@ -30,7 +30,7 @@ class MinikubeAdapter
   # TODO: find a less brute-force way of doing this!
   # We want rolling zero-downtime updates, and this is
   # definitely not that
-  def self.stop(environment_slug:, service:)
+  def self.stop_service(environment_slug:, service:)
     environment = ServiceEnvironment.find(environment_slug)
     if service_is_running?(service: service, environment_slug: environment_slug)
       KubernetesAdapter.delete_service(
@@ -54,7 +54,7 @@ class MinikubeAdapter
   end
 
 
-  def self.start(environment_slug:, service:, tag:, container_port: 3000, host_port: 8080)
+  def self.start_service(environment_slug:, service:, tag:, container_port: 3000, host_port: 8080)
     environment = ServiceEnvironment.find(environment_slug)
 
     if KubernetesAdapter.exists_in_namespace?(
@@ -76,7 +76,8 @@ class MinikubeAdapter
       name: service.slug,
       namespace: environment.namespace,
       context: environment.kubectl_context,
-      port: container_port
+      port: container_port,
+      image_pull_policy: 'ifNotPresent'
     )
 
     KubernetesAdapter.expose_node_port(

@@ -1,5 +1,30 @@
 class CloudPlatformAdapter
-  def self.start(environment_slug:, service:, tag:)
+  def self.start_service(environment_slug:, service:, tag:, container_port: 3000)
+    environment = ServiceEnvironment.find(environment_slug)
+
+    if KubernetesAdapter.exists_in_namespace?(
+      name: service.slug,
+      type: 'deployment',
+      namespace: environment.namespace,
+      context: environment.kubectl_context
+    )
+      KubernetesAdapter.set_image(
+        deployment_name: service.slug,
+        container_name: service.slug,
+        image: tag,
+        namespace: environment.namespace,
+        context: environment.kubectl_context
+      )
+    end
+    KubernetesAdapter.run(
+      tag: tag,
+      name: service.slug,
+      namespace: environment.namespace,
+      context: environment.kubectl_context,
+      port: container_port
+    )
+
+    # no node port needed with an ingress rule
   end
 
   def self.import_image(
@@ -94,7 +119,7 @@ class CloudPlatformAdapter
     )
   end
 
-  def self.stop(environment_slug:, service:)
+  def self.stop_service(environment_slug:, service:)
     environment = ServiceEnvironment.find(environment_slug)
     if service_is_running?(service: service, environment_slug: environment_slug)
       KubernetesAdapter.delete_service(

@@ -186,14 +186,15 @@ class KubernetesAdapter
     )
   end
 
-  def self.run(tag:, name:, namespace:, context:, port: 3000)
+  def self.run(tag:, name:, namespace:, context:, port: 3000, image_pull_policy: 'Always')
     ShellAdapter.exec(
       kubectl_binary,
       'run',
       "--image=#{tag}",
       name,
       "--port=#{port}",
-      '--image-pull-policy=IfNotPresent',
+      '--image-pull-policy',
+      image_pull_policy,
       std_args(namespace: namespace, context: context)
     )
   end

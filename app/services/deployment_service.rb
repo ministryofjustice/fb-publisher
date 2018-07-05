@@ -80,7 +80,7 @@ class DeploymentService
       environment_slug: environment_slug,
       service: service
     )
-      stop(environment_slug: environment_slug, service: service)
+      stop_service(environment_slug: environment_slug, service: service)
     end
 
     if adapter.deployment_exists?(
@@ -97,20 +97,20 @@ class DeploymentService
       end
     end
 
-    start(environment_slug: environment_slug, service: service, tag: tag)
+    self.start_service(environment_slug: environment_slug, service: service, tag: tag)
   end
 
-  def self.stop(environment_slug:, service:)
+  def self.stop_service(environment_slug:, service:)
     adapter = adapter_for(environment_slug)
-    adapter.stop(
+    adapter.stop_service(
       environment_slug: environment_slug,
       service: service
     )
   end
 
-  def self.start(environment_slug:, service:, tag:)
+  def self.start_service(environment_slug:, service:, tag:)
     adapter = adapter_for(environment_slug)
-    adapter.start(
+    adapter.start_service(
       environment_slug: environment_slug,
       service: service,
       tag: tag
