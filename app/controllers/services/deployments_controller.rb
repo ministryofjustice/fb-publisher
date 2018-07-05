@@ -8,8 +8,8 @@ class Services::DeploymentsController < ApplicationController
   before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy]
 
   def index
-    params[:limit] ||= 10
-    params[:offset] ||= 0
+    params[:per_page] ||= 10
+    params[:page] ||= 1
     params[:order] ||= 'created_at'
     params[:dir] ||= 'desc'
 
@@ -17,8 +17,8 @@ class Services::DeploymentsController < ApplicationController
     @deployments = DeploymentService.list(
       service: @service,
       environment_slug: params[:env],
-      limit: params[:per_page],
-      offset: params[:offset],
+      page: params[:page],
+      per_page: params[:per_page],
       order: params[:order],
       dir: params[:dir]
     )
