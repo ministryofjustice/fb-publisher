@@ -1,3 +1,5 @@
+require 'net/http'
+
 class ApplicationJob < ActiveJob::Base
   # recommended in https://github.com/resque/resque#activejob
   before_perform do |job|
