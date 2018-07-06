@@ -12,14 +12,14 @@ class DeploymentService
                               environment_slug: environment_slug)
   end
 
-  def self.list(service:, environment_slug:, limit: 10, offset: 0, order: 'created_at', dir: 'desc')
+  def self.list(service:, environment_slug:, per_page: 10, page: 1, order: 'created_at', dir: 'desc')
     ServiceDeployment.where(
       service_id: service.id,
       environment_slug: environment_slug
     )
     .order([order, dir].join(' '))
-    .limit(limit)
-    .offset(offset)
+    .limit(per_page)
+    .offset( (page-1) * per_page )
   end
 
   def self.adapter_for(environment_slug)
@@ -27,22 +27,28 @@ class DeploymentService
     [name, 'adapter'].join('_').classify.constantize
   end
 
-  def self.service_tag(environment_slug:, service:, version: 'latest')
-    [['fb', service.slug, environment_slug].join('-'), version].join(':')
+  def self.service_tag(
+    environment_slug:,
+    service:,
+    version: 'latest',
+    repository_scope: ENV['REMOTE_DOCKER_USERNAME']
+  )
+    name = ['fb', service.slug, environment_slug].join('-')
+    scoped = [repository_scope, name].join('/')
+    versionned= [scoped, version].join(':')
   end
 
   # TODO: better version mgmt! Something semantic, or the hash?
   def self.build(environment_slug:, service:, json_dir:, tag: nil)
-
     tag ||= service_tag(environment_slug: environment_slug,
                         service: service,
-                        version: GitService.current_commit_sha(dir: json_dir))
+                        version: VersionControlService.current_commit(dir: json_dir))
 
     LocalDockerService.build(
       tag: tag,
       json_dir: json_dir
     )
-    {tag: tag}
+    tag
   end
 
   def self.push(image:, environment_slug:)
@@ -58,17 +64,23 @@ class DeploymentService
     adapter.configure(
       config_dir: config_dir,
       environment_slug: environment_slug,
-      service: service,
+      service: service
     )
   end
 
+
+
+
+  # TODO: smoother (ideally zero-downtime) way of both
+  # restarting the service & picking up any new config
+  # (scale down to 0, then back up to 1?)
   def self.restart(environment_slug:, service:, tag:)
     adapter = adapter_for(environment_slug)
     if adapter.service_is_running?(
       environment_slug: environment_slug,
       service: service
     )
-      stop(environment_slug: environment_slug, service: service)
+      stop_service(environment_slug: environment_slug, service: service)
     end
 
     if adapter.deployment_exists?(
@@ -85,20 +97,20 @@ class DeploymentService
       end
     end
 
-    start(environment_slug: environment_slug, service: service, tag: tag)
+    self.start_service(environment_slug: environment_slug, service: service, tag: tag)
   end
 
-  def self.stop(environment_slug:, service:)
+  def self.stop_service(environment_slug:, service:)
     adapter = adapter_for(environment_slug)
-    adapter.stop(
+    adapter.stop_service(
       environment_slug: environment_slug,
       service: service
     )
   end
 
-  def self.start(environment_slug:, service:, tag:)
+  def self.start_service(environment_slug:, service:, tag:)
     adapter = adapter_for(environment_slug)
-    adapter.start(
+    adapter.start_service(
       environment_slug: environment_slug,
       service: service,
       tag: tag
@@ -106,7 +118,6 @@ class DeploymentService
   end
 
   def self.url_for(environment_slug:, service:)
-    BLAH
     adapter = adapter_for(environment_slug)
     begin
       adapter.url_for(

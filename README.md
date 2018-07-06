@@ -11,7 +11,8 @@ Form Builder Publisher Web application
 
 ### To perform deployments
 * [Docker](https://docker.com/) - tested on 18.03.1
-* [Kubernetes](https://kubernetes.io/) - Homebrew package `kubernetes-cli` v1.11+
+* [Kubernetes CLI](https://kubernetes.io/) - Homebrew package `kubernetes-cli` v1.11+
+* [AWS CLI](https://aws.amazon.com/cli) - tested on v1.11.120
 
 ### To run deployed services locally
 * [Minikube](https://github.com/kubernetes/minikube) - v0.26.1+

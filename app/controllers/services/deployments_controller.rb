@@ -8,8 +8,8 @@ class Services::DeploymentsController < ApplicationController
   before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy]
 
   def index
-    params[:limit] ||= 10
-    params[:offset] ||= 0
+    params[:per_page] ||= 10
+    params[:page] ||= 1
     params[:order] ||= 'created_at'
     params[:dir] ||= 'desc'
 
@@ -17,8 +17,8 @@ class Services::DeploymentsController < ApplicationController
     @deployments = DeploymentService.list(
       service: @service,
       environment_slug: params[:env],
-      limit: params[:per_page],
-      offset: params[:offset],
+      page: params[:page],
+      per_page: params[:per_page],
       order: params[:order],
       dir: params[:dir]
     )
@@ -42,6 +42,7 @@ class Services::DeploymentsController < ApplicationController
     authorize(@deployment)
 
     if @deployment.save
+      DeployServiceJob.perform_later(service_deployment_id: @deployment.id)
       redirect_to action: :index, service_slug: @service, env: @deployment.environment_slug
     else
       @environment = ServiceEnvironment.find(@deployment.environment_slug)
@@ -79,7 +80,8 @@ class Services::DeploymentsController < ApplicationController
       :environment_slug,
       :name,
       :service_id,
-      :value
+      :value,
+      :json_sub_dir
     )
   end
 end

@@ -1,4 +1,4 @@
-class GitService
+class GitAdapter
   def self.clone_repo(repo_url:, to_dir: dir)
     ShellAdapter.exec(git_binary, 'clone', repo_url, to_dir)
   end

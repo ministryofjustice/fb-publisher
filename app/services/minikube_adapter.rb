@@ -25,10 +25,12 @@ class MinikubeAdapter
     )
   end
 
+
+
   # TODO: find a less brute-force way of doing this!
   # We want rolling zero-downtime updates, and this is
   # definitely not that
-  def self.stop(environment_slug:, service:)
+  def self.stop_service(environment_slug:, service:)
     environment = ServiceEnvironment.find(environment_slug)
     if service_is_running?(service: service, environment_slug: environment_slug)
       KubernetesAdapter.delete_service(
@@ -52,7 +54,7 @@ class MinikubeAdapter
   end
 
 
-  def self.start(environment_slug:, service:, tag:, container_port: 3000, host_port: 8080)
+  def self.start_service(environment_slug:, service:, tag:, container_port: 3000, host_port: 8080)
     environment = ServiceEnvironment.find(environment_slug)
 
     if KubernetesAdapter.exists_in_namespace?(
@@ -74,7 +76,8 @@ class MinikubeAdapter
       name: service.slug,
       namespace: environment.namespace,
       context: environment.kubectl_context,
-      port: container_port
+      port: container_port,
+      image_pull_policy: 'ifNotPresent'
     )
 
     KubernetesAdapter.expose_node_port(
@@ -88,15 +91,19 @@ class MinikubeAdapter
 
   # we don't set up ingress for minikube, we just use node ports
   # so we have to query for the actual urls
-  def self.url_for(service:, environment_slug:)
+  def self.url_for(service:, environment_slug:, timeout: 2)
     environment = ServiceEnvironment.find(environment_slug)
     ShellAdapter.output_of(
       'minikube',
       'service',
+      '--url',
+      '--wait',
+      timeout,
+      '--interval',
+      1,
       service.slug,
       '--namespace',
-      environment.namespace,
-      '--url'
+      environment.namespace
     )
   end
 

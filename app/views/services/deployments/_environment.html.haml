@@ -10,8 +10,8 @@
     = environment.completed_at ? localize(environment.completed_at) : "-"
   %td
     - if environment.status
-      %span{ class: "status status-#{environment.status.to_s.first}xx" }
-        = environment.status
+      %span{ class: ['status', ['status', environment.status].join('-')].join(' ') }
+        = t( environment.status, scope: [:shared, :service_deployments, :status] )
     - else
       \-
   %td.actions

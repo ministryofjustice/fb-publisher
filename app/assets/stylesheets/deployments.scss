@@ -3,7 +3,7 @@
 .status-completed {
   background-color: $green;
 }
-.status-failed {
+.status-failed, .status-failed_retryable, .status-failed_non_retryable {
   background-color: $error-colour;
 }
 .status-running {

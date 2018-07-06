@@ -13,7 +13,7 @@ describe ServiceEnvironment do
       let(:values){ described_class.where(args) }
 
       it 'returns all values where all attributes match' do
-        expect(values.map(&:protocol)).to eq(['https://', 'https://'])
+        expect(values.map(&:protocol)).to eq(['https://', 'https://', 'https://'])
       end
     end
   end
@@ -38,13 +38,13 @@ describe ServiceEnvironment do
   end
 
   describe '#url_for' do
-    subject { ServiceEnvironment.new(protocol: 'myprotocol://', url_root:'root.host.name') }
+    subject { ServiceEnvironment.new(protocol: 'myprotocol://', url_root:'root.host.name', slug: 'newenv') }
 
     context 'given a service' do
       let(:service){ Service.new(slug: 'my-service-slug')}
 
-      it 'returns a string combining the protocol, slug, and url_root, ending with a slash' do
-        expect(subject.url_for(service)).to eq('myprotocol://my-service-slug.root.host.name/')
+      it 'returns a string combining the protocol, slug+env, and url_root, ending with a slash' do
+        expect(subject.url_for(service)).to eq('myprotocol://my-service-slug-newenv.root.host.name/')
       end
     end
   end

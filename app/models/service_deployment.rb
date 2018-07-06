@@ -10,14 +10,15 @@ class ServiceDeployment < ActiveRecord::Base
 
   STATUS = {
     completed: 'completed',
-    failed: 'failed',
+    failed_retryable: 'failed_retryable',
+    failed_non_retryable: 'failed_non_retryable',
     scheduled: 'scheduled',
     running: 'running'
   }.freeze
 
   validates :status, inclusion: {in: STATUS.values}
 
-  
+
 
   def self.latest(service_id:, environment_slug:)
     where(  service_id: service_id,
@@ -29,5 +30,13 @@ class ServiceDeployment < ActiveRecord::Base
   def self.visible_to(user_or_user_id)
     user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
     joins(:service).where(services: {created_by_user_id: user_id})
+  end
+
+  def update_status(new_status)
+    update_attributes(status: STATUS[new_status])
+  end
+
+  def complete!
+    update_attributes(status: STATUS[:completed], completed_at: Time.now)
   end
 end

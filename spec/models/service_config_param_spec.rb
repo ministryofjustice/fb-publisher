@@ -74,4 +74,30 @@ describe ServiceConfigParam do
       end
     end
   end
+
+  describe '#key_value_pairs' do
+    let(:indexed) do
+      {
+        'name1' => double(ServiceConfigParam, name: 'name1', value: 'value1'),
+        'name2' => double(ServiceConfigParam, name: 'name2', value: 'value2'),
+        'name3' => double(ServiceConfigParam, name: 'name3', value: 'value3')
+      }
+    end
+    context 'given a scope' do
+      before do
+        allow(scope).to receive(:index_by).and_return(indexed)
+      end
+      let(:scope) { double('scope') }
+
+      it 'returns all the params in the scope as a hash of name/value pairs' do
+        expect(described_class.key_value_pairs(scope)).to eq(
+          {
+            'name1' => 'value1',
+            'name2' => 'value2',
+            'name3' => 'value3'
+          }
+        )
+      end
+    end
+  end
 end
