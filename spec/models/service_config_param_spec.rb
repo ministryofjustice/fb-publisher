@@ -85,7 +85,7 @@ describe ServiceConfigParam do
     end
     context 'given a scope' do
       before do
-        allow(scope).to receive(:index_by).and return(indexed)
+        allow(scope).to receive(:index_by).and_return(indexed)
       end
       let(:scope) { double('scope') }
 
