@@ -42,6 +42,7 @@ class Services::DeploymentsController < ApplicationController
     authorize(@deployment)
 
     if @deployment.save
+      DeployServiceJob.perform_later(service_deployment_id: @deployment.id)
       redirect_to action: :index, service_slug: @service, env: @deployment.environment_slug
     else
       @environment = ServiceEnvironment.find(@deployment.environment_slug)

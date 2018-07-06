@@ -1,0 +1,2 @@
+class NonRetryableException < StandardError
+end

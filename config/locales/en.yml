@@ -179,6 +179,8 @@ en:
       status:
         completed: Completed
         failed: Failed
+        failed_retryable: Failed (will retry)
+        failed_non_retryable: Failed (terminal)
         running: Running
         scheduled: Scheduled
 
