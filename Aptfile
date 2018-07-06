@@ -1,2 +1,2 @@
 :repo:deb http://apt.kubernetes.io/ kubernetes-xenial main
-kubectl
+kubectl=1.10.5-00
