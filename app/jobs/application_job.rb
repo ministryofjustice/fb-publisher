@@ -7,7 +7,7 @@ class ApplicationJob < ActiveJob::Base
     job.on_retryable_exception(error)
   end
 
-  rescue_from(ActiveRecord::RecordNotFound, Net::OpenTimeout) do |exception|
+  rescue_from(::ActiveRecord::RecordNotFound, ::Net::OpenTimeout) do |exception|
     raise RetryableException.new(exception)
   end
 
