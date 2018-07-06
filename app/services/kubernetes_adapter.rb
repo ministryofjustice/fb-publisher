@@ -245,6 +245,20 @@ class KubernetesAdapter
     end
   end
 
+  def self.expose_deployment( name:, port:, target_port:, namespace:, context: )
+    ShellAdapter.exec(
+      kubectl_binary,
+      'expose',
+      'deployment',
+      name,
+      '--port',
+      port,
+      '--target-port',
+      target_port,
+      std_args(namespace: namespace, context: context)
+    )
+  end
+
   private
 
   def self.std_args(namespace:, context:)

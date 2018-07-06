@@ -24,7 +24,15 @@ class CloudPlatformAdapter
       port: container_port
     )
 
-    # no node port needed with an ingress rule
+    # no node port needed with an ingress rule, but we still need to
+    # run expose to create a service
+    KubernetesAdapter.expose_deployment(
+      name: service.slug,
+      port: container_port,
+      target_port: container_port,
+      namespace: environment.namespace,
+      context: environment.kubectl_context
+    )
   end
 
   def self.import_image(
