@@ -1,4 +1,9 @@
 class ApplicationJob < ActiveJob::Base
+  # recommended in https://github.com/resque/resque#activejob
+  before_perform do |job|
+    ActiveRecord::Base.clear_active_connections!
+  end
+
   discard_on NonRetryableException do |job, error|
     job.on_non_retryable_exception(error)
   end

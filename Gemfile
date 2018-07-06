@@ -26,7 +26,7 @@ gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]
 # Git integration
 gem 'git'
 
-# Gov.uk styling (TODO: upgrade to use new Design System) 
+# Gov.uk styling (TODO: upgrade to use new Design System)
 gem 'govuk_frontend_toolkit', '~> 6.0.0'
 gem 'govuk_elements_rails', '~> 3.0.0'
 gem 'govuk_elements_form_builder',  '~>1.0.0'
@@ -68,6 +68,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
+gem 'resque'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
