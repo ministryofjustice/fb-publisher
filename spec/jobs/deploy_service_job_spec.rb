@@ -75,7 +75,7 @@ describe DeployServiceJob do
 
     context 'when the job throws a non-retryable error' do
       before do
-        allow(DeploymentService).to receive(:build).and_raise(NameError.new("expected exception"))
+        allow(DeploymentService).to receive(:build).and_raise(CmdFailedError.new("expected exception"))
         allow(deployment).to receive(:fail!)
       end
 

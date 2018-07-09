@@ -1,4 +1,4 @@
 :repo:deb http://apt.kubernetes.io/ kubernetes-xenial main
 kubectl=1.10.5-00
-:repo:deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
-docker
+:repo:deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+docker-ce
