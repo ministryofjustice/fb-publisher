@@ -5,23 +5,16 @@ class ApplicationJob < ActiveJob::Base
   before_perform do |job|
     ActiveRecord::Base.clear_active_connections!
   end
-
-  discard_on NonRetryableException do |job, error|
+  # # any errors not handled in other ways will
+  # # result in a Non-Retryable failure
+  # # NOTE: this must come last! The *first* matching handler
+  # # will be called, not necessarily the most specific
+  discard_on StandardError do |job, error|
     job.on_non_retryable_exception(error)
   end
 
-  retry_on RetryableException, wait: :exponentially_longer, attempts: 4 do |job, error|
-    job.on_retryable_exception(error)
-  end
-
-  rescue_from(::ActiveRecord::RecordNotFound, ::Net::OpenTimeout) do |exception|
-    raise RetryableException.new(exception)
-  end
-
-  # any errors not handled in other ways will
-  # result in a Non-Retryable failure
-  rescue_from(StandardError) do |exception|
-    raise NonRetryableException.new(exception)
+  rescue_from Net::OpenTimeout, ActiveRecord::RecordNotFound do |error|
+    on_retryable_exception(error)
   end
 
   def temp_dir
@@ -30,10 +23,19 @@ class ApplicationJob < ActiveJob::Base
 
   # override on subclasses as required
   def on_retryable_exception(error)
-    Logger.error(error.message, backtrace: error.backtrace)
+    log_error(error)
+    if executions < 5
+      retry_job wait: 10.seconds
+    end
   end
 
   def on_non_retryable_exception(error)
-    Logger.error(error.message, backtrace: error.backtrace)
+    log_error(error)
+  end
+
+  def log_error(error)
+    logger.error(error.class.name)
+    logger.info(["message: ", error.message].join(' ')) if error.respond_to?(:message)
+    logger.info(["backtrace: ", error.backtrace.join("\n")].join(' ')) if error.respond_to?(:backtrace)
   end
 end

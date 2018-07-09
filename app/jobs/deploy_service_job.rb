@@ -52,12 +52,12 @@ class DeployServiceJob < ApplicationJob
   end
 
   def on_retryable_exception(error)
+    @deployment.fail!(true) if @deployment
     super
-    @deployment.update_status(:failed_retryable) if @deployment
   end
 
   def on_non_retryable_exception(error)
+    @deployment.fail!(false) if @deployment
     super
-    @deployment.update_status(:failed_non_retryable) if @deployment
   end
 end
