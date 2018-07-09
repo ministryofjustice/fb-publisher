@@ -11,10 +11,12 @@ class DeployServiceJob < ApplicationJob
     json_dir = File.join(temp_dir, 'json')
     config_dir = File.join(temp_dir, 'config')
 
-    @deployment.commit_sha = VersionControlService.checkout(
-      repo_url: @deployment.service.git_repo_url,
-      ref: @deployment.commit_sha,
-      to_dir: json_dir
+    @deployment.update_attributes(
+      commit_sha: VersionControlService.checkout(
+        repo_url: @deployment.service.git_repo_url,
+        ref: @deployment.commit_sha,
+        to_dir: json_dir
+      )
     )
 
     # if the json we want is not in the root of the repo,
@@ -48,7 +50,7 @@ class DeployServiceJob < ApplicationJob
 
     @deployment.complete!
   end
-  
+
   def on_retryable_exception(error)
     super
     @deployment.update_status(:failed_retryable) if @deployment

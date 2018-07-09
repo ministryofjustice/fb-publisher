@@ -68,9 +68,6 @@ class DeploymentService
     )
   end
 
-
-
-
   # TODO: smoother (ideally zero-downtime) way of both
   # restarting the service & picking up any new config
   # (scale down to 0, then back up to 1?)

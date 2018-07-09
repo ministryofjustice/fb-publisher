@@ -120,4 +120,236 @@ describe DeploymentService do
       end
     end
   end
+
+  describe '.build' do
+    before do
+      allow(LocalDockerService).to receive(:build)
+    end
+    let(:service) { double('service') }
+    let(:json_dir) { '/my/json/dir' }
+    let(:environment_slug) { 'dev' }
+
+    context 'when no service_tag is given' do
+      let(:result) do
+        described_class.build(
+          environment_slug: environment_slug,
+          service: service,
+          json_dir: json_dir
+        )
+      end
+      before do
+        allow(VersionControlService).to receive(:current_commit).with(dir: json_dir).and_return('mycommit')
+        allow(described_class).to receive(:service_tag).and_return('myservicetag')
+      end
+      it 'gets the current commit of the json dir' do
+        expect(VersionControlService).to receive(:current_commit).with(dir: json_dir).and_return('mycommit')
+        result
+      end
+      it 'makes a service_tag with the current_commit' do
+        expect(described_class).to receive(:service_tag).with(
+          environment_slug: environment_slug,
+          service: service,
+          version: 'mycommit'
+        ).and_return('myservicetag')
+        result
+      end
+    end
+    context 'when a tag is given' do
+      let(:result) do
+        described_class.build(
+          environment_slug: environment_slug,
+          service: service,
+          json_dir: json_dir,
+          tag: 'mytag'
+        )
+      end
+      it 'asks the LocalDockerService to build with the given tag and json_dir' do
+        expect(LocalDockerService).to receive(:build).with(tag: 'mytag', json_dir: json_dir)
+        result
+      end
+
+      it 'returns the tag' do
+        expect(result).to eq('mytag')
+      end
+    end
+  end
+
+  describe '.push' do
+    let(:adapter) { double('adapter') }
+    before do
+      allow(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      allow(adapter).to receive(:import_image).with(image: 'myimage').and_return('importedresult')
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      described_class.push(image: 'myimage', environment_slug: 'myenv')
+    end
+
+    it 'asks the adapter to import_image with the given image' do
+      expect(adapter).to receive(:import_image).with(image: 'myimage').and_return('importedresult')
+      described_class.push(image: 'myimage', environment_slug: 'myenv')
+    end
+
+    it 'returns the result of import_image' do
+      expect(described_class.push(image: 'myimage', environment_slug: 'myenv')).to eq('importedresult')
+    end
+  end
+
+  describe '.configure' do
+    let(:adapter) { double('adapter') }
+    before do
+      allow(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      allow(adapter).to receive(:configure).and_return('configure_result')
+      allow(FileUtils).to receive(:mkdir_p).with('/my/config/dir')
+    end
+
+    it 'makes the config_dir including parents if needed' do
+      expect(FileUtils).to receive(:mkdir_p).with('/my/config/dir')
+      described_class.configure(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir')
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      described_class.configure(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir')
+    end
+
+    it 'asks the adapter to configure with the given service' do
+      expect(adapter).to receive(:configure).with(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir').and_return('configure_result')
+      described_class.configure(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir')
+    end
+
+    it 'returns the result of configure from the adapter' do
+      expect(described_class.configure(service: 'myimage', environment_slug: 'myenv', config_dir: '/my/config/dir')).to eq('configure_result')
+    end
+  end
+
+  describe '.restart' do
+    let(:adapter) { double('adapter') }
+    let(:service_running) { false }
+    let(:deployment_exists) { false }
+    before do
+      allow(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      allow(adapter).to receive(:service_is_running?).and_return(service_running)
+      allow(adapter).to receive(:deployment_exists?).and_return(deployment_exists)
+      allow(adapter).to receive(:start_service).and_return('start_service_result')
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      described_class.restart(service: 'myservice', environment_slug: 'myenv', tag: 'mytag')
+    end
+
+    context 'when the service is running' do
+      let(:service_running) { true }
+
+      it 'stops the service' do
+        expect(described_class).to receive(:stop_service).with(service: 'myservice', environment_slug: 'myenv')
+        described_class.restart(service: 'myservice', environment_slug: 'myenv', tag: 'mytag')
+      end
+    end
+
+    context 'when the deployment exists' do
+      let(:deployment_exists) { true }
+
+      it 'asks the adapter to delete the deployment' do
+        expect(adapter).to receive(:delete_deployment).with(service: 'myservice', environment_slug: 'myenv')
+        described_class.restart(service: 'myservice', environment_slug: 'myenv', tag: 'mytag')
+      end
+
+      context 'if the delete_deployment fails' do
+        before do
+          allow(adapter).to receive(:delete_deployment).and_raise(CmdFailedError)
+        end
+
+        it 'does not throw an exception' do
+          expect { described_class.restart(service: 'myservice', environment_slug: 'myenv', tag: 'mytag') }.to_not raise_error
+        end
+      end
+    end
+
+    it 'starts the service' do
+      expect(described_class).to receive(:start_service).with(service: 'myservice', environment_slug: 'myenv', tag: 'mytag')
+      described_class.restart(service: 'myservice', environment_slug: 'myenv', tag: 'mytag')
+    end
+
+    it 'returns the result of start from the adapter' do
+      expect(described_class.restart(service: 'myimage', environment_slug: 'myenv', tag: 'mytag')).to eq('start_service_result')
+    end
+  end
+
+  describe '.stop_service' do
+    let(:adapter) { double('adapter') }
+    before do
+      allow(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      allow(adapter).to receive(:stop_service).and_return('importedresult')
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      described_class.stop_service(service: 'myservice', environment_slug: 'myenv')
+    end
+
+    it 'asks the adapter to stop_service with the given service and environment_slug' do
+      expect(adapter).to receive(:stop_service).with(service: 'myservice', environment_slug: 'myenv').and_return('importedresult')
+      described_class.stop_service(service: 'myservice', environment_slug: 'myenv')
+    end
+
+    it 'returns the result of stop_service' do
+      expect(described_class.stop_service(service: 'myservice', environment_slug: 'myenv')).to eq('importedresult')
+    end
+  end
+
+
+  describe '.url_for' do
+    let(:adapter) { double('adapter') }
+    before do
+      allow(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      allow(adapter).to receive(:url_for).and_return('importedresult')
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
+      described_class.url_for(service: 'myservice', environment_slug: 'myenv')
+    end
+
+    it 'asks the adapter to url_for with the given service and environment_slug' do
+      expect(adapter).to receive(:url_for).with(service: 'myservice', environment_slug: 'myenv').and_return('importedresult')
+      described_class.url_for(service: 'myservice', environment_slug: 'myenv')
+    end
+
+    it 'returns the result of url_for' do
+      expect(described_class.url_for(service: 'myservice', environment_slug: 'myenv')).to eq('importedresult')
+    end
+
+    context 'if the url_for fails' do
+      before do
+        allow(adapter).to receive(:url_for).and_raise(CmdFailedError)
+      end
+
+      it 'does not throw an exception' do
+        expect { described_class.url_for(service: 'myservice', environment_slug: 'myenv') }.to_not raise_error
+      end
+    end
+  end
+
+  describe '.empty_deployment' do
+    let(:service){ Service.new(name: 'my service', slug: 'my-service') }
+
+    it 'returns a new ServiceDeployment' do
+      expect(described_class.empty_deployment(service: service, environment_slug: 'myenv')).to be_a(ServiceDeployment)
+    end
+
+    describe 'returned object' do
+      let(:returned_object) { described_class.empty_deployment(service: service, environment_slug: 'myenv') }
+
+      it 'has the given service' do
+        expect(returned_object.service).to eq(service)
+      end
+
+      it 'has the given environment_slug' do
+        expect(returned_object.environment_slug).to eq('myenv')
+      end
+    end
+  end
 end
