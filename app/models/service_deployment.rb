@@ -39,4 +39,9 @@ class ServiceDeployment < ActiveRecord::Base
   def complete!
     update_attributes(status: STATUS[:completed], completed_at: Time.now)
   end
+
+  def fail!(retryable: false)
+    status = retryable ? STATUS[:failed_retryable] : STATUS[:failed_non_retryable]
+    update_attributes(status: status, completed_at: Time.now)
+  end
 end
