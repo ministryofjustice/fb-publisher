@@ -89,14 +89,27 @@ class DeploymentService
     # generate the
   end
 
-  def self.configure_env_vars(environment_slug:, service:, config_dir:)
+  def self.configure_env_vars(environment_slug:, service:, config_dir:, deployment:)
     FileUtils.mkdir_p(config_dir)
     adapter = adapter_for(environment_slug)
+
     adapter.configure_env_vars(
       config_dir: config_dir,
       environment_slug: environment_slug,
-      service: service
+      service: service,
+      system_config: system_config_for(
+        service: service,
+        deployment: deployment,
+        environment_slug: environment_slug
+      )
     )
+  end
+
+  def self.system_config_for(service:, deployment:, environment_slug:)
+    {
+      'SERVICEDATA' => File.join('/usr/app/', deployment.json_sub_dir),
+      'BIND_IP' => '0.0.0.0'
+    }
   end
 
   # TODO: smoother (ideally zero-downtime) way of both

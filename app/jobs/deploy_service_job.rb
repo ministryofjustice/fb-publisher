@@ -52,7 +52,8 @@ class DeployServiceJob < ApplicationJob
     DeploymentService.configure_env_vars(
       config_dir: config_dir,
       environment_slug: @deployment.environment_slug,
-      service: @deployment.service
+      service: @deployment.service,
+      deployment: @deployment
     )
 
     @deployment.complete!

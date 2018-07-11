@@ -5,7 +5,7 @@ class KubernetesAdapter
     config_file_path = File.join(config_dir, 'config-map.yml')
 
     File.open(config_file_path, 'w+') do |f|
-      f << config_map(vars: vars, name: name, namespace: namespace)
+      f << config_map(vars: vars, name: config_map_name(service: service), namespace: namespace)
     end
     create_or_update_config_map(
       context: environment.kubectl_context,
@@ -13,12 +13,12 @@ class KubernetesAdapter
       name: config_map_name(service: service),
       namespace: namespace
     )
-    apply_config_map(
-      name: config_map_name(service: service),
-      deployment_name: service.slug,
-      namespace: namespace,
-      context: environment.kubectl_context
-    )
+    # apply_config_map(
+    #   name: config_map_name(service: service),
+    #   deployment_name: service.slug,
+    #   namespace: namespace,
+    #   context: environment.kubectl_context
+    # )
     # This doesn't seem to have any effect on minikube
     if deployment_exists?(
       context: environment.kubectl_context,
@@ -173,7 +173,8 @@ class KubernetesAdapter
       commit_ref:,
       context:,
       namespace:,
-      environment_slug:
+      environment_slug:,
+      config_map_name:
     )
     file = File.join(config_dir, 'deployment.yml')
     write_config_file(
@@ -184,7 +185,8 @@ class KubernetesAdapter
           image: image,
           json_repo: json_repo,
           commit_ref: commit_ref,
-          namespace: namespace
+          namespace: namespace,
+          config_map_name: config_map_name
       )
     )
     apply_file(file: file, namespace: namespace, context: context)
@@ -234,14 +236,15 @@ class KubernetesAdapter
       )
     end
 
-    ShellAdapter.exec(
-      kubectl_binary,
-      'create',
-      'configmap',
-      name,
-      "--from-file=#{file}",
-      std_args(namespace: namespace, context: context)
-    )
+    apply_file(file: file, namespace: namespace, context: context)
+    # ShellAdapter.exec(
+    #   kubectl_binary,
+    #   'create',
+    #   'configmap',
+    #   name,
+    #   "--from-file=#{file}",
+    #   std_args(namespace: namespace, context: context)
+    # )
   end
 
   def self.run(tag:, name:, namespace:, context:, port: 3000, image_pull_policy: 'Always')
@@ -362,7 +365,7 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def self.deployment(name:, namespace:, json_repo:, commit_ref:, container_port:, image:)
+  def self.deployment(name:, namespace:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
     cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     <<~ENDHEREDOC
     apiVersion: apps/v1beta2
@@ -371,16 +374,16 @@ class KubernetesAdapter
       name: #{name}
       namespace: #{namespace}
       labels:
-        app: #{name}
+        run: #{name}
     spec:
       replicas: 2
       selector:
         matchLabels:
-          app: #{name}
+          run: #{name}
       template:
         metadata:
           labels:
-            app: #{name}
+            run: #{name}
         spec:
           initContainers:
           - name: clone-git-repo-into-volume
@@ -391,6 +394,9 @@ class KubernetesAdapter
               name: json-repo
           containers:
           - name: #{name}
+            envFrom:
+            - configMapRef:
+                name: #{config_map_name}
             image: #{image}
             ports:
             - containerPort: #{container_port}
@@ -412,7 +418,7 @@ class KubernetesAdapter
       name: #{name}
       namespace: #{namespace}
     data:
-      #{vars.map {|k,v| "  #{k}: #{v}" }.join('\n')}
+    #{vars.map {|k,v| "  #{k}: #{v}" }.join("\n")}
     ENDHEREDOC
   end
 

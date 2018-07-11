@@ -68,7 +68,8 @@ class CloudPlatformAdapter
       commit_ref: deployment.commit_sha,
       context: environment.kubectl_context,
       namespace: environment.namespace,
-      environment_slug: environment_slug
+      environment_slug: environment_slug,
+      config_map_name: KubernetesAdapter.config_map_name(service: service)
     )
 
     begin
