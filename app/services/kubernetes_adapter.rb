@@ -164,6 +164,64 @@ class KubernetesAdapter
     apply_file(file: file_path, namespace: namespace, context: context)
   end
 
+  def self.create_deployment(
+      config_dir:,
+      name:,
+      container_port:,
+      image:,
+      json_repo:,
+      commit_ref:,
+      context:,
+      namespace:,
+      environment_slug:
+    )
+    file = File.join(config_dir, 'deployment.yml')
+    write_config_file(
+      file: file,
+      content: deployment(
+          name: name,
+          container_port: container_port,
+          image: image,
+          json_repo: json_repo,
+          commit_ref: commit_ref,
+          namespace: namespace
+      )
+    )
+    apply_file(file: file, namespace: namespace, context: context)
+  end
+
+  def self.create_pod(
+      config_dir:,
+      name:,
+      container_port:,
+      image:,
+      json_repo:,
+      commit_ref:,
+      context:,
+      namespace:,
+      environment_slug:
+    )
+    file = File.join(config_dir, 'pod.yml')
+    write_config_file(
+      file: file,
+      content: pod_with_volume(
+          name: name,
+          container_port: container_port,
+          image: image,
+          json_repo: json_repo,
+          commit_ref: commit_ref,
+          namespace: namespace
+      )
+    )
+    apply_file(file: file, namespace: namespace, context: context)
+  end
+
+  def self.write_config_file(file:, content:)
+    File.open(file, 'w+') do |f|
+      f << content
+    end
+  end
+
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
   def self.create_or_update_config_map(file:, name:, namespace:, context:)
     if configmap_exists?(name: name, namespace: namespace, context: context)
@@ -262,7 +320,7 @@ class KubernetesAdapter
   private
 
   def self.std_args(namespace:, context:)
-    "--context=#{context} --namespace=#{namespace}"
+    " --context=#{context} --namespace=#{namespace} --token=$KUBECTL_BEARER_TOKEN"
   end
 
   def self.kubectl_binary
@@ -271,6 +329,79 @@ class KubernetesAdapter
 
   def self.timestamp_annotation
     "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"updated_at\":\"`date +'%s'`\"}}}}}"
+  end
+
+  def self.pod_with_volume(name:, container_port:, image:, json_repo:, commit_ref:, namespace:)
+    cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+    <<~ENDHEREDOC
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: #{name}
+      namespace: #{namespace}
+    spec:
+      initContainers:
+      - name: clone-git-repo-into-volume
+        image: radial/busyboxplus:git
+        command: ["/bin/sh", "-c", "#{cmd}"]
+        volumeMounts:
+        - mountPath: /usr/app
+          name: json-repo
+      containers:
+      - name: #{name}
+        image: #{image}
+        ports:
+        - containerPort: #{container_port}
+        volumeMounts:
+        - name: json-repo
+          mountPath: /usr/app
+
+      volumes:
+      - emptyDir: {}
+        name: json-repo
+    ENDHEREDOC
+  end
+
+  def self.deployment(name:, namespace:, json_repo:, commit_ref:, container_port:, image:)
+    cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+    <<~ENDHEREDOC
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    metadata:
+      name: #{name}
+      namespace: #{namespace}
+      labels:
+        app: #{name}
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app: #{name}
+      template:
+        metadata:
+          labels:
+            app: #{name}
+        spec:
+          initContainers:
+          - name: clone-git-repo-into-volume
+            image: radial/busyboxplus:git
+            command: ["/bin/sh", "-c", "#{cmd}"]
+            volumeMounts:
+            - mountPath: /usr/app
+              name: json-repo
+          containers:
+          - name: #{name}
+            image: #{image}
+            ports:
+            - containerPort: #{container_port}
+            volumeMounts:
+            - name: json-repo
+              mountPath: /usr/app
+
+          volumes:
+          - emptyDir: {}
+            name: json-repo
+    ENDHEREDOC
   end
 
   def self.config_map(vars: {}, name:, namespace:)

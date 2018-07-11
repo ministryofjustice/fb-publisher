@@ -127,6 +127,40 @@ class MinikubeAdapter
     )
   end
 
+  def self.setup_service(
+    environment_slug:,
+    service:,
+    deployment:,
+    config_dir:,
+    container_port: 3000,
+    image: default_runner_image_ref
+  )
+    environment = ServiceEnvironment.find(environment_slug)
+    KubernetesAdapter.create_pod(
+      config_dir: config_dir,
+      name: service.slug,
+      container_port: container_port,
+      image: image,
+      json_repo: service.git_repo_url,
+      commit_ref: deployment.commit_sha,
+      context: environment.kubectl_context,
+      namespace: environment.namespace,
+      environment_slug: environment_slug
+    )
+
+    begin
+      KubernetesAdapter.expose_node_port(
+        name: service.slug,
+        container_port: container_port,
+        host_port: container_port,
+        namespace: environment.namespace,
+        context: environment.kubectl_context
+      )
+    rescue CmdFailedError => e
+      puts("cmd failed, but no problem - ignoring: #{e}")
+    end
+  end
+
   private
 
   def self.default_private_key_path

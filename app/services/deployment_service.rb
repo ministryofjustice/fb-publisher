@@ -58,10 +58,41 @@ class DeploymentService
     )
   end
 
-  def self.configure(environment_slug:, service:, config_dir:)
+  def self.default_runner_image_ref
+    # old c100 prototype runner
+    # "aldavidson/fb-sample-runner:latest"
+
+    # shiny new general-purpose runner:
+    "aldavidson/fb-runner-node:latest"
+  end
+
+  def self.setup_service(
+    environment_slug:,
+    service:,
+    deployment:,
+    config_dir:,
+    container_port: 3000,
+    image: default_runner_image_ref
+  )
+    FileUtils.mkdir_p(config_dir)
+
+    adapter = adapter_for(environment_slug)
+    # generate the pod config
+    adapter.setup_service(
+      environment_slug: environment_slug,
+      service: service,
+      deployment: deployment,
+      config_dir: config_dir,
+      container_port: 3000,
+      image: default_runner_image_ref
+    )
+    # generate the
+  end
+
+  def self.configure_env_vars(environment_slug:, service:, config_dir:)
     FileUtils.mkdir_p(config_dir)
     adapter = adapter_for(environment_slug)
-    adapter.configure(
+    adapter.configure_env_vars(
       config_dir: config_dir,
       environment_slug: environment_slug,
       service: service
