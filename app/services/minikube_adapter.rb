@@ -10,7 +10,7 @@ class MinikubeAdapter
     ShellAdapter.exec(cmd)
   end
 
-  def self.configure(config_dir:, environment_slug:, service:, system_config: {})
+  def self.configure_env_vars(config_dir:, environment_slug:, service:, system_config: {})
     env_vars = ServiceConfigParam.key_value_pairs(
       service.service_config_params
              .where(environment_slug: environment_slug)
@@ -136,7 +136,7 @@ class MinikubeAdapter
     image: default_runner_image_ref
   )
     environment = ServiceEnvironment.find(environment_slug)
-    KubernetesAdapter.create_pod(
+    KubernetesAdapter.create_deployment(
       config_dir: config_dir,
       name: service.slug,
       container_port: container_port,
@@ -145,7 +145,8 @@ class MinikubeAdapter
       commit_ref: deployment.commit_sha,
       context: environment.kubectl_context,
       namespace: environment.namespace,
-      environment_slug: environment_slug
+      environment_slug: environment_slug,
+      config_map_name: KubernetesAdapter.config_map_name(service: service)
     )
 
     begin

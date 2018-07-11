@@ -86,7 +86,6 @@ class DeploymentService
       container_port: 3000,
       image: default_runner_image_ref
     )
-    # generate the
   end
 
   def self.configure_env_vars(environment_slug:, service:, config_dir:, deployment:)
