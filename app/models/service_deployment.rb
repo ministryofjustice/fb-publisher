@@ -46,4 +46,8 @@ class ServiceDeployment < ActiveRecord::Base
     update_attributes(status: status, completed_at: Time.now)
     logger.info "attributes updated to #{attributes}"
   end
+
+  def pending?
+    [STATUS[:queued], STATUS[:deploying]].include?(status)
+  end
 end

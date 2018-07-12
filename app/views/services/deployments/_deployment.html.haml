@@ -1,4 +1,4 @@
-%tr
+%tr{ id: deployment.id, data: { refreshable: deployment.pending? ? service_deployment_path(@service, deployment) : nil} }
   %td
     - if deployment.created_at.present?
       = l(deployment.created_at, format: :short)
