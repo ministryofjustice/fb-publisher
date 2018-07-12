@@ -6,9 +6,9 @@
 .status-failed, .status-failed_retryable, .status-failed_non_retryable {
   background-color: $error-colour;
 }
-.status-running {
+.status-deploying {
   background-color: $yellow;
 }
-.status-scheduled {
+.status-queued {
   background-color: $secondary-text-colour;
 }

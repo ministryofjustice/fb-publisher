@@ -36,7 +36,7 @@ class Services::DeploymentsController < ApplicationController
       deployments_params.merge(
         service: @service,
         created_by_user: @current_user,
-        status: ServiceDeployment::STATUS[:scheduled]
+        status: ServiceDeployment::STATUS[:queued]
       )
     )
     authorize(@deployment)

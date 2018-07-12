@@ -5,7 +5,7 @@ class DeployServiceJob < ApplicationJob
     @service_deployment_id = service_deployment_id
     @deployment = ServiceDeployment.find(service_deployment_id)
 
-    @deployment.update_status(:running)
+    @deployment.update_status(:deploying)
 
     config_dir = File.join(temp_dir, 'config')
     @deployment.update_attributes(

@@ -12,8 +12,8 @@ class ServiceDeployment < ActiveRecord::Base
     completed: 'completed',
     failed_retryable: 'failed_retryable',
     failed_non_retryable: 'failed_non_retryable',
-    scheduled: 'scheduled',
-    running: 'running'
+    queued: 'queued',
+    deploying: 'deploying'
   }.freeze
 
   validates :status, inclusion: {in: STATUS.values}

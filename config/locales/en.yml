@@ -152,7 +152,7 @@ en:
       config_params: Config Params
       deployments: Deployments
       permissions: Permissions
-      urls: URLs
+      urls: Status
     new:
       heading: New Service
       lede_html:
@@ -178,11 +178,11 @@ en:
     service_deployments:
       status:
         completed: Completed
+        deploying: Deploying
         failed: Failed
-        failed_retryable: Failed (will retry)
-        failed_non_retryable: Failed (terminal)
-        running: Running
-        scheduled: Scheduled
+        failed_retryable: Failed (retrying)
+        failed_non_retryable: Failed
+        queued: Queued
 
   user_sessions:
     destroy:
