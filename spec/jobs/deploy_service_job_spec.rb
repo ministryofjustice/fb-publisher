@@ -66,7 +66,7 @@ describe DeployServiceJob do
       end
 
       it 'fail!s the deployment passing true for retryable' do
-        expect(deployment).to receive(:fail!).with(true)
+        expect(deployment).to receive(:fail!).with(retryable: true)
         perform_and_handle_error
       end
     end
@@ -88,7 +88,7 @@ describe DeployServiceJob do
       end
 
       it 'fail!s the deployment passing false for retryable' do
-        expect(deployment).to receive(:fail!).with(false)
+        expect(deployment).to receive(:fail!).with(retryable: false)
         perform_and_handle_error
       end
     end

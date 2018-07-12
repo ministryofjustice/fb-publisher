@@ -33,12 +33,13 @@ class DeployServiceJob < ApplicationJob
   end
 
   def on_retryable_exception(error)
-    @deployment.fail!(true) if @deployment
+    logger.warn "RETRYABLE EXCEPTION! @deployment #{@deployment.inspect}"
+    @deployment.fail!(retryable: true) if @deployment
     super
   end
 
   def on_non_retryable_exception(error)
-    @deployment.fail!(false) if @deployment
+    @deployment.fail!(retryable: false) if @deployment
     super
   end
 end
