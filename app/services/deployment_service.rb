@@ -106,7 +106,7 @@ class DeploymentService
 
   def self.system_config_for(service:, deployment:, environment_slug:)
     {
-      'SERVICEDATA' => File.join('/usr/app/', deployment.json_sub_dir),
+      'SERVICEDATA' => File.join('/usr/app/', deployment.json_sub_dir.to_s),
       'BIND_IP' => '0.0.0.0'
     }
   end

@@ -19,10 +19,8 @@ describe DeployServiceJob do
     allow(deployment).to receive(:update_attributes)
     allow(deployment).to receive(:complete!)
     allow(VersionControlService).to receive(:checkout).and_return('some-sha')
-    allow(DeploymentService).to receive(:build).and_return('build-result')
-    allow(DeploymentService).to receive(:push).and_return('push-result')
-    allow(DeploymentService).to receive(:restart).and_return('restart-result')
-    allow(DeploymentService).to receive(:configure).and_return('configure-result')
+    allow(DeploymentService).to receive(:setup_service).and_return('setup_service-result')
+    allow(DeploymentService).to receive(:configure_env_vars).and_return('configure_env_vars-result')
   end
 
   describe '#perform' do
@@ -53,7 +51,7 @@ describe DeployServiceJob do
 
     context 'when the job throws a retryable error' do
       before do
-        allow(DeploymentService).to receive(:build).and_raise(Net::OpenTimeout.new("expected exception"))
+        allow(DeploymentService).to receive(:setup_service).and_raise(Net::OpenTimeout.new("expected exception"))
         allow(deployment).to receive(:fail!)
       end
 
@@ -75,7 +73,7 @@ describe DeployServiceJob do
 
     context 'when the job throws a non-retryable error' do
       before do
-        allow(DeploymentService).to receive(:build).and_raise(CmdFailedError.new("expected exception"))
+        allow(DeploymentService).to receive(:setup_service).and_raise(CmdFailedError.new("expected exception"))
         allow(deployment).to receive(:fail!)
       end
 
@@ -105,8 +103,7 @@ describe DeployServiceJob do
     it 'checks out the code from the VersionControlService' do
       expect(VersionControlService).to receive(:checkout).with(
         repo_url: service.git_repo_url,
-        ref: deployment.commit_sha,
-        to_dir: anything
+        ref: deployment.commit_sha
       ).and_return('some-sha')
       perform
     end

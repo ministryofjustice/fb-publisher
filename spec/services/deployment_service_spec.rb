@@ -196,31 +196,33 @@ describe DeploymentService do
     end
   end
 
-  describe '.configure' do
+  describe '.configure_env_vars' do
     let(:adapter) { double('adapter') }
+    let(:json_sub_dir) { nil }
+    let(:deployment) { double('deployment', json_sub_dir: json_sub_dir) }
     before do
       allow(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
-      allow(adapter).to receive(:configure).and_return('configure_result')
+      allow(adapter).to receive(:configure_env_vars).and_return('configure_env_vars_result')
       allow(FileUtils).to receive(:mkdir_p).with('/my/config/dir')
     end
 
     it 'makes the config_dir including parents if needed' do
       expect(FileUtils).to receive(:mkdir_p).with('/my/config/dir')
-      described_class.configure(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir')
+      described_class.configure_env_vars(service: 'myservice', deployment: deployment, environment_slug: 'myenv', config_dir: '/my/config/dir')
     end
 
     it 'gets the adapter for the given environment_slug' do
       expect(described_class).to receive(:adapter_for).with('myenv').and_return(adapter)
-      described_class.configure(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir')
+      described_class.configure_env_vars(service: 'myservice', deployment: deployment, environment_slug: 'myenv', config_dir: '/my/config/dir')
     end
 
-    it 'asks the adapter to configure with the given service' do
-      expect(adapter).to receive(:configure).with(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir').and_return('configure_result')
-      described_class.configure(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir')
+    it 'asks the adapter to configure_env_vars with the given service' do
+      expect(adapter).to receive(:configure_env_vars).with(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir', system_config: anything).and_return('configure_env_vars_result')
+      described_class.configure_env_vars(service: 'myservice', deployment: deployment, environment_slug: 'myenv', config_dir: '/my/config/dir')
     end
 
-    it 'returns the result of configure from the adapter' do
-      expect(described_class.configure(service: 'myimage', environment_slug: 'myenv', config_dir: '/my/config/dir')).to eq('configure_result')
+    it 'returns the result of configure_env_vars from the adapter' do
+      expect(described_class.configure_env_vars(service: 'myimage', deployment: deployment, environment_slug: 'myenv', config_dir: '/my/config/dir')).to eq('configure_env_vars_result')
     end
   end
 
