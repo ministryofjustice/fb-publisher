@@ -7,8 +7,6 @@ class ApplicationJob < ActiveJob::Base
   end
   # # any errors not handled in other ways will
   # # result in a Non-Retryable failure
-  # # NOTE: this must come last! The *first* matching handler
-  # # will be called, not necessarily the most specific
   discard_on StandardError do |job, error|
     job.on_non_retryable_exception(error)
   end

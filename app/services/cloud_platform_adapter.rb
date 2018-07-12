@@ -50,7 +50,52 @@ class CloudPlatformAdapter
     ServiceEnvironment.find(environment_slug).url_for(service)
   end
 
-  def self.configure(environment_slug:, service:, config_dir:, system_config: {})
+  def self.setup_service(
+    environment_slug:,
+    service:,
+    deployment:,
+    config_dir:,
+    container_port: 3000,
+    image: default_runner_image_ref
+  )
+    environment = ServiceEnvironment.find(environment_slug)
+    KubernetesAdapter.create_deployment(
+      config_dir: config_dir,
+      name: service.slug,
+      container_port: container_port,
+      image: image,
+      json_repo: service.git_repo_url,
+      commit_ref: deployment.commit_sha,
+      context: environment.kubectl_context,
+      namespace: environment.namespace,
+      environment_slug: environment_slug,
+      config_map_name: KubernetesAdapter.config_map_name(service: service)
+    )
+
+    begin
+      KubernetesAdapter.expose_deployment(
+        name: service.slug,
+        port: container_port,
+        target_port: container_port,
+        namespace: environment.namespace,
+        context: environment.kubectl_context
+      )
+    rescue CmdFailedError => e
+      Rails.logger.info "expose_deployment failed: #{e}\nIgnoring"
+    end
+
+    begin
+      create_ingress_rule(
+        service: service,
+        environment_slug: environment_slug,
+        config_dir: config_dir
+      )
+    rescue CmdFailedError => e
+      Rails.logger.info "create_ingress_rule failed: #{e}\nIgnoring"
+    end
+  end
+
+  def self.configure_env_vars(environment_slug:, service:, config_dir:, system_config: {})
     env_vars = ServiceConfigParam.key_value_pairs(
       service.service_config_params
       .where(environment_slug: environment_slug)
@@ -67,8 +112,9 @@ class CloudPlatformAdapter
     rescue CmdFailedError => e
       Rails.logger.info "set_environment_vars failed: #{e}\nIgnoring"
     end
+  end
 
-
+  def self.create_ingress_rule(service:, environment_slug:, config_dir:)
     url = url_for(service: service, environment_slug: environment_slug)
     environment = ServiceEnvironment.find(environment_slug)
 

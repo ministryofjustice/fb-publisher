@@ -5,7 +5,7 @@ class KubernetesAdapter
     config_file_path = File.join(config_dir, 'config-map.yml')
 
     File.open(config_file_path, 'w+') do |f|
-      f << config_map(vars: vars, name: name, namespace: namespace)
+      f << config_map(vars: vars, name: config_map_name(service: service), namespace: namespace)
     end
     create_or_update_config_map(
       context: environment.kubectl_context,
@@ -13,12 +13,12 @@ class KubernetesAdapter
       name: config_map_name(service: service),
       namespace: namespace
     )
-    apply_config_map(
-      name: config_map_name(service: service),
-      deployment_name: service.slug,
-      namespace: namespace,
-      context: environment.kubectl_context
-    )
+    # apply_config_map(
+    #   name: config_map_name(service: service),
+    #   deployment_name: service.slug,
+    #   namespace: namespace,
+    #   context: environment.kubectl_context
+    # )
     # This doesn't seem to have any effect on minikube
     if deployment_exists?(
       context: environment.kubectl_context,
@@ -164,6 +164,66 @@ class KubernetesAdapter
     apply_file(file: file_path, namespace: namespace, context: context)
   end
 
+  def self.create_deployment(
+      config_dir:,
+      name:,
+      container_port:,
+      image:,
+      json_repo:,
+      commit_ref:,
+      context:,
+      namespace:,
+      environment_slug:,
+      config_map_name:
+    )
+    file = File.join(config_dir, 'deployment.yml')
+    write_config_file(
+      file: file,
+      content: deployment(
+          name: name,
+          container_port: container_port,
+          image: image,
+          json_repo: json_repo,
+          commit_ref: commit_ref,
+          namespace: namespace,
+          config_map_name: config_map_name
+      )
+    )
+    apply_file(file: file, namespace: namespace, context: context)
+  end
+
+  def self.create_pod(
+      config_dir:,
+      name:,
+      container_port:,
+      image:,
+      json_repo:,
+      commit_ref:,
+      context:,
+      namespace:,
+      environment_slug:
+    )
+    file = File.join(config_dir, 'pod.yml')
+    write_config_file(
+      file: file,
+      content: pod_with_volume(
+          name: name,
+          container_port: container_port,
+          image: image,
+          json_repo: json_repo,
+          commit_ref: commit_ref,
+          namespace: namespace
+      )
+    )
+    apply_file(file: file, namespace: namespace, context: context)
+  end
+
+  def self.write_config_file(file:, content:)
+    File.open(file, 'w+') do |f|
+      f << content
+    end
+  end
+
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
   def self.create_or_update_config_map(file:, name:, namespace:, context:)
     if configmap_exists?(name: name, namespace: namespace, context: context)
@@ -176,14 +236,15 @@ class KubernetesAdapter
       )
     end
 
-    ShellAdapter.exec(
-      kubectl_binary,
-      'create',
-      'configmap',
-      name,
-      "--from-file=#{file}",
-      std_args(namespace: namespace, context: context)
-    )
+    apply_file(file: file, namespace: namespace, context: context)
+    # ShellAdapter.exec(
+    #   kubectl_binary,
+    #   'create',
+    #   'configmap',
+    #   name,
+    #   "--from-file=#{file}",
+    #   std_args(namespace: namespace, context: context)
+    # )
   end
 
   def self.run(tag:, name:, namespace:, context:, port: 3000, image_pull_policy: 'Always')
@@ -262,7 +323,7 @@ class KubernetesAdapter
   private
 
   def self.std_args(namespace:, context:)
-    "--context=#{context} --namespace=#{namespace}"
+    " --context=#{context} --namespace=#{namespace} --token=$KUBECTL_BEARER_TOKEN"
   end
 
   def self.kubectl_binary
@@ -273,6 +334,82 @@ class KubernetesAdapter
     "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"updated_at\":\"`date +'%s'`\"}}}}}"
   end
 
+  def self.pod_with_volume(name:, container_port:, image:, json_repo:, commit_ref:, namespace:)
+    cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+    <<~ENDHEREDOC
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: #{name}
+      namespace: #{namespace}
+    spec:
+      initContainers:
+      - name: clone-git-repo-into-volume
+        image: radial/busyboxplus:git
+        command: ["/bin/sh", "-c", "#{cmd}"]
+        volumeMounts:
+        - mountPath: /usr/app
+          name: json-repo
+      containers:
+      - name: #{name}
+        image: #{image}
+        ports:
+        - containerPort: #{container_port}
+        volumeMounts:
+        - name: json-repo
+          mountPath: /usr/app
+
+      volumes:
+      - emptyDir: {}
+        name: json-repo
+    ENDHEREDOC
+  end
+
+  def self.deployment(name:, namespace:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
+    cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+    <<~ENDHEREDOC
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    metadata:
+      name: #{name}
+      namespace: #{namespace}
+      labels:
+        run: #{name}
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          run: #{name}
+      template:
+        metadata:
+          labels:
+            run: #{name}
+        spec:
+          initContainers:
+          - name: clone-git-repo-into-volume
+            image: radial/busyboxplus:git
+            command: ["/bin/sh", "-c", "#{cmd}"]
+            volumeMounts:
+            - mountPath: /usr/app
+              name: json-repo
+          containers:
+          - name: #{name}
+            envFrom:
+            - configMapRef:
+                name: #{config_map_name}
+            image: #{image}
+            ports:
+            - containerPort: #{container_port}
+            volumeMounts:
+            - name: json-repo
+              mountPath: /usr/app
+
+          volumes:
+          - emptyDir: {}
+            name: json-repo
+    ENDHEREDOC
+  end
+
   def self.config_map(vars: {}, name:, namespace:)
     <<~ENDHEREDOC
     apiVersion: v1
@@ -281,7 +418,7 @@ class KubernetesAdapter
       name: #{name}
       namespace: #{namespace}
     data:
-      #{vars.map {|k,v| "  #{k}: #{v}" }.join('\n')}
+    #{vars.map {|k,v| "  #{k}: #{v}" }.join("\n")}
     ENDHEREDOC
   end
 

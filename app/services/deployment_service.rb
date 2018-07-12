@@ -58,14 +58,57 @@ class DeploymentService
     )
   end
 
-  def self.configure(environment_slug:, service:, config_dir:)
+  def self.default_runner_image_ref
+    # old c100 prototype runner
+    # "aldavidson/fb-sample-runner:latest"
+
+    # shiny new general-purpose runner:
+    "aldavidson/fb-runner-node:latest"
+  end
+
+  def self.setup_service(
+    environment_slug:,
+    service:,
+    deployment:,
+    config_dir:,
+    container_port: 3000,
+    image: default_runner_image_ref
+  )
+    FileUtils.mkdir_p(config_dir)
+
+    adapter = adapter_for(environment_slug)
+    # generate the pod config
+    adapter.setup_service(
+      environment_slug: environment_slug,
+      service: service,
+      deployment: deployment,
+      config_dir: config_dir,
+      container_port: 3000,
+      image: default_runner_image_ref
+    )
+  end
+
+  def self.configure_env_vars(environment_slug:, service:, config_dir:, deployment:)
     FileUtils.mkdir_p(config_dir)
     adapter = adapter_for(environment_slug)
-    adapter.configure(
+
+    adapter.configure_env_vars(
       config_dir: config_dir,
       environment_slug: environment_slug,
-      service: service
+      service: service,
+      system_config: system_config_for(
+        service: service,
+        deployment: deployment,
+        environment_slug: environment_slug
+      )
     )
+  end
+
+  def self.system_config_for(service:, deployment:, environment_slug:)
+    {
+      'SERVICEDATA' => File.join('/usr/app/', deployment.json_sub_dir.to_s),
+      'BIND_IP' => '0.0.0.0'
+    }
   end
 
   # TODO: smoother (ideally zero-downtime) way of both

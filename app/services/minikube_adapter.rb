@@ -10,7 +10,7 @@ class MinikubeAdapter
     ShellAdapter.exec(cmd)
   end
 
-  def self.configure(config_dir:, environment_slug:, service:, system_config: {})
+  def self.configure_env_vars(config_dir:, environment_slug:, service:, system_config: {})
     env_vars = ServiceConfigParam.key_value_pairs(
       service.service_config_params
              .where(environment_slug: environment_slug)
@@ -125,6 +125,41 @@ class MinikubeAdapter
       namespace: environment.namespace,
       context: environment.kubectl_context
     )
+  end
+
+  def self.setup_service(
+    environment_slug:,
+    service:,
+    deployment:,
+    config_dir:,
+    container_port: 3000,
+    image: default_runner_image_ref
+  )
+    environment = ServiceEnvironment.find(environment_slug)
+    KubernetesAdapter.create_deployment(
+      config_dir: config_dir,
+      name: service.slug,
+      container_port: container_port,
+      image: image,
+      json_repo: service.git_repo_url,
+      commit_ref: deployment.commit_sha,
+      context: environment.kubectl_context,
+      namespace: environment.namespace,
+      environment_slug: environment_slug,
+      config_map_name: KubernetesAdapter.config_map_name(service: service)
+    )
+
+    begin
+      KubernetesAdapter.expose_node_port(
+        name: service.slug,
+        container_port: container_port,
+        host_port: container_port,
+        namespace: environment.namespace,
+        context: environment.kubectl_context
+      )
+    rescue CmdFailedError => e
+      puts("cmd failed, but no problem - ignoring: #{e}")
+    end
   end
 
   private

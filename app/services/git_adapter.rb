@@ -5,7 +5,7 @@ class GitAdapter
 
   def self.checkout(ref: nil, dir:)
     Dir.chdir(dir) do
-      ShellAdapter.exec(git_binary, 'checkout', ref)
+      ShellAdapter.exec(git_binary, 'checkout', ref.to_s)
     end
   end
 
