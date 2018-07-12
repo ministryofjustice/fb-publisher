@@ -1,3 +1,5 @@
+@import 'colours';
+
 .styled-as-link {
   text-decoration: underline;
   padding: 0;
@@ -24,8 +26,6 @@
   padding: 1em ;
 }
 
-@import 'colours';
-
 .flash-notice {
   background-color: $focus-colour;
   background-color: rgba($focus-colour, 0.5);
@@ -42,15 +42,32 @@
 }
 
 .inline-nav {
-  border-bottom: 1px solid $border-colour;
+  // border-bottom: 1px solid $border-colour;
   padding-bottom: 1em;
 
   ul {
     list-style-type: none;
     li {
       display: inline-block;
+      padding: 0; margin: 0;
       a, span {
-        padding: 1em;
+        padding: 0.5em;
+      }
+      a {
+        border-top: 1px solid $panel-colour;
+        border-left: 1px solid $panel-colour;
+        border-right: 1px solid $panel-colour;
+        background-color: $panel-colour;
+        &:hover {
+          background-color: inherit;
+        }
+      }
+      span {
+        border-top: 1px outset $panel-colour;
+        border-left: 1px outset $panel-colour;
+        border-right: 1px outset $panel-colour;
+        border-bottom: none;
+        z-index: 99;
       }
     }
   }

@@ -43,8 +43,8 @@ describe DeployServiceJob do
     end
 
     describe 'starting' do
-      it 'updates the status of the deployment to :running' do
-        expect(deployment).to receive(:update_status).with(:running)
+      it 'updates the status of the deployment to :deploying' do
+        expect(deployment).to receive(:update_status).with(:deploying)
         perform
       end
     end

@@ -5,7 +5,7 @@ class Services::DeploymentsController < ApplicationController
   include Concerns::NestedResourceController
   nest_under :service, attr_name: :slug, param_name: :service_slug
 
-  before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy]
+  before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy, :show]
 
   def index
     params[:per_page] ||= 10
@@ -36,7 +36,7 @@ class Services::DeploymentsController < ApplicationController
       deployments_params.merge(
         service: @service,
         created_by_user: @current_user,
-        status: ServiceDeployment::STATUS[:scheduled]
+        status: ServiceDeployment::STATUS[:queued]
       )
     )
     authorize(@deployment)
@@ -66,6 +66,14 @@ class Services::DeploymentsController < ApplicationController
   def destroy
     @deployment.destroy!
     redirect_to action: :index, service_id: @service, env: @deployment.environment_slug
+  end
+
+  def show
+    if request.xhr?
+      render partial: 'deployment', locals: {deployment: @deployment}
+    else
+      # default
+    end
   end
 
   private

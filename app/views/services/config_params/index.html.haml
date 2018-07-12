@@ -14,7 +14,8 @@
           - @environments.each do |env|
             %li
               - if params[:env] == env.slug.to_s
-                = env.name
+                %span
+                  = env.name
               - else
                 = link_to env.name, {env: env.slug}
 

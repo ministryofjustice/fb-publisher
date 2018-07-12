@@ -1,6 +1,23 @@
+@import 'colours';
+
 #config-params {
   th.inline-nav {
     text-align: center;
+
+    li {
+      border-left: 1px solid $border-colour;
+      font-size: 80%;
+
+      a, span {
+        background: none;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+      }
+      &:first-child {
+        border-left: none;
+      }
+    }
   }
 
 }

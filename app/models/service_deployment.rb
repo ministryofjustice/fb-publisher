@@ -12,8 +12,8 @@ class ServiceDeployment < ActiveRecord::Base
     completed: 'completed',
     failed_retryable: 'failed_retryable',
     failed_non_retryable: 'failed_non_retryable',
-    scheduled: 'scheduled',
-    running: 'running'
+    queued: 'queued',
+    deploying: 'deploying'
   }.freeze
 
   validates :status, inclusion: {in: STATUS.values}
@@ -45,5 +45,9 @@ class ServiceDeployment < ActiveRecord::Base
     status = retryable ? STATUS[:failed_retryable] : STATUS[:failed_non_retryable]
     update_attributes(status: status, completed_at: Time.now)
     logger.info "attributes updated to #{attributes}"
+  end
+
+  def pending?
+    [STATUS[:queued], STATUS[:deploying]].include?(status)
   end
 end
