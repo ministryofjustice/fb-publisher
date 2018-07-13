@@ -34,7 +34,7 @@ en:
     service:
       git_repo_url:
         not_valid_scheme: "must be a valid https: or file: URL"
-        invalid_uri: is not a valid https: or file: URL
+        invalid_uri: "is not a valid https: or file: URL"
   helpers:
     hint:
       service:
