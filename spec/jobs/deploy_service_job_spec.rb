@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe DeployServiceJob do
   let(:json_sub_dir) { nil }
-  let(:service) { double('service', git_repo_url: 'git://some/repo') }
+  let(:service) { double('service', git_repo_url: 'https://some/repo') }
   let(:deployment) do
     double('deployment',
       id: 'my-deployment-id',

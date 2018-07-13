@@ -4,7 +4,7 @@ describe 'visiting /services' do
   before do
     allow(DeploymentService).to receive(:url_for).and_return('url.test')
   end
-  
+
   context 'as a logged in user' do
     let(:user){ User.create(id: 'abc123', name: 'test user', email: 'test@example.justice.gov.uk') }
     before do
@@ -58,8 +58,8 @@ describe 'visiting /services' do
             before do
               fill_in('URL of the service config JSON Git repository', with: url)
             end
-            context 'with a valid git url' do
-              let(:url) { 'git://git.example.com/repo.git' }
+            context 'with a valid https git repo url' do
+              let(:url) { 'https://git.example.com/repo.git' }
 
               context 'and click Create Service' do
                 before do
@@ -84,7 +84,7 @@ describe 'visiting /services' do
       before do
         visit '/services/new'
         fill_in('Service name', with: 'My First Service')
-        fill_in('URL of the service config JSON Git repository', with: 'git://repo.url/repo.git')
+        fill_in('URL of the service config JSON Git repository', with: 'https://repo.url/repo.git')
         find('input[value="Create Service"]').click()
       end
 
