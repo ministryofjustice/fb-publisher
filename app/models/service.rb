@@ -11,6 +11,7 @@ class Service < ActiveRecord::Base
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
   validates :slug, length: {maximum: 64, minimum: 3}, uniqueness: true
   validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
+  validate  :git_repo_url_must_use_https
 
   # Naive first impl - just services created by the given user
   # TODO: revisit once we have concept of teams
@@ -31,9 +32,22 @@ class Service < ActiveRecord::Base
   end
 
   def to_slug(string=name)
+    return if string.empty?
     string.gsub(/[^[:alnum:]\-]+/i, '-')\
           .gsub(/^\-*(.*)/, '\1')\
           .gsub(/(.*)\-+$/, '\1')\
           .downcase
+  end
+
+  def git_repo_url_must_use_https
+    begin
+      uri = URI.parse(self.git_repo_url)
+      unless ['https', 'file', ''].include?(uri.scheme)
+        errors.add(:git_repo_url, I18n.t(:not_valid_scheme, scope: [:errors, :service, :git_repo_url]))
+      end
+
+    rescue URI::InvalidURIError => e
+      errors.add(:git_repo_url, I18n.t(:invalid_uri, scope: [:errors, :service, :git_repo_url]))
+    end
   end
 end

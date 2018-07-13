@@ -64,6 +64,75 @@ describe Service do
         end
       end
     end
+
+    context 'with a git_repo_url' do
+      before do
+        subject.git_repo_url = git_repo_url
+      end
+
+      context 'that is empty' do
+        let(:git_repo_url) { nil }
+
+        it 'adds an error on git_repo_url' do
+          subject.valid?
+          expect(subject.errors[:git_repo_url]).to_not be_empty
+        end
+      end
+
+      context 'that is too short' do
+        let(:git_repo_url) { 'a' }
+
+        it 'adds an error on git_repo_url' do
+          subject.valid?
+          expect(subject.errors[:git_repo_url]).to_not be_empty
+        end
+      end
+
+      context 'that is not a parsable URI' do
+        let(:git_repo_url) { 'this is not a uri' }
+
+        it 'adds an error on git_repo_url' do
+          subject.valid?
+          expect(subject.errors[:git_repo_url]).to_not be_empty
+        end
+      end
+
+      context 'that is just a file path' do
+        let(:git_repo_url) { '/my/file/path' }
+
+        it 'adds an error on git_repo_url' do
+          subject.valid?
+          expect(subject.errors[:git_repo_url]).to_not be_empty
+        end
+      end
+
+      context 'that is a valid file: uri' do
+        let(:git_repo_url) { 'file:/my/file/path' }
+
+        it 'does not add an error on git_repo_url' do
+          subject.valid?
+          expect(subject.errors[:git_repo_url]).to be_empty
+        end
+      end
+
+      context 'that is a valid git: uri' do
+        let(:git_repo_url) { 'git@github.com:ministryofjustice/fb-sample-json.git' }
+
+        it 'adds an error on git_repo_url' do
+          subject.valid?
+          expect(subject.errors[:git_repo_url]).to_not be_empty
+        end
+      end
+
+      context 'that is a valid https: uri' do
+        let(:git_repo_url) { 'https://my/https/repo.git' }
+
+        it 'does not add an error on git_repo_url' do
+          subject.valid?
+          expect(subject.errors[:git_repo_url]).to be_empty
+        end
+      end
+    end
   end
 
   describe '#to_param' do
