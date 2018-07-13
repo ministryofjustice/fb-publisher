@@ -30,11 +30,16 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  errors:
+    service:
+      git_repo_url:
+        not_valid_scheme: "must be a valid https: or file: URL"
+        invalid_uri: "is not a valid https: or file: URL"
   helpers:
     hint:
       service:
         git_repo_url_html:
-          Should be cloneable & readable by an unauthenticated user<br />
+          This must use the <strong>https</strong> scheme (<em>not</em> ssh)<br />
           For example, <a href="https://github.com/ministryofjustice/fb-sample-json.git">https://github.com/ministryofjustice/fb-sample-json.git</a>
         name_html:
           What users will see as the title of your service<br />

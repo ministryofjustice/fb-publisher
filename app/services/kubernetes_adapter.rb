@@ -353,6 +353,7 @@ class KubernetesAdapter
       containers:
       - name: #{name}
         image: #{image}
+        imagePullPolicy: Always
         ports:
         - containerPort: #{container_port}
         volumeMounts:
