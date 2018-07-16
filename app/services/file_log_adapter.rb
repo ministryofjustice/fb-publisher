@@ -1,16 +1,9 @@
 class FileLogAdapter
-  def self.log(message:, job_class:, job_id:, tag:, in_log:)
-    msg = JobLogFormatter.format(
-      message: message,
-      job_id: job_id,
-      job_class: job_class,
-      tag: tag,
-      timestamp: Time.now
-    )
+  def self.log(message:, job_id:, tag:, in_log:)
     log = file_path(in_log)
     FileUtils.mkdir_p(log_dir) unless File.exists?(log_dir)
     File.open(log, 'a') do |f|
-      f << msg + "\n"
+      f << message + "\n"
     end
   end
 

@@ -1,9 +1,15 @@
 class JobLogService
   def self.log(message:, job:, tag: nil)
-    adapter.log(
+    formatted_message = JobLogFormatter.format(
       message: message,
       job_id: job.job_id,
       job_class: job.class.name,
+      tag: tag,
+      timestamp: Time.now
+    )
+    adapter.log(
+      message: formatted_message,
+      job_id: job.job_id,
       in_log: log_name(job_class: job.class.name, job_id: job.job_id, tag: tag),
       tag: tag
     )
