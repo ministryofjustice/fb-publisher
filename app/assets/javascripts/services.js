@@ -4,7 +4,7 @@ function attachEvents() {
   // be more specific
   $( document ).on('ajax:success','.button_to', handleAjaxResponse)
 
-  if( $('tr[data-refreshable]').size() > 0 ) {
+  if( $('*[data-refreshable]').size() > 0 ) {
     set_refresh_timer(5000);
   }
 }
@@ -16,9 +16,7 @@ function set_refresh_timer(interval) {
 }
 
 function refresh_all(refresh_again_interval) {
-  $('tr[data-refreshable]').each( function(i, elem){
-    console.log("elem = ");
-    console.log(elem)
+  $('*[data-refreshable]').each( function(i, elem){
     $.ajax({
           url: $(elem).data('refreshable'),
           cache: false,

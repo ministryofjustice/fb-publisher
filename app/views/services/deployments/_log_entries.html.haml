@@ -1,0 +1,6 @@
+- if @log_entries.empty?
+  %em{ class: 'console', id: 'log-entries', data: { refreshable: log_service_deployment_path(@service, @deployment) } }
+    = t('.no_log_entries')
+- else
+  %pre{ class: 'console', id: 'log-entries', data: { refreshable: log_service_deployment_path(@service, @deployment) } }
+    = render partial: 'log_entry', collection: @log_entries

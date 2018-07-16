@@ -12,3 +12,14 @@
 .status-queued {
   background-color: $secondary-text-colour;
 }
+
+.console {
+  background-color: $grey-4;
+  border: 1px inset $border-colour;
+  color: $black;
+  font-family: 'Courier New', Console, fixed-width;
+  font-size: 80%;
+  max-width: 100%;
+  padding: 0.5em;
+  overflow-x: auto;
+}

@@ -5,7 +5,7 @@ class Services::DeploymentsController < ApplicationController
   include Concerns::NestedResourceController
   nest_under :service, attr_name: :slug, param_name: :service_slug
 
-  before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy, :show]
+  before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy, :show, :log]
 
   def index
     params[:per_page] ||= 10
@@ -73,6 +73,18 @@ class Services::DeploymentsController < ApplicationController
       render partial: 'deployment', locals: {deployment: @deployment}
     else
       # default
+    end
+  end
+
+  def log
+    @log_entries = JobLogService.entries(
+      tag: DeployServiceJob.log_tag(@deployment.id),
+      min_timestamp: params[:min_timestamp]
+    )
+    if request.xhr?
+      render partial: 'log_entries', locals: {log_entries: @log_entries}
+    else
+      @environments = ServiceEnvironment.all
     end
   end
 

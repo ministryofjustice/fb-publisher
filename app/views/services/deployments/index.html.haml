@@ -1,19 +1,6 @@
 = render partial: 'services/header', locals: {service: @service}
 
-
-.inline-nav
-  %ul
-    %li
-      = t '.environments'
-    - @environments.each do |env|
-      %li
-        - if params[:env] == env.slug.to_s
-          %span
-            = env.name
-        - else
-          = link_to env.name, {env: env.slug}
-    %li
-      = link_to t('.all_envs_status'), status_service_deployments_path(@service)
+= render partial: 'environments_nav', locals: {current_env: params[:env]}
 
 %table#deployments
   %thead
