@@ -22,6 +22,7 @@ describe DeployServiceJob do
     allow(VersionControlService).to receive(:checkout).and_return('some-sha')
     allow(DeploymentService).to receive(:setup_service).and_return('setup_service-result')
     allow(DeploymentService).to receive(:configure_env_vars).and_return('configure_env_vars-result')
+    allow(DeploymentService).to receive(:restart_service).and_return('restart_service-result')
   end
 
   describe '#perform' do
@@ -111,6 +112,14 @@ describe DeployServiceJob do
 
     it 'updates the deployment with the returned commit sha' do
       expect(deployment).to receive(:update_attributes).with(commit_sha: 'some-sha')
+      perform
+    end
+
+    it 'restarts the service' do
+      allow(DeploymentService).to receive(:restart_service).with(
+        service: service,
+        environment_slug: 'myenv'
+      )
       perform
     end
   end

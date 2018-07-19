@@ -79,6 +79,7 @@ en:
     configuring_params: 'Updating config params'
     deploying_service: 'Deploying service'
     reading_commit: 'Reading commit SHA'
+    restarting: 'Restarting service'
     starting: 'Starting job %{job_id} for ServiceDeployment %{service_deployment_id}'
     writing_commit: 'Writing commit SHA %{sha}'
   home:

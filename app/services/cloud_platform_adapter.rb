@@ -187,4 +187,13 @@ class CloudPlatformAdapter
     end
   end
 
+  def self.delete_pods(environment_slug:, service: service)
+    environment = ServiceEnvironment.find(environment_slug)
+    KubernetesAdapter.delete_pods(
+      label: "run=#{service.slug}",
+      namespace: environment.namespace,
+      context: environment.kubectl_context
+    )
+  end
+
 end

@@ -320,6 +320,17 @@ class KubernetesAdapter
     )
   end
 
+  def self.delete_pods( label:, namespace:, context: )
+    ShellAdapter.exec(
+      kubectl_binary,
+      'delete',
+      'pods',
+      '-l',
+      label,
+      std_args(namespace: namespace, context: context)
+    )
+  end
+
   private
 
   def self.std_args(namespace:, context:)
