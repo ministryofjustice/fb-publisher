@@ -11,6 +11,10 @@ class ServiceDeploymentPolicy < ApplicationPolicy
     policy_for(record.service).show?
   end
 
+  def log?
+    policy_for(record.service).show?
+  end
+
   def edit?
     policy_for(record.service).update?
   end

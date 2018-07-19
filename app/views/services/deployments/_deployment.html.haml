@@ -20,4 +20,4 @@
     - else
       = deployment.created_by_user.name
   %td
-    = link_to t('.view_log'), service_deployment_path(@service, deployment)
+    = link_to t('.view_log'), log_service_deployment_path(@service, deployment)

@@ -14,6 +14,7 @@ describe DeployServiceJob do
   end
 
   before do
+    allow(JobLogService).to receive(:log)
     allow(ServiceDeployment).to receive(:find).with('my-deployment-id').and_return(deployment)
     allow(deployment).to receive(:update_status)
     allow(deployment).to receive(:update_attributes)

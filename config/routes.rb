@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :deployments, controller_name: :service_deployments do
         get 'status', on: :collection, to: 'deployments#status'
         get '(/:env)', on: :collection, to: 'deployments#index', constraints: ServiceEnvironment::RoutingConstraint.new
+        get 'log', on: :member, to: 'deployments#log'
       end
     end
   end

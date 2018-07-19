@@ -1,0 +1,13 @@
+.inline-nav
+  %ul
+    %li
+      = t '.environments'
+    - @environments.each do |env|
+      %li
+        - if current_env == env.slug.to_s
+          %span
+            = env.name
+        - else
+          = link_to env.name, {env: env.slug}
+    %li
+      = link_to t('.all_envs_status'), status_service_deployments_path(@service)

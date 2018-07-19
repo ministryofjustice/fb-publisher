@@ -73,6 +73,14 @@ en:
   auth:
     existing_user:
       welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
+  deploy_service_job:
+    all_done: 'ALL DONE'
+    complete: 'Finished - writing status back to Deployment'
+    configuring_params: 'Updating config params'
+    deploying_service: 'Deploying service'
+    reading_commit: 'Reading commit SHA'
+    starting: 'Starting job %{job_id} for ServiceDeployment %{service_deployment_id}'
+    writing_commit: 'Writing commit SHA %{sha}'
   home:
     login:
       link_text: Use your MoJ Google Account to sign in or sign up
@@ -123,12 +131,16 @@ en:
       update:
         success: Config Param '%{name}' (%{environment}) updated successfully
     deployments:
-      index:
+      environments_nav:
         all_envs_status: '(all)'
+        environments: 'Deployments in'
+      index:
         completed_at: Finished at
         created_at: Job created at
-        environments: 'Deployments in'
         status: 'Status'
+      log:
+        lede_html: "Deployment log"
+        no_log_entries: '(no log entries)'
       new:
         heading: Deploy '%{service}' to %{environment}
         lede_html:

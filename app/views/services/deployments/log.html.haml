@@ -1,0 +1,8 @@
+= render partial: 'services/header', locals: {service: @service}
+
+%p.lede
+  = t '.lede_html', deployment_id: @deployment.id
+
+= render partial: 'environments_nav', locals: {current_env: @deployment.environment_slug}
+
+= render partial: 'log_entries', locals: {log_entries: @log_entries}
