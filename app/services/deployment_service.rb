@@ -61,7 +61,6 @@ class DeploymentService
     adapter = adapter_for(environment_slug)
     # generate the pod config
     adapter.setup_service(
-      environment_slug: environment_slug,
       service: service,
       deployment: deployment,
       config_dir: config_dir,
@@ -76,7 +75,6 @@ class DeploymentService
 
     adapter.configure_env_vars(
       config_dir: config_dir,
-      environment_slug: environment_slug,
       service: service,
       system_config: system_config_for(
         service: service,
@@ -96,7 +94,6 @@ class DeploymentService
   def self.stop_service(environment_slug:, service:)
     adapter = adapter_for(environment_slug)
     adapter.stop_service(
-      environment_slug: environment_slug,
       service: service
     )
   end
@@ -104,7 +101,6 @@ class DeploymentService
   def self.start_service(environment_slug:, service:, tag:)
     adapter = adapter_for(environment_slug)
     adapter.start_service(
-      environment_slug: environment_slug,
       service: service,
       tag: tag
     )
@@ -116,7 +112,6 @@ class DeploymentService
     # deleted, and instantly begin creating new ones
     # that will pick up any new config maps or json
     adapter.delete_pods(
-      environment_slug: environment_slug,
       service: service
     )
   end
@@ -125,7 +120,6 @@ class DeploymentService
     adapter = adapter_for(environment_slug)
     begin
       adapter.url_for(
-        environment_slug: environment_slug,
         service: service
       )
     rescue CmdFailedError => e

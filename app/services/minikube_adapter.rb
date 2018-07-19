@@ -9,7 +9,7 @@ class MinikubeAdapter
                           KubernetesAdapter.new(environment: environment)
   end
 
-  def self.configure_env_vars(config_dir:, service:, system_config: {})
+  def configure_env_vars(config_dir:, service:, system_config: {})
     env_vars = ServiceConfigParam.key_value_pairs(
       service.service_config_params
              .where(environment_slug: @environment.slug)
@@ -28,7 +28,7 @@ class MinikubeAdapter
   # TODO: find a less brute-force way of doing this!
   # We want rolling zero-downtime updates, and this is
   # definitely not that
-  def self.stop_service(service:)
+  def stop_service(service:)
     if service_is_running?(service: service)
       kubernetes_adapter.delete_service(
         name: service.slug
@@ -39,14 +39,14 @@ class MinikubeAdapter
     end
   end
 
-  def self.delete_deployment(service:)
+  def delete_deployment(service:)
     kubernetes_adapter.delete_deployment(
       name: kubernetes_adapter.deployment_name(service: service)
     )
   end
 
 
-  def self.start_service(service:, tag:, container_port: 3000, host_port: 8080)
+  def start_service(service:, tag:, container_port: 3000, host_port: 8080)
     if kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
       type: 'deployment'
@@ -73,7 +73,7 @@ class MinikubeAdapter
 
   # we don't set up ingress for minikube, we just use node ports
   # so we have to query for the actual urls
-  def self.url_for(service:, timeout: 2)
+  def url_for(service:, timeout: 2)
     ShellAdapter.output_of(
       'minikube',
       'service',
@@ -88,21 +88,21 @@ class MinikubeAdapter
     )
   end
 
-  def self.service_is_running?(service:)
+  def service_is_running?(service:)
     kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
       type: 'service'
     )
   end
 
-  def self.deployment_exists?(service:)
+  def deployment_exists?(service:)
     kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
       type: 'deployment'
     )
   end
 
-  def self.setup_service(
+  def setup_service(
     service:,
     deployment:,
     config_dir:,
@@ -130,7 +130,7 @@ class MinikubeAdapter
     end
   end
 
-  def self.delete_pods(service: service)
+  def delete_pods(service: service)
     kubernetes_adapter.delete_pods(
       label: "run=#{service.slug}"
     )
@@ -138,11 +138,11 @@ class MinikubeAdapter
 
   private
 
-  def self.default_private_key_path
+  def default_private_key_path
     "~/.minikube/machines/minikube/id_rsa"
   end
 
-  def self.ssh_cmd(cmd_to_run: nil, private_key_path: default_private_key_path)
+  def ssh_cmd(cmd_to_run: nil, private_key_path: default_private_key_path)
     ShellAdapter.build_cmd(
       executable: 'ssh',
       args: [

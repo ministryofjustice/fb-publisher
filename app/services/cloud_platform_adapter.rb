@@ -20,7 +20,7 @@ class CloudPlatformAdapter
     end
     kubernetes_adapter.run(
       tag: tag,
-      name: service.slug
+      name: service.slug,
       port: container_port
     )
 
@@ -35,12 +35,11 @@ class CloudPlatformAdapter
 
 
   # can be called before the service is deployed
-  def url_for(service:, environment_slug:)
-    ServiceEnvironment.find(environment_slug).url_for(service)
+  def url_for(service:)
+    environment.url_for(service)
   end
 
   def setup_service(
-    environment_slug:,
     service:,
     deployment:,
     config_dir:,
@@ -54,7 +53,7 @@ class CloudPlatformAdapter
       image: image,
       json_repo: service.git_repo_url,
       commit_ref: deployment.commit_sha,
-      config_map_name: KubernetesAdapter.config_map_name(service: service)
+      config_map_name: kubernetes_adapter.config_map_name(service: service)
     )
 
     begin
@@ -70,7 +69,6 @@ class CloudPlatformAdapter
     begin
       create_ingress_rule(
         service: service,
-        environment_slug: environment_slug,
         config_dir: config_dir
       )
     rescue CmdFailedError => e
@@ -78,10 +76,10 @@ class CloudPlatformAdapter
     end
   end
 
-  def configure_env_vars(environment_slug:, service:, config_dir:, system_config: {})
+  def configure_env_vars(service:, config_dir:, system_config: {})
     env_vars = ServiceConfigParam.key_value_pairs(
       service.service_config_params
-      .where(environment_slug: environment_slug)
+      .where(environment_slug: environment.slug)
       .order(:name)
     )
 
@@ -96,8 +94,8 @@ class CloudPlatformAdapter
     end
   end
 
-  def create_ingress_rule(service:, environment_slug:, config_dir:)
-    url = url_for(service: service, environment_slug: environment_slug)
+  def create_ingress_rule(service:, config_dir:)
+    url = url_for(service: service)
 
     kubernetes_adapter.create_ingress_rule(
       service_slug: service.slug,
@@ -111,7 +109,7 @@ class CloudPlatformAdapter
   # TODO: refactor for DRY-ness!
   ##############################################################
 
-  def service_url(service:, environment_slug:)
+  def service_url(service:)
     kubernetes_adapter.service_url(
       service: service
     )
@@ -119,38 +117,38 @@ class CloudPlatformAdapter
 
 
 
-  def service_is_running?(environment_slug:, service:)
+  def service_is_running?(service:)
     kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
       type: 'service'
     )
   end
 
-  def deployment_exists?(environment_slug:, service:)
+  def deployment_exists?(service:)
     kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
       type: 'deployment'
     )
   end
 
-  def delete_deployment(environment_slug:, service:)
+  def delete_deployment(service:)
     kubernetes_adapter.delete_deployment(
       name: kubernetes_adapter.deployment_name(service: service)
     )
   end
 
-  def stop_service(environment_slug:, service:)
-    if service_is_running?(service: service, environment_slug: environment_slug)
+  def stop_service(service:)
+    if service_is_running?(service: service)
       kubernetes_adapter.delete_service(
         name: service.slug
       )
     end
-    if deployment_exists?(service: service, environment_slug: environment_slug)
-      delete_deployment(service: service, environment_slug: environment_slug)
+    if deployment_exists?(service: service)
+      delete_deployment(service: service)
     end
   end
 
-  def delete_pods(environment_slug:, service: service)
+  def delete_pods(service: service)
     kubernetes_adapter.delete_pods(
       label: "run=#{service.slug}"
     )

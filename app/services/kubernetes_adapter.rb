@@ -20,7 +20,7 @@ class KubernetesAdapter
     )
   end
 
-  def self.namespace_exists?
+  def namespace_exists?
     begin
       ShellAdapter.exec(
         kubectl_binary,
@@ -35,15 +35,15 @@ class KubernetesAdapter
     end
   end
 
-  def self.configmap_exists?(name:)
+  def configmap_exists?(name:)
     exists_in_namespace?( name: name, type: 'configmap' )
   end
 
-  def self.deployment_exists?(name:)
+  def deployment_exists?(name:)
     exists_in_namespace?( name: name, type: 'deployment')
   end
 
-  def self.exists_in_namespace?(name:, type:)
+  def exists_in_namespace?(name:, type:)
     begin
       ShellAdapter.exec(
         kubectl_binary,
@@ -58,7 +58,7 @@ class KubernetesAdapter
     end
   end
 
-  def self.set_image( deployment_name:, container_name:, image:)
+  def set_image( deployment_name:, container_name:, image:)
     ShellAdapter.exec(
       kubectl_binary,
       'set',
@@ -69,7 +69,7 @@ class KubernetesAdapter
     )
   end
 
-  def self.delete_service(name:)
+  def delete_service(name:)
     ShellAdapter.exec(
       kubectl_binary,
       'delete',
@@ -79,7 +79,7 @@ class KubernetesAdapter
     )
   end
 
-  def self.delete_deployment(name:)
+  def delete_deployment(name:)
     ShellAdapter.exec(
       kubectl_binary,
       'delete',
@@ -92,7 +92,7 @@ class KubernetesAdapter
   # just writes an updated timestamp annotation -
   # quickest, smoothest and easiest way to refresh a deployment
   # so that it can pick up new configmaps, etc
-  def self.patch_deployment(name:)
+  def patch_deployment(name:)
     ShellAdapter.exec(
       kubectl_binary,
       'patch',
@@ -106,7 +106,7 @@ class KubernetesAdapter
 
   # see https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-env-em-
   # "Import environment from a config map with a prefix"
-  def self.apply_config_map(name:, deployment_name:)
+  def apply_config_map(name:, deployment_name:)
     ShellAdapter.exec(
       kubectl_binary,
       'set',
@@ -117,7 +117,7 @@ class KubernetesAdapter
     )
   end
 
-  def self.apply_file(file:)
+  def apply_file(file:)
     ShellAdapter.exec(
       kubectl_binary,
       'apply',
@@ -127,7 +127,7 @@ class KubernetesAdapter
     )
   end
 
-  def self.create_ingress_rule(
+  def create_ingress_rule(
     config_dir:,
     service_slug:,
     hostname:,
@@ -143,7 +143,7 @@ class KubernetesAdapter
     apply_file(file: file_path)
   end
 
-  def self.create_deployment(
+  def create_deployment(
       config_dir:,
       name:,
       container_port:,
@@ -167,7 +167,7 @@ class KubernetesAdapter
     apply_file(file: file)
   end
 
-  def self.create_pod(
+  def create_pod(
       config_dir:,
       name:,
       container_port:,
@@ -189,14 +189,14 @@ class KubernetesAdapter
     apply_file(file: file)
   end
 
-  def self.write_config_file(file:, content:)
+  def write_config_file(file:, content:)
     File.open(file, 'w+') do |f|
       f << content
     end
   end
 
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
-  def self.create_or_update_config_map(file:, name:)
+  def create_or_update_config_map(file:, name:)
     if configmap_exists?(name: name)
       ShellAdapter.exec(
         kubectl_binary,
@@ -210,7 +210,7 @@ class KubernetesAdapter
     apply_file(file: file)
   end
 
-  def self.run(tag:, name:, port: 3000, image_pull_policy: 'Always')
+  def run(tag:, name:, port: 3000, image_pull_policy: 'Always')
     ShellAdapter.exec(
       kubectl_binary,
       'run',
@@ -223,7 +223,7 @@ class KubernetesAdapter
     )
   end
 
-  def self.expose_node_port( name:, container_port: 3000, host_port: )
+  def expose_node_port( name:, container_port: 3000, host_port: )
     ShellAdapter.exec(
       kubectl_binary,
       'expose',
@@ -236,11 +236,11 @@ class KubernetesAdapter
     )
   end
 
-  def self.config_map_name(service:)
+  def config_map_name(service:)
     ['fb', service.slug, 'config-map'].join('-')
   end
 
-  def self.deployment_name(service:)
+  def deployment_name(service:)
     # if we're using kubectl run shorthand, then the
     # deployment name is the service name
     service.slug
@@ -248,7 +248,7 @@ class KubernetesAdapter
 
   # given a deployed service, what is the URL defined in the actual
   # ingress rule?
-  def self.service_url(service:)
+  def service_url(service:)
     services = JSON.parse(
       ShellAdapter.output_of(
         kubectl_binary,
@@ -267,7 +267,7 @@ class KubernetesAdapter
     end
   end
 
-  def self.expose_deployment( name:, port:, target_port: )
+  def expose_deployment( name:, port:, target_port: )
     ShellAdapter.exec(
       kubectl_binary,
       'expose',
@@ -281,7 +281,7 @@ class KubernetesAdapter
     )
   end
 
-  def self.delete_pods( label: )
+  def delete_pods( label: )
     ShellAdapter.exec(
       kubectl_binary,
       'delete',
@@ -294,19 +294,19 @@ class KubernetesAdapter
 
   private
 
-  def self.std_args
-    " --context=#{@environment.context} --namespace=#{@environment.namespace} --token=$KUBECTL_BEARER_TOKEN"
+  def std_args
+    " --context=#{@environment.kubectl_context} --namespace=#{@environment.namespace} --token=$KUBECTL_BEARER_TOKEN"
   end
 
-  def self.kubectl_binary
+  def kubectl_binary
     '$(which kubectl)'
   end
 
-  def self.timestamp_annotation
+  def timestamp_annotation
     "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"updated_at\":\"`date +'%s'`\"}}}}}"
   end
 
-  def self.pod_with_volume(name:, container_port:, image:, json_repo:, commit_ref:)
+  def pod_with_volume(name:, container_port:, image:, json_repo:, commit_ref:)
     cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     <<~ENDHEREDOC
     apiVersion: v1
@@ -338,7 +338,7 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def self.deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
+  def deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
     cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     <<~ENDHEREDOC
     apiVersion: apps/v1beta2
@@ -383,7 +383,7 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def self.config_map(vars: {}, name:)
+  def config_map(vars: {}, name:)
     <<~ENDHEREDOC
     apiVersion: v1
     kind: ConfigMap
@@ -395,7 +395,7 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def self.ingress_rule(service_slug:, hostname:, container_port: 3000)
+  def ingress_rule(service_slug:, hostname:, container_port: 3000)
     <<~ENDHEREDOC
     apiVersion: extensions/v1beta1
     kind: Ingress

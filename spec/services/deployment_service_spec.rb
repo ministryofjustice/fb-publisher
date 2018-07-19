@@ -148,7 +148,7 @@ describe DeploymentService do
     end
 
     it 'asks the adapter to configure_env_vars with the given service' do
-      expect(adapter).to receive(:configure_env_vars).with(service: 'myservice', environment_slug: 'myenv', config_dir: '/my/config/dir', system_config: anything).and_return('configure_env_vars_result')
+      expect(adapter).to receive(:configure_env_vars).with(service: 'myservice', config_dir: '/my/config/dir', system_config: anything).and_return('configure_env_vars_result')
       described_class.configure_env_vars(service: 'myservice', deployment: deployment, environment_slug: 'myenv', config_dir: '/my/config/dir')
     end
 
@@ -170,7 +170,7 @@ describe DeploymentService do
     end
 
     it 'asks the adapter to stop_service with the given service and environment_slug' do
-      expect(adapter).to receive(:stop_service).with(service: 'myservice', environment_slug: 'myenv').and_return('importedresult')
+      expect(adapter).to receive(:stop_service).with(service: 'myservice').and_return('importedresult')
       described_class.stop_service(service: 'myservice', environment_slug: 'myenv')
     end
 
@@ -193,7 +193,7 @@ describe DeploymentService do
     end
 
     it 'asks the adapter to url_for with the given service and environment_slug' do
-      expect(adapter).to receive(:url_for).with(service: 'myservice', environment_slug: 'myenv').and_return('importedresult')
+      expect(adapter).to receive(:url_for).with(service: 'myservice').and_return('importedresult')
       described_class.url_for(service: 'myservice', environment_slug: 'myenv')
     end
 
@@ -216,18 +216,18 @@ describe DeploymentService do
     let(:service){ Service.new(name: 'my service', slug: 'my-service') }
 
     it 'returns a new ServiceDeployment' do
-      expect(described_class.empty_deployment(service: service, environment_slug: 'myenv')).to be_a(ServiceDeployment)
+      expect(described_class.empty_deployment(service: service, environment_slug: 'my-env-slug')).to be_a(ServiceDeployment)
     end
 
     describe 'returned object' do
-      let(:returned_object) { described_class.empty_deployment(service: service, environment_slug: 'myenv') }
+      let(:returned_object) { described_class.empty_deployment(service: service, environment_slug: 'my-env-slug') }
 
       it 'has the given service' do
         expect(returned_object.service).to eq(service)
       end
 
       it 'has the given environment_slug' do
-        expect(returned_object.environment_slug).to eq('myenv')
+        expect(returned_object.environment_slug).to eq('my-env-slug')
       end
     end
   end
