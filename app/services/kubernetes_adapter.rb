@@ -13,28 +13,6 @@ class KubernetesAdapter
       name: config_map_name(service: service),
       namespace: namespace
     )
-    # apply_config_map(
-    #   name: config_map_name(service: service),
-    #   deployment_name: service.slug,
-    #   namespace: namespace,
-    #   context: environment.kubectl_context
-    # )
-    # This doesn't seem to have any effect on minikube
-    if deployment_exists?(
-      context: environment.kubectl_context,
-      name: deployment_name(service: service, environment_slug: environment_slug),
-      namespace: namespace
-    )
-      begin
-        patch_deployment(
-          context: environment.kubectl_context,
-          name: deployment_name(service: service, environment_slug: environment_slug),
-          namespace: namespace
-        )
-      rescue CmdFailedError => e
-        puts 'could not patch deployment - this may not be a problem?'
-      end
-    end
   end
 
   def self.namespace_exists?(namespace:, context:)
@@ -237,14 +215,6 @@ class KubernetesAdapter
     end
 
     apply_file(file: file, namespace: namespace, context: context)
-    # ShellAdapter.exec(
-    #   kubectl_binary,
-    #   'create',
-    #   'configmap',
-    #   name,
-    #   "--from-file=#{file}",
-    #   std_args(namespace: namespace, context: context)
-    # )
   end
 
   def self.run(tag:, name:, namespace:, context:, port: 3000, image_pull_policy: 'Always')

@@ -38,26 +38,6 @@ class DeploymentService
     versionned= [scoped, version].join(':')
   end
 
-  # TODO: better version mgmt! Something semantic, or the hash?
-  def self.build(environment_slug:, service:, json_dir:, tag: nil)
-    tag ||= service_tag(environment_slug: environment_slug,
-                        service: service,
-                        version: VersionControlService.current_commit(dir: json_dir))
-
-    LocalDockerService.build(
-      tag: tag,
-      json_dir: json_dir
-    )
-    tag
-  end
-
-  def self.push(image:, environment_slug:)
-    adapter = adapter_for(environment_slug)
-    adapter.import_image(
-      image: image
-    )
-  end
-
   def self.default_runner_image_ref
     # old c100 prototype runner
     # "aldavidson/fb-sample-runner:latest"
@@ -109,35 +89,6 @@ class DeploymentService
       'SERVICEDATA' => File.join('/usr/app/', deployment.json_sub_dir.to_s),
       'BIND_IP' => '0.0.0.0'
     }
-  end
-
-  # TODO: smoother (ideally zero-downtime) way of both
-  # restarting the service & picking up any new config
-  # (scale down to 0, then back up to 1?)
-  def self.restart(environment_slug:, service:, tag:)
-    adapter = adapter_for(environment_slug)
-    if adapter.service_is_running?(
-      environment_slug: environment_slug,
-      service: service
-    )
-      stop_service(environment_slug: environment_slug, service: service)
-    end
-
-    if adapter.deployment_exists?(
-      environment_slug: environment_slug,
-      service: service
-    )
-      begin
-        adapter.delete_deployment(
-          environment_slug: environment_slug,
-          service: service
-        )
-      rescue CmdFailedError => e
-        false
-      end
-    end
-
-    self.start_service(environment_slug: environment_slug, service: service, tag: tag)
   end
 
   def self.stop_service(environment_slug:, service:)

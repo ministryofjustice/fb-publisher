@@ -35,16 +35,7 @@ class CloudPlatformAdapter
     )
   end
 
-  def self.import_image(
-    image:,
-    repository_scope: ENV['REMOTE_DOCKER_USERNAME']
-  )
-    LocalDockerService.push_to_dockerhub(
-      tag: image,
-      repository_scope: repository_scope
-    )
-  end
-
+  
   # can be called before the service is deployed
   def self.url_for(service:, environment_slug:)
     ServiceEnvironment.find(environment_slug).url_for(service)

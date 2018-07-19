@@ -1,15 +1,6 @@
 # Takes advantage of the sometimes-more-friendly minikube layer
 # where possible, delegates to KubernetesAdapter where needed
 class MinikubeAdapter
-  def self.import_image(image:, private_key_path: default_private_key_path)
-    cmd = ShellAdapter.build_cmd(
-      executable: 'docker',
-      args: ['save', image],
-      pipe_to: ssh_cmd(cmd_to_run:  'docker load ')
-    )
-    ShellAdapter.exec(cmd)
-  end
-
   def self.configure_env_vars(config_dir:, environment_slug:, service:, system_config: {})
     env_vars = ServiceConfigParam.key_value_pairs(
       service.service_config_params
