@@ -23,8 +23,10 @@ class DeploymentService
   end
 
   def self.adapter_for(environment_slug)
-    name = ServiceEnvironment.find(environment_slug).deployment_adapter
-    [name, 'adapter'].join('_').classify.constantize
+    environment = ServiceEnvironment.find(environment_slug)
+    name = environment.deployment_adapter
+    klass = [name, 'adapter'].join('_').classify.constantize
+    klass.new(environment: environment)
   end
 
   def self.service_tag(

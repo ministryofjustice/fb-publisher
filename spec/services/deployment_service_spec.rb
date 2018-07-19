@@ -59,8 +59,14 @@ describe DeploymentService do
       before do
         allow(ServiceEnvironment).to receive(:find).with(slug).and_return mock_env
       end
-      it 'returns a class matching the given environments deployment_adapter' do
-        expect(described_class.adapter_for(:made_up_slug)).to eq(MinikubeAdapter)
+      it 'returns an instance of the class matching the given environments deployment_adapter' do
+        expect(described_class.adapter_for(:made_up_slug)).to be_a(MinikubeAdapter)
+      end
+
+      describe 'the returned adapter' do
+        it "has environment set to the environment with the given environment_slug" do
+          expect(described_class.adapter_for(:made_up_slug).environment).to eq(mock_env)
+        end
       end
     end
   end

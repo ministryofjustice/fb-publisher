@@ -1,28 +1,33 @@
 class KubernetesAdapter
-  def self.set_environment_vars(vars: {}, service:, config_dir:, environment_slug:)
-    environment = ServiceEnvironment.find(environment_slug)
-    namespace = environment.namespace
+  attr_accessor :environment
+
+  def initialize(environment:)
+    @environment = environment
+  end
+
+  def set_environment_vars(vars: {}, service:, config_dir:)
     config_file_path = File.join(config_dir, 'config-map.yml')
 
     File.open(config_file_path, 'w+') do |f|
-      f << config_map(vars: vars, name: config_map_name(service: service), namespace: namespace)
+      f << config_map(
+        vars: vars,
+        name: config_map_name(service: service)
+      )
     end
     create_or_update_config_map(
-      context: environment.kubectl_context,
       file: config_file_path,
-      name: config_map_name(service: service),
-      namespace: namespace
+      name: config_map_name(service: service)
     )
   end
 
-  def self.namespace_exists?(namespace:, context:)
+  def self.namespace_exists?
     begin
       ShellAdapter.exec(
         kubectl_binary,
         'get',
         'namespaces',
-        namespace,
-        "--context=#{context}"
+        @environment.namespace,
+        "--context=#{@environment.context}"
       )
       true
     rescue CmdFailedError => e
@@ -30,24 +35,22 @@ class KubernetesAdapter
     end
   end
 
-  def self.configmap_exists?(name:, namespace:, context:)
-    exists_in_namespace?( name: name, type: 'configmap',
-                          namespace: namespace, context: context)
+  def self.configmap_exists?(name:)
+    exists_in_namespace?( name: name, type: 'configmap' )
   end
 
-  def self.deployment_exists?(name:, namespace:, context:)
-    exists_in_namespace?( name: name, type: 'deployment',
-                          namespace: namespace, context: context)
+  def self.deployment_exists?(name:)
+    exists_in_namespace?( name: name, type: 'deployment')
   end
 
-  def self.exists_in_namespace?(name:, type:, namespace:, context:)
+  def self.exists_in_namespace?(name:, type:)
     begin
       ShellAdapter.exec(
         kubectl_binary,
         'get',
         type,
         name,
-        std_args(namespace: namespace, context: context)
+        std_args
       )
       true
     rescue CmdFailedError => e
@@ -55,47 +58,47 @@ class KubernetesAdapter
     end
   end
 
-  def self.set_image( deployment_name:, container_name:, image:, namespace:, context:)
+  def self.set_image( deployment_name:, container_name:, image:)
     ShellAdapter.exec(
       kubectl_binary,
       'set',
       'image',
       "deployment/#{deployment_name}",
       "#{container_name}=#{image}",
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
-  def self.delete_service(name:, namespace:, context:)
+  def self.delete_service(name:)
     ShellAdapter.exec(
       kubectl_binary,
       'delete',
       'service',
       name,
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
-  def self.delete_deployment(name:, namespace:, context:)
+  def self.delete_deployment(name:)
     ShellAdapter.exec(
       kubectl_binary,
       'delete',
       'deployment',
       name,
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
   # just writes an updated timestamp annotation -
   # quickest, smoothest and easiest way to refresh a deployment
   # so that it can pick up new configmaps, etc
-  def self.patch_deployment(name:, namespace:, context:)
+  def self.patch_deployment(name:)
     ShellAdapter.exec(
       kubectl_binary,
       'patch',
       'deployment',
       name,
-      std_args(namespace: namespace, context: context),
+      std_args,
       '-p',
       "'#{timestamp_annotation}'"
     )
@@ -103,24 +106,24 @@ class KubernetesAdapter
 
   # see https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-env-em-
   # "Import environment from a config map with a prefix"
-  def self.apply_config_map(name:, deployment_name:, namespace:, context:)
+  def self.apply_config_map(name:, deployment_name:)
     ShellAdapter.exec(
       kubectl_binary,
       'set',
       'env',
       "--from=configmap/#{name}",
-      std_args(namespace: namespace, context: context),
+      std_args,
       "deployment/#{deployment_name}"
     )
   end
 
-  def self.apply_file(file:, namespace:, context:)
+  def self.apply_file(file:)
     ShellAdapter.exec(
       kubectl_binary,
       'apply',
       '-f',
       file,
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
@@ -128,9 +131,7 @@ class KubernetesAdapter
     config_dir:,
     service_slug:,
     hostname:,
-    container_port: 3000,
-    context:,
-    namespace:
+    container_port: 3000
   )
     file_path = File.join(config_dir, 'config-map.yml')
     File.open(file_path, 'w+') do |f|
@@ -139,7 +140,7 @@ class KubernetesAdapter
                         container_port: 3000)
     end
 
-    apply_file(file: file_path, namespace: namespace, context: context)
+    apply_file(file: file_path)
   end
 
   def self.create_deployment(
@@ -149,9 +150,6 @@ class KubernetesAdapter
       image:,
       json_repo:,
       commit_ref:,
-      context:,
-      namespace:,
-      environment_slug:,
       config_map_name:
     )
     file = File.join(config_dir, 'deployment.yml')
@@ -163,11 +161,10 @@ class KubernetesAdapter
           image: image,
           json_repo: json_repo,
           commit_ref: commit_ref,
-          namespace: namespace,
           config_map_name: config_map_name
       )
     )
-    apply_file(file: file, namespace: namespace, context: context)
+    apply_file(file: file)
   end
 
   def self.create_pod(
@@ -176,10 +173,7 @@ class KubernetesAdapter
       container_port:,
       image:,
       json_repo:,
-      commit_ref:,
-      context:,
-      namespace:,
-      environment_slug:
+      commit_ref:
     )
     file = File.join(config_dir, 'pod.yml')
     write_config_file(
@@ -189,11 +183,10 @@ class KubernetesAdapter
           container_port: container_port,
           image: image,
           json_repo: json_repo,
-          commit_ref: commit_ref,
-          namespace: namespace
+          commit_ref: commit_ref
       )
     )
-    apply_file(file: file, namespace: namespace, context: context)
+    apply_file(file: file)
   end
 
   def self.write_config_file(file:, content:)
@@ -203,21 +196,21 @@ class KubernetesAdapter
   end
 
   # see https://blog.zkanda.io/updating-a-configmap-secrets-in-kubernetes/
-  def self.create_or_update_config_map(file:, name:, namespace:, context:)
-    if configmap_exists?(name: name, namespace: namespace, context: context)
+  def self.create_or_update_config_map(file:, name:)
+    if configmap_exists?(name: name)
       ShellAdapter.exec(
         kubectl_binary,
         'delete',
         'configmap',
         name,
-        std_args(namespace: namespace, context: context)
+        std_args
       )
     end
 
-    apply_file(file: file, namespace: namespace, context: context)
+    apply_file(file: file)
   end
 
-  def self.run(tag:, name:, namespace:, context:, port: 3000, image_pull_policy: 'Always')
+  def self.run(tag:, name:, port: 3000, image_pull_policy: 'Always')
     ShellAdapter.exec(
       kubectl_binary,
       'run',
@@ -226,11 +219,11 @@ class KubernetesAdapter
       "--port=#{port}",
       '--image-pull-policy',
       image_pull_policy,
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
-  def self.expose_node_port( name:, namespace:, context:, container_port: 3000, host_port: )
+  def self.expose_node_port( name:, container_port: 3000, host_port: )
     ShellAdapter.exec(
       kubectl_binary,
       'expose',
@@ -239,7 +232,7 @@ class KubernetesAdapter
       "--port=#{host_port}",
       "--target-port=#{container_port}",
       '--type=NodePort',
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
@@ -247,9 +240,7 @@ class KubernetesAdapter
     ['fb', service.slug, 'config-map'].join('-')
   end
 
-  def self.deployment_name(service:, environment_slug:)
-    # ['fb', service.slug, 'dpl'].join('-')
-
+  def self.deployment_name(service:)
     # if we're using kubectl run shorthand, then the
     # deployment name is the service name
     service.slug
@@ -257,13 +248,13 @@ class KubernetesAdapter
 
   # given a deployed service, what is the URL defined in the actual
   # ingress rule?
-  def self.service_url(service:, environment_slug:, namespace:, context:)
+  def self.service_url(service:)
     services = JSON.parse(
       ShellAdapter.output_of(
         kubectl_binary,
         'get',
         'ing',
-        std_args(namespace: namespace, context: context),
+        std_args,
         '-o',
         'json'
       )
@@ -276,7 +267,7 @@ class KubernetesAdapter
     end
   end
 
-  def self.expose_deployment( name:, port:, target_port:, namespace:, context: )
+  def self.expose_deployment( name:, port:, target_port: )
     ShellAdapter.exec(
       kubectl_binary,
       'expose',
@@ -286,25 +277,25 @@ class KubernetesAdapter
       port,
       '--target-port',
       target_port,
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
-  def self.delete_pods( label:, namespace:, context: )
+  def self.delete_pods( label: )
     ShellAdapter.exec(
       kubectl_binary,
       'delete',
       'pods',
       '-l',
       label,
-      std_args(namespace: namespace, context: context)
+      std_args
     )
   end
 
   private
 
-  def self.std_args(namespace:, context:)
-    " --context=#{context} --namespace=#{namespace} --token=$KUBECTL_BEARER_TOKEN"
+  def self.std_args
+    " --context=#{@environment.context} --namespace=#{@environment.namespace} --token=$KUBECTL_BEARER_TOKEN"
   end
 
   def self.kubectl_binary
@@ -315,14 +306,14 @@ class KubernetesAdapter
     "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"updated_at\":\"`date +'%s'`\"}}}}}"
   end
 
-  def self.pod_with_volume(name:, container_port:, image:, json_repo:, commit_ref:, namespace:)
+  def self.pod_with_volume(name:, container_port:, image:, json_repo:, commit_ref:)
     cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     <<~ENDHEREDOC
     apiVersion: v1
     kind: Pod
     metadata:
       name: #{name}
-      namespace: #{namespace}
+      namespace: #{@environment.namespace}
     spec:
       initContainers:
       - name: clone-git-repo-into-volume
@@ -347,14 +338,14 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def self.deployment(name:, namespace:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
+  def self.deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
     cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     <<~ENDHEREDOC
     apiVersion: apps/v1beta2
     kind: Deployment
     metadata:
       name: #{name}
-      namespace: #{namespace}
+      namespace: #{@environment.namespace}
       labels:
         run: #{name}
     spec:
@@ -392,13 +383,13 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def self.config_map(vars: {}, name:, namespace:)
+  def self.config_map(vars: {}, name:)
     <<~ENDHEREDOC
     apiVersion: v1
     kind: ConfigMap
     metadata:
       name: #{name}
-      namespace: #{namespace}
+      namespace: #{@environment.namespace}
     data:
     #{vars.map {|k,v| "  #{k}: #{v}" }.join("\n")}
     ENDHEREDOC
@@ -410,6 +401,7 @@ class KubernetesAdapter
     kind: Ingress
     metadata:
       name: #{service_slug}-ingress
+      namespace: #{@environment.namespace}
       annotations:
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
