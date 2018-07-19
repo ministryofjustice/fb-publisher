@@ -1,6 +1,5 @@
 class RedisLogAdapter
   def self.log(message:, job_id:, tag:, in_log:)
-    byebug
     connection.append(
       key_for(job_id: job_id, tag: tag),
       message + "\n"
