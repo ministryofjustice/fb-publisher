@@ -1,84 +1,66 @@
 class CloudPlatformAdapter
-  def self.start_service(environment_slug:, service:, tag:, container_port: 3000)
-    environment = ServiceEnvironment.find(environment_slug)
+  attr_accessor :environment, :kubernetes_adapter
 
-    if KubernetesAdapter.exists_in_namespace?(
+  def initialize(environment:, kubernetes_adapter: nil)
+    @environment = environment
+    @kubernetes_adapter = kubernetes_adapter || \
+                          KubernetesAdapter.new(environment: environment)
+  end
+
+  def start_service(service:, tag:, container_port: 3000)
+    if kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
-      type: 'deployment',
-      namespace: environment.namespace,
-      context: environment.kubectl_context
+      type: 'deployment'
     )
-      KubernetesAdapter.set_image(
+      kubernetes_adapter.set_image(
         deployment_name: service.slug,
         container_name: service.slug,
-        image: tag,
-        namespace: environment.namespace,
-        context: environment.kubectl_context
+        image: tag
       )
     end
-    KubernetesAdapter.run(
+    kubernetes_adapter.run(
       tag: tag,
       name: service.slug,
-      namespace: environment.namespace,
-      context: environment.kubectl_context,
       port: container_port
     )
 
     # no node port needed with an ingress rule, but we still need to
     # run expose to create a service
-    KubernetesAdapter.expose_deployment(
+    kubernetes_adapter.expose_deployment(
       name: service.slug,
       port: container_port,
-      target_port: container_port,
-      namespace: environment.namespace,
-      context: environment.kubectl_context
+      target_port: container_port
     )
   end
 
-  def self.import_image(
-    image:,
-    repository_scope: ENV['REMOTE_DOCKER_USERNAME']
-  )
-    LocalDockerService.push_to_dockerhub(
-      tag: image,
-      repository_scope: repository_scope
-    )
-  end
 
   # can be called before the service is deployed
-  def self.url_for(service:, environment_slug:)
-    ServiceEnvironment.find(environment_slug).url_for(service)
+  def url_for(service:)
+    environment.url_for(service)
   end
 
-  def self.setup_service(
-    environment_slug:,
+  def setup_service(
     service:,
     deployment:,
     config_dir:,
     container_port: 3000,
     image: default_runner_image_ref
   )
-    environment = ServiceEnvironment.find(environment_slug)
-    KubernetesAdapter.create_deployment(
+    kubernetes_adapter.create_deployment(
       config_dir: config_dir,
       name: service.slug,
       container_port: container_port,
       image: image,
       json_repo: service.git_repo_url,
       commit_ref: deployment.commit_sha,
-      context: environment.kubectl_context,
-      namespace: environment.namespace,
-      environment_slug: environment_slug,
-      config_map_name: KubernetesAdapter.config_map_name(service: service)
+      config_map_name: kubernetes_adapter.config_map_name(service: service)
     )
 
     begin
-      KubernetesAdapter.expose_deployment(
+      kubernetes_adapter.expose_deployment(
         name: service.slug,
         port: container_port,
-        target_port: container_port,
-        namespace: environment.namespace,
-        context: environment.kubectl_context
+        target_port: container_port
       )
     rescue CmdFailedError => e
       Rails.logger.info "expose_deployment failed: #{e}\nIgnoring"
@@ -87,7 +69,6 @@ class CloudPlatformAdapter
     begin
       create_ingress_rule(
         service: service,
-        environment_slug: environment_slug,
         config_dir: config_dir
       )
     rescue CmdFailedError => e
@@ -95,35 +76,31 @@ class CloudPlatformAdapter
     end
   end
 
-  def self.configure_env_vars(environment_slug:, service:, config_dir:, system_config: {})
+  def configure_env_vars(service:, config_dir:, system_config: {})
     env_vars = ServiceConfigParam.key_value_pairs(
       service.service_config_params
-      .where(environment_slug: environment_slug)
+      .where(environment_slug: environment.slug)
       .order(:name)
     )
 
     begin
-      KubernetesAdapter.set_environment_vars(
+      kubernetes_adapter.set_environment_vars(
         vars: env_vars.merge(system_config),
         service: service,
-        config_dir: config_dir,
-        environment_slug: environment_slug
+        config_dir: config_dir
       )
     rescue CmdFailedError => e
       Rails.logger.info "set_environment_vars failed: #{e}\nIgnoring"
     end
   end
 
-  def self.create_ingress_rule(service:, environment_slug:, config_dir:)
-    url = url_for(service: service, environment_slug: environment_slug)
-    environment = ServiceEnvironment.find(environment_slug)
+  def create_ingress_rule(service:, config_dir:)
+    url = url_for(service: service)
 
-    KubernetesAdapter.create_ingress_rule(
+    kubernetes_adapter.create_ingress_rule(
       service_slug: service.slug,
       config_dir: config_dir,
-      hostname: URI.parse(url).host,
-      context: environment.kubectl_context,
-      namespace: environment.namespace
+      hostname: URI.parse(url).host
     )
   end
 
@@ -132,67 +109,48 @@ class CloudPlatformAdapter
   # TODO: refactor for DRY-ness!
   ##############################################################
 
-  def self.service_url(service:, environment_slug:)
-    environment = ServiceEnvironment.find(environment_slug)
-    KubernetesAdapter.service_url(
-      service: service,
-      environment_slug: environment_slug,
-      context: environment.kubectl_context,
-      namespace: environment.namespace
+  def service_url(service:)
+    kubernetes_adapter.service_url(
+      service: service
     )
   end
 
 
 
-  def self.service_is_running?(environment_slug:, service:)
-    environment = ServiceEnvironment.find(environment_slug)
-    KubernetesAdapter.exists_in_namespace?(
+  def service_is_running?(service:)
+    kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
-      type: 'service',
-      namespace: environment.namespace,
-      context: environment.kubectl_context
+      type: 'service'
     )
   end
 
-  def self.deployment_exists?(environment_slug:, service:)
-    environment = ServiceEnvironment.find(environment_slug)
-    KubernetesAdapter.exists_in_namespace?(
+  def deployment_exists?(service:)
+    kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
-      type: 'deployment',
-      namespace: environment.namespace,
-      context: environment.kubectl_context
+      type: 'deployment'
     )
   end
 
-  def self.delete_deployment(environment_slug:, service:)
-    environment = ServiceEnvironment.find(environment_slug)
-    KubernetesAdapter.delete_deployment(
-      name: KubernetesAdapter.deployment_name(service: service, environment_slug: environment_slug),
-      namespace: environment.namespace,
-      context: environment.kubectl_context
+  def delete_deployment(service:)
+    kubernetes_adapter.delete_deployment(
+      name: kubernetes_adapter.deployment_name(service: service)
     )
   end
 
-  def self.stop_service(environment_slug:, service:)
-    environment = ServiceEnvironment.find(environment_slug)
-    if service_is_running?(service: service, environment_slug: environment_slug)
-      KubernetesAdapter.delete_service(
-        name: service.slug,
-        namespace: environment.namespace,
-        context: environment.kubectl_context
+  def stop_service(service:)
+    if service_is_running?(service: service)
+      kubernetes_adapter.delete_service(
+        name: service.slug
       )
     end
-    if deployment_exists?(service: service, environment_slug: environment_slug)
-      delete_deployment(service: service, environment_slug: environment_slug)
+    if deployment_exists?(service: service)
+      delete_deployment(service: service)
     end
   end
 
-  def self.delete_pods(environment_slug:, service: service)
-    environment = ServiceEnvironment.find(environment_slug)
-    KubernetesAdapter.delete_pods(
-      label: "run=#{service.slug}",
-      namespace: environment.namespace,
-      context: environment.kubectl_context
+  def delete_pods(service: service)
+    kubernetes_adapter.delete_pods(
+      label: "run=#{service.slug}"
     )
   end
 
