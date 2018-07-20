@@ -5,7 +5,8 @@ class Service < ActiveRecord::Base
 
   has_many :service_status_checks, dependent: :destroy
   has_many :service_config_params, dependent: :destroy
-  #has_many :service_permissions, dependent: :destroy
+  has_many :permissions, dependent: :destroy
+  has_many :teams, through: :permissions
   has_many :service_deployments, dependent: :destroy
 
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true

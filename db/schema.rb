@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_20_064139) do
+ActiveRecord::Schema.define(version: 2018_07_20_094057) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,6 +25,15 @@ ActiveRecord::Schema.define(version: 2018_07_20_064139) do
     t.index ["email"], name: "index_identities_on_email"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid"
     t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
+  create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "service_id"
+    t.uuid "team_id"
+    t.index ["service_id"], name: "index_permissions_on_service_id"
+    t.index ["team_id"], name: "index_permissions_on_team_id"
   end
 
   create_table "service_config_params", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -85,6 +94,15 @@ ActiveRecord::Schema.define(version: 2018_07_20_064139) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "team_members", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id"
+    t.uuid "team_id"
+    t.index ["team_id"], name: "index_team_members_on_team_id"
+    t.index ["user_id"], name: "index_team_members_on_user_id"
+  end
+
   create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "slug"
@@ -101,6 +119,8 @@ ActiveRecord::Schema.define(version: 2018_07_20_064139) do
   end
 
   add_foreign_key "identities", "users"
+  add_foreign_key "permissions", "services"
+  add_foreign_key "permissions", "teams"
   add_foreign_key "service_config_params", "services"
   add_foreign_key "service_deployments", "services"
   add_foreign_key "service_deployments", "users", column: "created_by_user_id"
@@ -109,5 +129,7 @@ ActiveRecord::Schema.define(version: 2018_07_20_064139) do
   add_foreign_key "service_permissions", "users", column: "users_id"
   add_foreign_key "service_status_checks", "services"
   add_foreign_key "services", "users", column: "created_by_user_id"
+  add_foreign_key "team_members", "teams"
+  add_foreign_key "team_members", "users"
   add_foreign_key "teams", "users", column: "created_by_user_id"
 end

@@ -211,10 +211,9 @@ en:
       no_teams_yet: You don't have any teams yet.
       new_team: Create a new team
     links:
-      config_params: Config Params
-      deployments: Deployments
+      members: Members
       permissions: Permissions
-      urls: Status
+      show: Show/Edit
     new:
       heading: New Team
       lede_html:
@@ -226,8 +225,8 @@ en:
       edit: Edit
       success: The team "%{team}" was successfully deleted
     show:
-      lede_html:
-        Status of your team in the available environments
+      lede_html: ""
+
       timestamp: Checked at
       url: URL
     update:
