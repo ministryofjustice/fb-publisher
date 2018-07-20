@@ -1,0 +1,13 @@
+%tr
+  %td
+    = link_to team.name, team_path(team)
+  %td.actions
+    - if can?(:edit, team)
+      = link_to t('.edit'), edit_team_path(team)
+    - if can?(:destroy, team)
+      = button_to t('.delete'),
+                  team_path(team),
+                  method: :delete,
+                  class: 'button',
+                  data: { confirm: t('.delete_confirm', team: team.name),
+                          disable_with: t('.deleting') }

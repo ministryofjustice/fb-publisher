@@ -1,0 +1,6 @@
+= form_for team do |f|
+  .form-group
+    = f.text_field :name, required: true, maxlength: 128
+  .form-group
+    = f.text_field :slug, maxlength: 64
+  = f.submit class: 'button button-cta'

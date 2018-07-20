@@ -192,6 +192,46 @@ en:
       url: URL
     update:
       success: Service "%{service}" updated successfully
+  teams:
+    create:
+      success: Your new team has been created successfully
+    destroy:
+      success: Team "%{team}" deleted successfully
+    edit:
+      heading: Editing '%{name}'
+
+    environment:
+      checking: 'checking...'
+      check_now: 'Check now'
+    index:
+      actions: Actions
+      caption: Your Teams
+      heading: Your Teams
+      name: Team name
+      no_teams_yet: You don't have any teams yet.
+      new_team: Create a new team
+    links:
+      config_params: Config Params
+      deployments: Deployments
+      permissions: Permissions
+      urls: Status
+    new:
+      heading: New Team
+      lede_html:
+        Tell us some details about your new team.
+    team:
+      delete: Delete
+      delete_confirm: Are you sure you want to delete the team '%{team}'?
+      deleting: Deleting...
+      edit: Edit
+      success: The team "%{team}" was successfully deleted
+    show:
+      lede_html:
+        Status of your team in the available environments
+      timestamp: Checked at
+      url: URL
+    update:
+      success: Team "%{team}" updated successfully
   shared:
     errors_intro: There were some errors in that form
     service_deployments:

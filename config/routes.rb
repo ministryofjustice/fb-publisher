@@ -11,7 +11,13 @@ Rails.application.routes.draw do
   get '/signup_error/:error_type' => 'user_sessions#signup_error', as: 'signup_error'
   get '/' => 'home#show', as: 'root'
 
-  resources :teams
+  resources :teams, param: :slug do
+    scope :module => 'teams' do
+      resources :members
+      resources :permissions
+    end
+  end
+
   resources :services, param: :slug do
     scope :module => 'services' do
       resources :status_checks
