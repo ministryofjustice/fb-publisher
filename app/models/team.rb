@@ -3,6 +3,7 @@ class Team < ActiveRecord::Base
   include Concerns::CreatedByUser
 
   has_many    :members, class_name: 'TeamMember', dependent: :destroy
+  has_many    :users_as_member, through: :members, source: :user
   has_many    :permissions
   has_many    :services, through: :permissions
 
@@ -18,6 +19,8 @@ class Team < ActiveRecord::Base
     # and do an IN() query for them.
     # Benefits: each separate query can be cached
     # Drawbacks: not going to scale beyond a few hundred teams-per-user
+    # (that limitation is OK for now, and TBH I can't see many users
+    # creating more than that)
     ids = with_user_as_member(user_id).pluck(:id) + \
           created_by_user(user_id).pluck(:id)
     Team.where("id IN(?)", ids.uniq)
