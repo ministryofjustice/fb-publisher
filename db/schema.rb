@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_13_102948) do
+ActiveRecord::Schema.define(version: 2018_07_20_064139) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -85,6 +85,14 @@ ActiveRecord::Schema.define(version: 2018_07_13_102948) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.uuid "created_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
     t.string "name"
@@ -101,4 +109,5 @@ ActiveRecord::Schema.define(version: 2018_07_13_102948) do
   add_foreign_key "service_permissions", "users", column: "users_id"
   add_foreign_key "service_status_checks", "services"
   add_foreign_key "services", "users", column: "created_by_user_id"
+  add_foreign_key "teams", "users", column: "created_by_user_id"
 end
