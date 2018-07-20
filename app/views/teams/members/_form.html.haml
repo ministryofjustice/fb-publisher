@@ -1,0 +1,10 @@
+= form_with model: @member, url: update_or_create(@member), local: true do |f|
+  %tr.in-form
+    %td{ colspan: 2 }
+      = select_tag 'team_member[user_id]',
+                    options_from_collection_for_select( @possible_members,
+                                                        :id,
+                                                        :name_and_email),
+                    class: 'form-control'
+    %td.actions
+      = f.submit t('.submit'), class: 'button button-cta'

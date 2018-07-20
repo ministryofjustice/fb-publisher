@@ -214,6 +214,17 @@ en:
       members: Members
       permissions: Permissions
       show: Show/Edit
+    members:
+      form:
+        submit: Add member
+      index:
+        lede_html:
+          All members of a team have the same permissions to
+          change or deploy services within Publisher
+      member:
+        delete: Delete
+        deleting: Deleting...
+        delete_confirm: Are you sure you want to delete %{name_and_email}?
     new:
       heading: New Team
       lede_html:

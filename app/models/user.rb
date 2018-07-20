@@ -9,7 +9,11 @@ class User < ActiveRecord::Base
   # MVP version: every user can see every other user
   def self.visible_to(user_or_user_id)
     user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
-    where(true)
+    where('1=1')
+  end
+
+  def name_and_email
+    "#{name} (#{email})"
   end
 
 end

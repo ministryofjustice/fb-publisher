@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_20_094057) do
+ActiveRecord::Schema.define(version: 2018_07_20_234822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 2018_07_20_094057) do
     t.datetime "updated_at", null: false
     t.uuid "user_id"
     t.uuid "team_id"
+    t.uuid "created_by_user_id"
     t.index ["team_id"], name: "index_team_members_on_team_id"
     t.index ["user_id"], name: "index_team_members_on_user_id"
   end
@@ -131,5 +132,6 @@ ActiveRecord::Schema.define(version: 2018_07_20_094057) do
   add_foreign_key "services", "users", column: "created_by_user_id"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
+  add_foreign_key "team_members", "users", column: "created_by_user_id"
   add_foreign_key "teams", "users", column: "created_by_user_id"
 end
