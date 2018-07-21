@@ -179,6 +179,17 @@ en:
       notice:
         Nothing will be put live until you <em>deploy</em> your service -
         which you can do after creating it
+    permissions:
+      form:
+        submit: Grant permission
+      index:
+        lede_html:
+          Teams which have permission to make changes or deploy updates to this service
+        name: Team name
+      permission:
+        delete: Remove permission
+        deleting: Removing...
+        delete_confirm: Are you sure you want to remove permission for %{team} to make changes to '%{name}'?
     service:
       delete: Delete
       delete_confirm: Are you sure you want to delete the service '%{service}'?

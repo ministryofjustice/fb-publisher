@@ -1,0 +1,15 @@
+%tr
+  %td
+    - if can?(:show, permission.team)
+      = link_to permission.team.name, team_path(permission.team)
+    - else
+      = permission.team.name
+
+  %td.actions
+    - if can?(:destroy, permission)
+      = button_to t('.delete'),
+                  service_permission_path(permission.service, permission),
+                  method: :delete,
+                  class: 'styled-as-link',
+                  data: { confirm: t('.delete_confirm', team: permission.team.name, name: permission.service.name),
+                          disable_with: t('.deleting') }

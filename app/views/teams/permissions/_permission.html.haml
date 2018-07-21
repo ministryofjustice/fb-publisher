@@ -1,6 +1,9 @@
 %tr
   %td
-    = permission.service.name
+    - if can?(:show, permission.service)
+      = link_to permission.service.name, service_path(permission.service)
+    - else
+      = permission.service.name
   %td.actions
     - if can?(:destroy, permission)
       = button_to t('.delete'),
