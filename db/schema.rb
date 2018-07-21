@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_20_234822) do
+ActiveRecord::Schema.define(version: 2018_07_21_072345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2018_07_20_234822) do
     t.datetime "updated_at", null: false
     t.uuid "service_id"
     t.uuid "team_id"
+    t.uuid "created_by_user_id"
     t.index ["service_id"], name: "index_permissions_on_service_id"
     t.index ["team_id"], name: "index_permissions_on_team_id"
   end
@@ -122,6 +123,7 @@ ActiveRecord::Schema.define(version: 2018_07_20_234822) do
   add_foreign_key "identities", "users"
   add_foreign_key "permissions", "services"
   add_foreign_key "permissions", "teams"
+  add_foreign_key "permissions", "users", column: "created_by_user_id"
   add_foreign_key "service_config_params", "services"
   add_foreign_key "service_deployments", "services"
   add_foreign_key "service_deployments", "users", column: "created_by_user_id"

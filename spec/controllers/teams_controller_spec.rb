@@ -8,11 +8,11 @@ describe TeamsController do
 
   describe '#index' do
     context 'for a logged-in user' do
-      let(:user) { double(User, id: 1234) }
+      let(:user) { User.create(name: 'user 1', email: 'user@example.com') }
       let(:user_services)  do
         [
-          double(Team, id: 1, created_by_user_id: user.id),
-          double(Team, id: 2, created_by_user_id: user.id)
+          Team.create!(name: 'team 1', created_by_user_id: user.id),
+          Team.create!(name: 'team 2', created_by_user_id: user.id)
         ]
       end
 

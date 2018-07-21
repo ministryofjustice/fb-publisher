@@ -229,6 +229,18 @@ en:
       heading: New Team
       lede_html:
         Tell us some details about your new team.
+    permissions:
+      form:
+        submit: Grant permission
+      index:
+        lede_html:
+          Service for which this team has permission to make changes or deploy
+          updates
+        name: Service name
+      permission:
+        delete: Remove permission
+        deleting: Removing...
+        delete_confirm: Are you sure you want to remove permission for %{team} to make changes to '%{name}'?
     team:
       delete: Delete
       delete_confirm: Are you sure you want to delete the team '%{team}'?

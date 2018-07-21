@@ -4,7 +4,7 @@ describe Team do
   describe '.visible_to' do
     context 'given a user' do
       let(:user) { User.create!(name: 'test user', email: 'test@example.com') }
-      let(:other_user) { User.create(name: 'Other User', email: 'otheruser@example.com') }
+      let(:other_user) { User.create!(name: 'Other User', email: 'otheruser@example.com') }
 
       context 'who has created a team' do
         let!(:team_created_by_user) { Team.create!(name: 'test users team', created_by_user: user) }
@@ -25,7 +25,7 @@ describe Team do
       context 'who is a member of a team' do
         let!(:team_with_user_as_member) { Team.create!(name: 'test users team', created_by_user: other_user) }
         before do
-          team_with_user_as_member.users_as_member << user
+          team_with_user_as_member.members << TeamMember.new(user: user, created_by_user: other_user)
         end
 
         it 'includes the team with the given user as member' do
