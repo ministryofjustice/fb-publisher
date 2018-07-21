@@ -1,0 +1,13 @@
+%tr
+  %td
+    = member.user.name
+  %td
+    = member.user.email
+  %td.actions
+    - if can?(:destroy, member)
+      = button_to t('.delete'),
+                  team_member_path(member.team, member),
+                  method: :delete,
+                  class: 'styled-as-link',
+                  data: { confirm: t('.delete_confirm', name_and_email: member.user.name_and_email),
+                          disable_with: t('.deleting') }

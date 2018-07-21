@@ -1,0 +1,7 @@
+%h1.heading-xlarge
+  = t('.heading', name: @team.name)
+
+= GovukElementsErrorsHelper.error_summary @team,
+  t(:errors_intro, scope: [:shared]), ''
+
+= render partial: 'teams/form', locals: {team: @team}

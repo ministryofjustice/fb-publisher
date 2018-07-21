@@ -1,0 +1,17 @@
+= render partial: 'teams/header', locals: {team: @team}
+
+%p.lede
+  = t '.lede_html'
+
+%table#team-permissions
+  %thead
+    %tr
+      %th
+        = t '.name'
+      %th
+        = t '.actions'
+
+  %tbody
+    = render partial: 'permission', collection: @permissions
+
+    = render partial: 'form', locals: {permission: @permission}

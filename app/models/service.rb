@@ -1,15 +1,15 @@
 class Service < ActiveRecord::Base
+  include Concerns::HasSlug
+
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by_user_id
 
   has_many :service_status_checks, dependent: :destroy
   has_many :service_config_params, dependent: :destroy
-  #has_many :service_permissions, dependent: :destroy
+  has_many :permissions, dependent: :destroy
+  has_many :teams, through: :permissions
   has_many :service_deployments, dependent: :destroy
 
-  before_validation :generate_slug_if_blank!
-
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
-  validates :slug, length: {maximum: 64, minimum: 3}, uniqueness: true
   validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
   validate  :git_repo_url_must_use_https
 
@@ -20,24 +20,11 @@ class Service < ActiveRecord::Base
     where(created_by_user_id: user_id)
   end
 
-  def to_param
-    slug
-  end
+
 
   private
 
-  def generate_slug_if_blank!
-    return unless slug.blank?
-    self.slug = to_slug
-  end
 
-  def to_slug(string=name)
-    return if string.empty?
-    string.gsub(/[^[:alnum:]\-]+/i, '-')\
-          .gsub(/^\-*(.*)/, '\1')\
-          .gsub(/(.*)\-+$/, '\1')\
-          .downcase
-  end
 
   def git_repo_url_must_use_https
     begin

@@ -1,0 +1,20 @@
+= render partial: 'teams/header', locals: {team: @team}
+
+%p.lede
+  = t '.lede_html'
+
+%table#team-members
+  %thead
+    %tr
+      %th
+        = t '.name'
+      %th
+        = t '.email'
+
+      %th
+        = t '.actions'
+
+  %tbody
+    = render partial: 'member', collection: @members
+
+    = render partial: 'form', locals: {member: @member}

@@ -1,0 +1,27 @@
+= render partial: 'teams/header', locals: {team: @team}
+
+%p.lede
+  = t('.lede_html')
+
+%dl
+  %dt.column-one-quarter
+    = t('.name')
+  %dd.column-three-quarters
+    = @team.name
+  %dt.column-one-quarter
+    = t('.slug')
+  %dd.column-three-quarters
+    = @team.slug
+
+  %dt.column-one-quarter
+    = t('.members')
+  %dd.column-three-quarters
+    = @team.members.count
+  %dt.column-one-quarter
+    = t('.services')
+  %dd.column-three-quarters
+    = @team.services.count
+
+%br
+%p
+  = link_to t('.edit'), edit_team_path(@team)

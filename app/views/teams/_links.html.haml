@@ -1,0 +1,17 @@
+%nav#team-links.inline-nav
+  %ul
+    %li
+      - if current_action?(controller: :teams, action: :show)
+        %span= t('.show')
+      - else
+        = link_to t('.show'), team_path(team)
+    %li
+      - if current_action?(controller: 'teams/members', action: :index)
+        %span= t('.members')
+      - else
+        = link_to t('.members'), team_members_path(team)
+    %li
+      - if current_action?(controller: 'teams/permissions')
+        %span= t('.permissions')
+      - else
+        = link_to t('.permissions'), team_permissions_path(team)
