@@ -25,6 +25,13 @@ class Service < ActiveRecord::Base
     where("id IN(?)", service_ids.uniq)
   end
 
+  def is_visible_to?(user_or_user_id)
+    user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
+
+    created_by_user_id == user_id || \
+      Permission.for_user_id(user_id).where(service_id: self.id).exists?
+  end
+
   def self.with_permissions_for_user(user_id)
     joins(:permissions).joins(permissions: :team) \
                        .joins(permissions: {team: :members}) \
