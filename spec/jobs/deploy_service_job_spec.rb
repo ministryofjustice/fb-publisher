@@ -21,6 +21,7 @@ describe DeployServiceJob do
     allow(deployment).to receive(:complete!)
     allow(VersionControlService).to receive(:checkout).and_return('some-sha')
     allow(DeploymentService).to receive(:setup_service).and_return('setup_service-result')
+    allow(DeploymentService).to receive(:expose).and_return('expose-result')
     allow(DeploymentService).to receive(:configure_env_vars).and_return('configure_env_vars-result')
     allow(DeploymentService).to receive(:restart_service).and_return('restart_service-result')
   end

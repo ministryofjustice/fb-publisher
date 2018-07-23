@@ -36,6 +36,13 @@ class DeployServiceJob < ApplicationJob
       deployment: @deployment
     )
 
+    log_for_user(:exposing)
+    DeploymentService.expose(
+      config_dir: config_dir,
+      environment_slug: @deployment.environment_slug,
+      service: @deployment.service
+    )
+
     log_for_user(:restarting)
     DeploymentService.restart_service(
       environment_slug: @deployment.environment_slug,

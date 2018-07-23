@@ -1,50 +1,6 @@
 # Takes advantage of the sometimes-more-friendly minikube layer
 # where possible, delegates to KubernetesAdapter where needed
-class MinikubeAdapter
-  attr_accessor :environment, :kubernetes_adapter
-
-  def initialize(environment:, kubernetes_adapter: nil)
-    @environment = environment
-    @kubernetes_adapter = kubernetes_adapter || \
-                          KubernetesAdapter.new(environment: environment)
-  end
-
-  def configure_env_vars(config_dir:, service:, system_config: {})
-    env_vars = ServiceConfigParam.key_value_pairs(
-      service.service_config_params
-             .where(environment_slug: @environment.slug)
-             .order(:name)
-    )
-
-    kubernetes_adapter.set_environment_vars(
-      vars: env_vars.merge(system_config),
-      service: service,
-      config_dir: config_dir
-    )
-  end
-
-
-
-  # TODO: find a less brute-force way of doing this!
-  # We want rolling zero-downtime updates, and this is
-  # definitely not that
-  def stop_service(service:)
-    if service_is_running?(service: service)
-      kubernetes_adapter.delete_service(
-        name: service.slug
-      )
-    end
-    if deployment_exists?(service: service)
-      delete_deployment(service: service)
-    end
-  end
-
-  def delete_deployment(service:)
-    kubernetes_adapter.delete_deployment(
-      name: kubernetes_adapter.deployment_name(service: service)
-    )
-  end
-
+class MinikubeAdapter < GenericKubernetesPlatformAdapter
 
   def start_service(service:, tag:, container_port: 3000, host_port: 8080)
     if kubernetes_adapter.exists_in_namespace?(
@@ -88,20 +44,6 @@ class MinikubeAdapter
     )
   end
 
-  def service_is_running?(service:)
-    kubernetes_adapter.exists_in_namespace?(
-      name: service.slug,
-      type: 'service'
-    )
-  end
-
-  def deployment_exists?(service:)
-    kubernetes_adapter.exists_in_namespace?(
-      name: service.slug,
-      type: 'deployment'
-    )
-  end
-
   def setup_service(
     service:,
     deployment:,
@@ -118,7 +60,13 @@ class MinikubeAdapter
       commit_ref: deployment.commit_sha,
       config_map_name: kubernetes_adapter.config_map_name(service: service)
     )
+  end
 
+  def expose(
+    service:,
+    config_dir:,
+    container_port: 3000
+  )
     begin
       kubernetes_adapter.expose_node_port(
         name: service.slug,
@@ -128,12 +76,6 @@ class MinikubeAdapter
     rescue CmdFailedError => e
       puts("cmd failed, but no problem - ignoring: #{e}")
     end
-  end
-
-  def delete_pods(service: service)
-    kubernetes_adapter.delete_pods(
-      label: "run=#{service.slug}"
-    )
   end
 
   private
