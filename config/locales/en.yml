@@ -78,6 +78,7 @@ en:
     complete: 'Finished - writing status back to Deployment'
     configuring_params: 'Updating config params'
     deploying_service: 'Deploying service'
+    exposing: 'Allowing inbound traffic'
     reading_commit: 'Reading commit SHA'
     restarting: 'Restarting service'
     starting: 'Starting job %{job_id} for ServiceDeployment %{service_deployment_id}'

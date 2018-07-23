@@ -23,7 +23,7 @@ class Team < ActiveRecord::Base
     # creating more than that)
     ids = with_user_as_member(user_id).pluck(:id) + \
           created_by_user(user_id).pluck(:id)
-    Team.where("id IN(?)", ids.uniq)
+    where("id IN(?)", ids.uniq)
   end
 
   def self.with_user_as_member(user_id)

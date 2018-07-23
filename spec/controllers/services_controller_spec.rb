@@ -8,11 +8,11 @@ describe ServicesController do
 
   describe '#index' do
     context 'for a logged-in user' do
-      let(:user) { double(User, id: 1234) }
+      let(:user) { User.create!(name: 'user', email: 'user@example.com') }
       let(:user_services)  do
         [
-          double(Service, id: 1, created_by_user_id: user.id),
-          double(Service, id: 2, created_by_user_id: user.id)
+          Service.create!(name: 'service 1', git_repo_url: 'https://some/repo/1', created_by_user_id: user.id),
+          Service.create!(name: 'service 2', git_repo_url: 'https://some/repo/2', created_by_user_id: user.id)
         ]
       end
 

@@ -43,6 +43,14 @@ class ApplicationPolicy
     policy_class.new(user, other_record)
   end
 
+  def self.delegate_to(record_method)
+    [:index?, :show?, :create?, :new?, :update?, :edit?, :destroy?].each do |method|
+      define_method(method) do
+        policy_for(record.send(record_method)).send("#{method}")
+      end
+    end
+  end
+
   class Scope
     attr_reader :user, :scope
 

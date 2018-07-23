@@ -8,22 +8,29 @@ class ServicePolicy < ApplicationPolicy
   end
 
   def show?
-    user.id == record.created_by_user_id
+    true
   end
 
   def edit?
-    user.id == record.created_by_user_id
+    is_editable_by?(user.id)
   end
 
   def update?
-    user.id == record.created_by_user_id
+    is_editable_by?(user.id)
   end
 
   def create?
-    user.id == record.created_by_user_id
+    is_editable_by?(user.id)
   end
 
   def destroy?
-    user.id == record.created_by_user_id
+    is_editable_by?(user.id)
+  end
+
+  private
+
+  def is_editable_by?(user_id)
+    user.id == record.created_by_user_id || \
+      Permission.for_user_id(user_id).where(service_id: record.id).exists?
   end
 end

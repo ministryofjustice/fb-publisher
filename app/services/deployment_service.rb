@@ -69,6 +69,16 @@ class DeploymentService
     )
   end
 
+  def self.expose(
+    environment_slug:,
+    service:,
+    config_dir:,
+    container_port: 3000
+  )
+    adapter = adapter_for(environment_slug)
+    adapter.expose(service: service, config_dir: config_dir, container_port: container_port)
+  end
+
   def self.configure_env_vars(environment_slug:, service:, config_dir:, deployment:)
     FileUtils.mkdir_p(config_dir)
     adapter = adapter_for(environment_slug)

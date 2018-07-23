@@ -13,13 +13,30 @@ class Service < ActiveRecord::Base
   validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
   validate  :git_repo_url_must_use_https
 
-  # Naive first impl - just services created by the given user
-  # TODO: revisit once we have concept of teams
+  # NOTE: uses same naive implementation as Team.visible_to -
+  # two separate queries for IDs, then a single WHERE id IN(?)
+  # Which will not scale well past a few hundred IDs
   def self.visible_to(user_or_user_id)
     user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
-    where(created_by_user_id: user_id)
+
+    service_ids = where(created_by_user_id: user_id).pluck(:id)
+    service_ids += with_permissions_for_user(user_id).pluck(:id)
+
+    where("id IN(?)", service_ids.uniq)
   end
 
+  def is_visible_to?(user_or_user_id)
+    user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
+
+    created_by_user_id == user_id || \
+      Permission.for_user_id(user_id).where(service_id: self.id).exists?
+  end
+
+  def self.with_permissions_for_user(user_id)
+    joins(:permissions).joins(permissions: :team) \
+                       .joins(permissions: {team: :members}) \
+                       .where(team_members: {user_id: user_id})
+  end
 
 
   private
