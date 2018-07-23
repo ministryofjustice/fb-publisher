@@ -142,4 +142,58 @@ describe Service do
       expect(subject.to_param).to eq(subject.slug)
     end
   end
+
+  describe '.visible_to' do
+    context 'given a user' do
+      let(:user) { User.create!(name: 'test user', email: 'test@example.com') }
+      let(:other_user) { User.create!(name: 'Other User', email: 'otheruser@example.com') }
+
+      context 'who has created a Service' do
+        let!(:service_created_by_user) { Service.create!(name: 'test users service', created_by_user: user, git_repo_url: 'https://some/repo') }
+
+        context 'and a service created by someone else' do
+          let!(:service_created_by_other_user) { Service.create!(name: 'other users service', created_by_user: other_user, git_repo_url: 'https://some/repo') }
+
+          it 'includes the service created by the given user' do
+            expect(Service.visible_to(user).pluck(:id)).to include(service_created_by_user.id)
+          end
+
+          it 'does not include the service created by the other user' do
+            expect(Service.visible_to(user).pluck(:id)).to_not include(service_created_by_other_user.id)
+          end
+        end
+      end
+
+      context 'who is a member of a team' do
+        let!(:team_with_user_as_member) { Team.create!(name: 'test users team', created_by_user: other_user) }
+        before do
+          team_with_user_as_member.members << TeamMember.new(user: user, created_by_user: other_user)
+        end
+
+        context 'and a Service created by another user' do
+          let!(:service_with_permission_created_by_other_user) { Service.create!(name: 'other users service', created_by_user: other_user, git_repo_url: 'https://some/repo') }
+
+          context 'without permission granted to the users team' do
+            before do
+              service_with_permission_created_by_other_user.permissions.delete_all
+            end
+
+            it 'does not include that service' do
+              expect(Service.visible_to(user).pluck(:id)).to_not include(service_with_permission_created_by_other_user.id)
+            end
+          end
+
+          context 'with permission granted to the users team' do
+            before do
+              service_with_permission_created_by_other_user.permissions.create!(team: team_with_user_as_member, created_by_user: other_user)
+            end
+
+            it 'includes the service with the given user as member' do
+              expect(Service.visible_to(user).pluck(:id)).to include(service_with_permission_created_by_other_user.id)
+            end
+          end
+        end
+      end
+    end
+  end
 end
