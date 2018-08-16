@@ -17,7 +17,7 @@ ALL_ENVS = {
   },
   production: {
     deployment_adapter: 'cloud_platform',
-    kubectl_context: 'cp-prod',
+    kubectl_context: 'cp-live',
     name: 'Production',
     namespace: 'formbuilder-services-production',
     protocol: 'https://',
