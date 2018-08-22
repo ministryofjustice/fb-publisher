@@ -1,10 +1,8 @@
 class FileLogAdapter
   def self.log(message:, job_id:, tag:, in_log:)
-    log = file_path(in_log)
-    FileUtils.mkdir_p(log_dir) unless File.exists?(log_dir)
-    File.open(log, 'a') do |f|
-      f << message + "\n"
-    end
+    log_path = file_path(in_log)
+    make_dir_if_needed!
+    write_log_line(log_path: log_path, message: message)
   end
 
   def self.entries(job_id: nil, tag: nil, min_timestamp: nil)
@@ -55,7 +53,12 @@ class FileLogAdapter
     files = Dir.glob(log_dir + '/**.txt')
     entries = []
     files.select do |file|
-      file_matches?(file: file, job_id: nil, tag: nil, min_timestamp: nil, max_timestamp: max_timestamp)
+      file_matches?(
+        file: file,
+        job_id: job_id,
+        tag: tag,
+        min_timestamp: min_timestamp,
+        max_timestamp: max_timestamp)
     end
   end
 
@@ -65,6 +68,12 @@ class FileLogAdapter
     return false if tag && entry['tag'] != tag
     return false if min_timestamp && entry['timestamp'] < min_timestamp
     true
+  end
+
+  def self.write_log_line(log:, message:)
+    File.open(log, 'a') do |f|
+      f << message + "\n"
+    end
   end
 
   def self.file_name(job_id:, tag:)
@@ -77,5 +86,9 @@ class FileLogAdapter
 
   def self.log_dir
     File.join(Rails.root, 'log', 'jobs')
+  end
+
+  def self.make_dir_if_needed!
+    FileUtils.mkdir_p(log_dir) unless File.exists?(log_dir)
   end
 end
