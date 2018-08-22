@@ -1,7 +1,7 @@
 ALL_ENVS = {
   dev: {
     deployment_adapter: 'cloud_platform',
-    kubectl_context: 'cp-non-prod',
+    kubectl_context: 'cp-live',
     name: 'Development',
     namespace: 'formbuilder-services-dev',
     protocol: 'https://',
@@ -9,7 +9,7 @@ ALL_ENVS = {
   },
   staging: {
     deployment_adapter: 'cloud_platform',
-    kubectl_context: 'cp-non-prod',
+    kubectl_context: 'cp-live',
     name: 'Staging',
     namespace: 'formbuilder-services-staging',
     protocol: 'https://',
