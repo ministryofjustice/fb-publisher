@@ -196,4 +196,47 @@ describe Service do
       end
     end
   end
+
+  describe '#is_visible_to?' do
+    let!(:user){ User.create!(id: '1234', name: 'user name', email: 'my@emai.com') }
+    let(:other_user){ User.new(id: '5678') }
+
+    context 'when the user created the service' do
+      before do
+        subject.created_by_user = user
+      end
+
+      it 'returns true' do
+        expect(subject.is_visible_to?(user)).to eq(true)
+      end
+    end
+
+    context 'when the user did not create the service' do
+      before do
+        subject.created_by_user = other_user
+      end
+
+      context 'and there is no permission for that user id' do
+        it 'returns false' do
+          expect(subject.is_visible_to?(user)).to eq(false)
+        end
+      end
+
+      context 'but there is permission for that user_id' do
+        let(:team) { Team.create!(name: 'team 1', created_by_user: other_user)}
+        before do
+          subject.slug = 'slug'
+          subject.name = 'subject name'
+          subject.git_repo_url = 'https://git.repo/url'
+          subject.save!
+          TeamMember.create!(team: team, user: user, created_by_user: other_user)
+          Permission.create!(service: subject, team: team, created_by_user: other_user)
+        end
+
+        it 'returns true' do
+          expect(subject.is_visible_to?(user)).to eq(true)
+        end
+      end
+    end
+  end
 end
