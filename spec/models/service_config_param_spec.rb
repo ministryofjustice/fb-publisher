@@ -75,6 +75,71 @@ describe ServiceConfigParam do
     end
   end
 
+  describe '.visible_to' do
+    let(:user) { User.create!(name: 'test user', email: 'test@example.com') }
+    let(:other_user) { User.create!(name: 'Other User', email: 'otheruser@example.com') }
+
+    context 'given a user' do
+      context 'who has created a service' do
+        let!(:service_created_by_user) { Service.create!(name: 'test users service', created_by_user: user, git_repo_url: 'https://some.com/repo') }
+
+        context 'with a config param' do
+          let!(:user_service_config_param) { ServiceConfigParam.create!(name: 'USER_SERVICE_CONFIG_PARAM', environment_slug: 'dev', value: 'value 1', service: service_created_by_user, last_updated_by_user: user)}
+
+          context 'and a service created by someone else' do
+            let!(:service_created_by_other_user) { Service.create!(name: 'other users service', created_by_user: other_user, git_repo_url: 'https://some.com/other/repo') }
+
+            context 'with a config param' do
+              let!(:other_user_service_config_param) { ServiceConfigParam.create!(name: 'OTHER_USER_SERVICE_CONFIG_PARAM', environment_slug: 'dev', value: 'value 1', service: service_created_by_other_user, last_updated_by_user: other_user)}
+
+              it 'includes the param from the service created by the given user' do
+                expect(ServiceConfigParam.visible_to(user).pluck(:id)).to include(user_service_config_param.id)
+              end
+
+              it 'does not include the param from service created by the other user' do
+                expect(ServiceConfigParam.visible_to(user).pluck(:id)).to_not include(other_user_service_config_param.id)
+              end
+            end
+          end
+        end
+      end
+
+      context 'who is a member of a team' do
+        let!(:team_with_user_as_member) { Team.create!(name: 'test users team', created_by_user: other_user) }
+        before do
+          team_with_user_as_member.members << TeamMember.new(user: user, created_by_user: other_user)
+        end
+
+        context 'with permission to update a service created by another user' do
+          let!(:service_created_by_other_user) { Service.create!(name: 'other users service', created_by_user: other_user, git_repo_url: 'https://some.com/other/repo') }
+          before do
+            Permission.create!(service: service_created_by_other_user, team: team_with_user_as_member, created_by_user: other_user)
+          end
+
+          context 'which has a config param' do
+            let!(:other_user_service_config_param) { ServiceConfigParam.create!(name: 'OTHER_USER_SERVICE_CONFIG_PARAM', environment_slug: 'dev', value: 'value 1', service: service_created_by_other_user, last_updated_by_user: other_user)}
+
+            it 'includes the param from the service created by the given user' do
+              expect(ServiceConfigParam.visible_to(user).pluck(:id)).to include(other_user_service_config_param.id)
+            end
+          end
+        end
+
+        context 'without permission to update a service created by another user' do
+          let!(:service_created_by_other_user) { Service.create!(name: 'other users service', created_by_user: other_user, git_repo_url: 'https://some.com/other/repo') }
+
+          context 'which has a config param' do
+            let!(:other_user_service_config_param) { ServiceConfigParam.create!(name: 'OTHER_USER_SERVICE_CONFIG_PARAM', environment_slug: 'dev', value: 'value 1', service: service_created_by_other_user, last_updated_by_user: other_user)}
+
+            it 'does not include the param from the service created by the given user' do
+              expect(ServiceConfigParam.visible_to(user).pluck(:id)).to_not include(other_user_service_config_param.id)
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe '#key_value_pairs' do
     let(:indexed) do
       {
@@ -97,6 +162,30 @@ describe ServiceConfigParam do
             'name3' => 'value3'
           }
         )
+      end
+    end
+  end
+
+  describe '#is_visible_to?' do
+    let(:service){ Service.new }
+    let(:user){ User.new }
+    before do
+      subject.service = service
+      allow(service).to receive(:is_visible_to?).with(user).and_return(visible)
+    end
+
+    context 'when the user can see the service' do
+      let(:visible) { true }
+
+      it 'returns true' do
+        expect(subject.is_visible_to?(user)).to eq(true)
+      end
+    end
+    context 'when the user cannot see the service' do
+      let(:visible) { false }
+
+      it 'returns true' do
+        expect(subject.is_visible_to?(user)).to eq(false)
       end
     end
   end

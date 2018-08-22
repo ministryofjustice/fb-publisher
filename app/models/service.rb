@@ -27,6 +27,7 @@ class Service < ActiveRecord::Base
 
   def is_visible_to?(user_or_user_id)
     user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
+    return false unless user_id.present?
 
     created_by_user_id == user_id || \
       Permission.for_user_id(user_id).where(service_id: self.id).exists?

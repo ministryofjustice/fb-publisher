@@ -13,6 +13,12 @@ class ServiceConfigParam < ActiveRecord::Base
   def self.visible_to(user_or_user_id)
     user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
     joins(:service).where(services: {created_by_user_id: user_id})
+    # NOTE: won't scale beyond 500 services visible to this user
+    where("service_id IN(?)", Service.visible_to(user_id).pluck(:id))
+  end
+
+  def is_visible_to?(user_or_user_id)
+    service.is_visible_to?(user_or_user_id)
   end
 
   def self.key_value_pairs(scope)

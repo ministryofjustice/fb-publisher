@@ -91,4 +91,7 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # see https://auth0.com/docs/quickstart/webapp/rails/01-login#-failure-message-invalid_credentials-
+  OmniAuth.config.full_host = ENV['RAILS_FULL_URL_ROOT']
 end
