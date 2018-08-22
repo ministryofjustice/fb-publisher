@@ -106,16 +106,16 @@ class KubernetesAdapter
 
   # see https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-env-em-
   # "Import environment from a config map with a prefix"
-  def apply_config_map(name:, deployment_name:)
-    ShellAdapter.exec(
-      kubectl_binary,
-      'set',
-      'env',
-      "--from=configmap/#{name}",
-      std_args,
-      "deployment/#{deployment_name}"
-    )
-  end
+  # def apply_config_map(name:, deployment_name:)
+  #   ShellAdapter.exec(
+  #     kubectl_binary,
+  #     'set',
+  #     'env',
+  #     "--from=configmap/#{name}",
+  #     std_args,
+  #     "deployment/#{deployment_name}"
+  #   )
+  # end
 
   def apply_file(file:)
     ShellAdapter.exec(
