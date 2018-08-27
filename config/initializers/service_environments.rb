@@ -5,7 +5,7 @@ ALL_ENVS = {
     name: 'Development',
     namespace: 'formbuilder-services-dev',
     protocol: 'https://',
-    url_root: 'apps.non-production.k8s.integration.dsd.io'
+    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io'
   },
   staging: {
     deployment_adapter: 'cloud_platform',
@@ -13,7 +13,7 @@ ALL_ENVS = {
     name: 'Staging',
     namespace: 'formbuilder-services-staging',
     protocol: 'https://',
-    url_root: 'apps.non-production.k8s.integration.dsd.io'
+    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io'
   },
   production: {
     deployment_adapter: 'cloud_platform',
@@ -21,7 +21,7 @@ ALL_ENVS = {
     name: 'Production',
     namespace: 'formbuilder-services-production',
     protocol: 'https://',
-    url_root: 'apps.production.k8s.integration.dsd.io'
+    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io'
   }
 }
 # only use minikube on local machines - i.e. dev
