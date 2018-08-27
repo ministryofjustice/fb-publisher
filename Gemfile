@@ -50,6 +50,11 @@ gem 'puma', '~> 3.11'
 # Policy-based authorization
 gem 'pundit'
 
+# allow Cross-origin requests, otherwise CDN cache-fetch requests show up
+# as cancelled, even though they work when you copy-and-paste the URL into
+# a browser
+gem 'rack-cors', require: 'rack/cors'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
 

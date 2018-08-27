@@ -24,5 +24,12 @@ module FbPublisher
     logger.formatter = config.log_formatter
     config.log_tags  = [:subdomain, :uuid]
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'localhost:3000', /https*:\/\/.*?bloopist\.com/
+        resource '*', :headers => :any, :methods => :any
+      end
+    end
   end
 end

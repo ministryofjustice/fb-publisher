@@ -193,6 +193,7 @@ GEM
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     rack (2.0.5)
+    rack-cors (1.0.2)
     rack-protection (2.0.3)
       rack
     rack-test (1.0.0)
@@ -359,6 +360,7 @@ DEPENDENCIES
   poltergeist
   puma (~> 3.11)
   pundit
+  rack-cors
   rails (~> 5.2.0)
   resque
   rspec (~> 3.6.0)
