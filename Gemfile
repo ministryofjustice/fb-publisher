@@ -39,7 +39,7 @@ gem 'haml-rails'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 
-gem 'omniauth', '~> 1.6.1'
+gem 'omniauth' #, '~> 1.6.1'
 gem 'omniauth-auth0', '~> 2.0.0'
 
 # Use postgresql as the database for Active Record
