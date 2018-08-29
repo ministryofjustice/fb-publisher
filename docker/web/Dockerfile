@@ -1,29 +1,14 @@
 # Base image
-FROM nginx
+FROM aldavidson/fb-publisher-base
 
-# Install dependencies
-RUN apt-get update -qq && apt-get -y install apache2-utils
+# allow access to port 3000
+ENV APP_PORT 3000
+EXPOSE $APP_PORT
 
-# establish where Nginx should look for files
-ENV RAILS_ROOT /var/www/fb-publisher
+# precompile assets
+ARG RAILS_ENV=production
+RUN RAILS_ENV=${RAILS_ENV} bundle exec rake assets:precompile --trace
 
-# Set our working directory inside the image
-WORKDIR $RAILS_ROOT
-
-# create log directory
-RUN mkdir log
-
-# copy over static assets
-COPY public public/
-
-# Copy Nginx config template
-COPY docker/web/nginx.conf /tmp/docker.nginx
-
-# substitute variable references in the Nginx config template for real values from the environment
-# put the final config in its place
-RUN envsubst '$RAILS_ROOT' < /tmp/docker.nginx > /etc/nginx/conf.d/default.conf
-ARG NGINX_PORT=80
-EXPOSE $NGINX_PORT
-
-# Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
-CMD [ "nginx", "-g", "daemon off;" ]
+# run the rails server
+ARG RAILS_ENV=production
+CMD bundle exec rails s -e ${RAILS_ENV} -p ${APP_PORT} --binding=0.0.0.0
