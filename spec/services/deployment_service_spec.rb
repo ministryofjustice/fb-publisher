@@ -231,4 +231,13 @@ describe DeploymentService do
       end
     end
   end
+
+  describe '.default_runner_image_ref' do
+    it 'is "aldavidson/fb-runner-node:latest"' do
+      expect(described_class.default_runner_image_ref).to eq('aldavidson/fb-runner-node:latest')
+    end
+  end
+
+  describe '.start_service' do
+  end
 end
