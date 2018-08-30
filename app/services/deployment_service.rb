@@ -64,8 +64,8 @@ class DeploymentService
       service: service,
       deployment: deployment,
       config_dir: config_dir,
-      container_port: 3000,
-      image: default_runner_image_ref
+      container_port: container_port,
+      image: image
     )
   end
 

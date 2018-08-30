@@ -231,4 +231,113 @@ describe DeploymentService do
       end
     end
   end
+
+  describe '.default_runner_image_ref' do
+    it 'is "aldavidson/fb-runner-node:latest"' do
+      expect(described_class.default_runner_image_ref).to eq('aldavidson/fb-runner-node:latest')
+    end
+  end
+
+  describe '.setup_service' do
+    let(:mock_adapter) { double('adapter', setup_service: true) }
+    let(:args) {
+      {
+        environment_slug: 'env_slug',
+        service: 'service',
+        deployment: 'deployment',
+        config_dir: 'config_dir'
+      }
+    }
+    before do
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(described_class).to receive(:adapter_for).and_return(mock_adapter)
+    end
+
+    it 'creates the config dir' do
+      expect(FileUtils).to receive(:mkdir_p).with('config_dir')
+      described_class.setup_service(args)
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
+      described_class.setup_service(args)
+    end
+
+    it 'asks the adapter to setup_service passing on all args' do
+      expect(described_class).to receive(:setup_service).with(args).and_return(mock_adapter)
+      described_class.setup_service(args)
+    end
+  end
+
+  describe '.expose' do
+    let(:mock_adapter) { double('adapter', expose: true) }
+    let(:args) {
+      {
+        environment_slug: 'env_slug',
+        service: 'service',
+        container_port: 'container_port',
+        config_dir: 'config_dir'
+      }
+    }
+    before do
+      allow(described_class).to receive(:adapter_for).and_return(mock_adapter)
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
+      described_class.expose(args)
+    end
+
+    it 'asks the adapter to expose passing on all args except environment_slug' do
+      expect(mock_adapter).to receive(:expose).with(args.except(:environment_slug)).and_return(mock_adapter)
+      described_class.expose(args)
+    end
+  end
+
+  describe '.start_service' do
+    let(:mock_adapter) { double('adapter', start_service: true) }
+    let(:args) {
+      {
+        environment_slug: 'env_slug',
+        service: 'service',
+        tag: 'tag'
+      }
+    }
+    before do
+      allow(described_class).to receive(:adapter_for).and_return(mock_adapter)
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
+      described_class.start_service(args)
+    end
+
+    it 'asks the adapter to start_service passing on all args except environment_slug' do
+      expect(mock_adapter).to receive(:start_service).with(args.except(:environment_slug)).and_return(mock_adapter)
+      described_class.start_service(args)
+    end
+  end
+
+  describe '.restart_service' do
+    let(:mock_adapter) { double('adapter', delete_pods: true) }
+    let(:args) {
+      {
+        environment_slug: 'env_slug',
+        service: 'service'
+      }
+    }
+    before do
+      allow(described_class).to receive(:adapter_for).and_return(mock_adapter)
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
+      described_class.restart_service(args)
+    end
+
+    it 'asks the adapter to delete_pods passing on all args except environment_slug' do
+      expect(mock_adapter).to receive(:delete_pods).with(args.except(:environment_slug)).and_return(mock_adapter)
+      described_class.restart_service(args)
+    end
+  end
 end
