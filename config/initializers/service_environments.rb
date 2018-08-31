@@ -1,7 +1,7 @@
 ALL_ENVS = {
   dev: {
     deployment_adapter: 'cloud_platform',
-    kubectl_context: 'cp-live',
+    kubectl_context: ENV['KUBECTL_CONTEXT'],
     name: 'Development',
     namespace: 'formbuilder-services-dev',
     protocol: 'https://',
@@ -9,7 +9,7 @@ ALL_ENVS = {
   },
   staging: {
     deployment_adapter: 'cloud_platform',
-    kubectl_context: 'cp-live',
+    kubectl_context: ENV['KUBECTL_CONTEXT'],
     name: 'Staging',
     namespace: 'formbuilder-services-staging',
     protocol: 'https://',
@@ -17,7 +17,7 @@ ALL_ENVS = {
   },
   production: {
     deployment_adapter: 'cloud_platform',
-    kubectl_context: 'cp-live',
+    kubectl_context: ENV['KUBECTL_CONTEXT'],
     name: 'Production',
     namespace: 'formbuilder-services-production',
     protocol: 'https://',
