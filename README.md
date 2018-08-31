@@ -66,7 +66,8 @@ bundle exec rails db:setup db:migrate
 bundle exec rails s
 ```
 
-## About the code
+
+# About the code
 
 I've tried to follow some simple principles when building this app.
 Firstly, the [MoJ Digital Development Principles](http://bit.ly/27jc8ia) and
