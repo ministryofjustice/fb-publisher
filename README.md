@@ -87,6 +87,27 @@ There are a few more specific rules-of-thumb I've followed  - in no particular
 6. All significant workflow should be encapsulated in stateless service objects
 
 
-
 The application is built on Ruby on Rails 5, using ActiveJob for offline
 processing.
+
+# Deployment & Environments
+
+Publisher is deployed on the [MOJ Cloud Platform](https://ministryofjustice.github.io/cloud-platform-user-docs/#cloud-platform-user-guide)
+It has three deployed environments: dev, staging & production.
+These are defined in config/service_environments.rb, but all point to the 'live-0' cloud platform Kubernetes cluster (from their point of view, anything running other people's code is considered 'live')
+
+The deployment artefacts are Docker images (see the 'docker' directory).
+There is one 'base' image, containing the application code and all of the dependencies required for Rails to boot up, plus two more specialised 'web' and 'worker' images which do final role-specific setup (pre-compile assets, install kubectl for Kubernetes interactions, etc)
+
+There's a convenience script at scripts/build_all.sh which builds all images.
+
+For instructions on how to configure infrastructure and actually deploy the app, please see the (private) repo [fb-publisher-deploy](https://github.com/ministryofjustice/fb-publisher-deploy)
+
+
+
+
+# Running locally
+
+When you are running in the default development mode (see "To run as a native application" above), there will also be a 'localhost' environment.
+
+This environment will deploy to a local [Minikube](https://kubernetes.io/docs/setup/minikube/) cluster, so that you can test services & overall deployment etc.
