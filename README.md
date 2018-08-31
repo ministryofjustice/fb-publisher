@@ -108,4 +108,6 @@ For instructions on how to configure infrastructure and actually deploy the app,
 
 # Running locally
 
-When you are running in the default development mode (see "To run as a native application" above), there will also be a 'localhost' environment
+When you are running in the default development mode (see "To run as a native application" above), there will also be a 'localhost' environment.
+
+This environment will deploy to a local [Minikube](https://kubernetes.io/docs/setup/minikube/) cluster, so that you can test services & overall deployment etc.
