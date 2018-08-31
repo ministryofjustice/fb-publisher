@@ -27,7 +27,7 @@ class Services::DeploymentsController < ApplicationController
 
   def status
     @environments = ServiceEnvironment.all
-    @deployments_by_environment = DeploymentService.new(service: @service).status
+    @deployments_by_environment = DeploymentService.service_status(@service)
   end
 
   # called (remotely) from the "add" button in index
