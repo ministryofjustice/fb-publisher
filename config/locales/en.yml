@@ -157,7 +157,8 @@ en:
       success: Service "%{service}" deleted successfully
     edit:
       heading: Editing '%{name}'
-
+      form:
+        submit: Update Service
     environment:
       checking: 'checking...'
       check_now: 'Check now'
@@ -180,6 +181,8 @@ en:
       notice:
         Nothing will be put live until you <em>deploy</em> your service -
         which you can do after creating it
+      form:
+        submit: Next
     permissions:
       form:
         submit: Grant permission

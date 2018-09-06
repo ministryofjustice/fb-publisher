@@ -46,7 +46,7 @@ describe 'visiting /services' do
 
           context 'and click Create Service' do
             before do
-              click_on( 'Create Service' )
+              click_on( 'Next' )
             end
 
             it 'does not submit the form' do
@@ -63,7 +63,7 @@ describe 'visiting /services' do
 
               context 'and click Create Service' do
                 before do
-                  click_on( 'Create Service' )
+                  click_on( 'Next' )
                 end
 
                 it 'shows me the status of my new service' do
@@ -85,7 +85,7 @@ describe 'visiting /services' do
         visit '/services/new'
         fill_in('Service name', with: 'My First Service')
         fill_in('URL of the service config JSON Git repository', with: 'https://repo.url/repo.git')
-        find('input[value="Create Service"]').click()
+        find('input[value="Next"]').click()
       end
 
       describe 'Deleting a service', js: true do
