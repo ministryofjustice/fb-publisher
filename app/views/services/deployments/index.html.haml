@@ -19,4 +19,5 @@
         = t '.actions'
 
   %tbody
+    = pagy_nav(@pagy).html_safe
     = render partial: 'deployment', collection: @deployments

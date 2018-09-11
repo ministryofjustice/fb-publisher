@@ -12,16 +12,6 @@ class DeploymentService
                               environment_slug: environment_slug)
   end
 
-  def self.list(service:, environment_slug:, per_page: 10, page: 1, order: 'created_at', dir: 'desc')
-    ServiceDeployment.where(
-      service_id: service.id,
-      environment_slug: environment_slug
-    )
-    .order([order, dir].join(' '))
-    .limit(per_page)
-    .offset( (page-1) * per_page )
-  end
-
   def self.adapter_for(environment_slug)
     environment = ServiceEnvironment.find(environment_slug)
     name = environment.deployment_adapter

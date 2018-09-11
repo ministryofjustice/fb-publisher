@@ -2,9 +2,9 @@ require 'rails_helper'
 
 describe GitAdapter do
   before do
+    allow(GitAdapter).to receive(:git_binary).and_return('git')
     allow(ShellAdapter).to receive(:exec)
     allow(ShellAdapter).to receive(:output_of).and_return('cmd output')
-    allow(ShellAdapter).to receive(:output_of).with("which git").and_return('git')
   end
 
   describe '.clone_repo' do

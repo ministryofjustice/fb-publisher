@@ -42,6 +42,9 @@ gem 'jquery-rails'
 gem 'omniauth' #, '~> 1.6.1'
 gem 'omniauth-auth0', '~> 2.0.0'
 
+# Pagination
+gem 'pagy'
+
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
