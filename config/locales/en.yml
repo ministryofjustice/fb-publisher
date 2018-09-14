@@ -140,6 +140,8 @@ en:
         completed_at: Finished at
         created_at: Job created at
         status: 'Status'
+        next: 'Next'
+        previous: 'Previous'
       log:
         lede_html: "Deployment log"
         no_log_entries: '(no log entries)'

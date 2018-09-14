@@ -3,6 +3,7 @@ class Services::DeploymentsController < ApplicationController
   before_action :require_user!
 
   include Concerns::NestedResourceController
+  include Pagy::Backend
   nest_under :service, attr_name: :slug, param_name: :service_slug
 
   before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy, :show, :log]
@@ -14,14 +15,10 @@ class Services::DeploymentsController < ApplicationController
     params[:dir] ||= 'desc'
 
     @environments = ServiceEnvironment.all
-    @deployments = DeploymentService.list(
-      service: @service,
-      environment_slug: params[:env],
-      page: params[:page],
-      per_page: params[:per_page],
-      order: params[:order],
-      dir: params[:dir]
-    )
+    @pagy, @deployments = pagy(ServiceDeployment.where(service: @service,
+                                                       environment_slug: params[:env]).order("#{params[:order]} #{params[:dir]}"),
+                               items: params[:per_page])
+
     @deployment = ServiceDeployment.new(service: @service, environment_slug: params[:env])
   end
 
