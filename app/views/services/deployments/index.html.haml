@@ -2,6 +2,8 @@
 
 = render partial: 'environments_nav', locals: {current_env: params[:env]}
 
+= pagy_nav(@pagy).html_safe
+
 %table#deployments
   %thead
     %tr
@@ -19,5 +21,4 @@
         = t '.actions'
 
   %tbody
-    = pagy_nav(@pagy).html_safe
     = render partial: 'deployment', collection: @deployments

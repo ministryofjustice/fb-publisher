@@ -46,3 +46,24 @@ main {
     }
   }
 }
+
+.pagination {
+  text-align: right;
+
+  .page {
+    padding: 0.2em 0.5em;
+
+    &.active {
+      font-weight: bold;
+    }
+
+    &.prev {
+      border-right: 1px solid $border-colour;
+      padding-left: inherit;
+    }
+    &.next {
+      border-left: 1px solid $border-colour;
+      padding-right: inherit;
+    }
+  }
+}
