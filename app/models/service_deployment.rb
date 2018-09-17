@@ -18,8 +18,6 @@ class ServiceDeployment < ActiveRecord::Base
 
   validates :status, inclusion: {in: STATUS.values}
 
-
-
   def self.latest(service_id:, environment_slug:)
     where(  service_id: service_id,
             environment_slug: environment_slug)
@@ -49,5 +47,12 @@ class ServiceDeployment < ActiveRecord::Base
 
   def pending?
     [STATUS[:queued], STATUS[:deploying]].include?(status)
+  end
+
+  def self.generate_github_link(service:, commit_sha:)
+    url_link = Service.find(service.id).git_repo_url
+    return if url_link.nil?
+    url_link.slice!('.git')
+    url_link << '/commit/' << commit_sha
   end
 end

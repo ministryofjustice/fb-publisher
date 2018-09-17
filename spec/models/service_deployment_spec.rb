@@ -59,4 +59,25 @@ describe ServiceDeployment do
       end
     end
   end
+
+  describe '#generate_commit_link' do
+    context 'given a service' do
+      let(:user) do
+        User.create(id: 'abc123', name: 'test user', email: 'test@example.justice.gov.uk')
+      end
+
+      let(:service) do
+        Service.create!(id: 'fed456',
+                        name: 'My New Service',
+                        slug: 'my-new-service',
+                        git_repo_url: 'https://github.com/some-organisation/some-repository.git',
+                        created_by_user: user)
+      end
+
+      it 'set the Github link for the commit sha' do
+        commit_link = ServiceDeployment.generate_github_link(service: service, commit_sha: 'a123e56')
+        expect(commit_link).to eq('https://github.com/some-organisation/some-repository/commit/a123e56')
+      end
+    end
+  end
 end
