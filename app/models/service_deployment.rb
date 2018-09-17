@@ -50,7 +50,7 @@ class ServiceDeployment < ActiveRecord::Base
   end
 
   def self.generate_github_link(service:, commit_sha:)
-    url_link = Service.find(service.id).git_repo_url
+    url_link = service.git_repo_url
     return if url_link.nil?
     url_link.slice!('.git')
     url_link << '/commit/' << commit_sha
