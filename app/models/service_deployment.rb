@@ -49,9 +49,10 @@ class ServiceDeployment < ActiveRecord::Base
     [STATUS[:queued], STATUS[:deploying]].include?(status)
   end
 
-  def self.generate_github_link(service:, commit_sha:)
+  def generate_github_link
+    return if service.git_repo_url.blank?
+
     url_link = service.git_repo_url
-    return if url_link.nil?
     url_link.slice!('.git')
     url_link << '/commit/' << commit_sha
   end

@@ -11,8 +11,7 @@
       \-
   %td
     - if deployment.commit_sha.present?
-      = link_to(deployment.commit_sha, ServiceDeployment.generate_github_link(service: deployment.service,
-                                                                              commit_sha: deployment.commit_sha))
+      = link_to(deployment.commit_sha, deployment.generate_github_link)
     - else
       \-
   %td

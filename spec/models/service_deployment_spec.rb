@@ -74,9 +74,20 @@ describe ServiceDeployment do
                         created_by_user: user)
       end
 
-      it 'set the Github link for the commit sha' do
-        commit_link = ServiceDeployment.generate_github_link(service: service, commit_sha: 'a123e56')
-        expect(commit_link).to eq('https://github.com/some-organisation/some-repository/commit/a123e56')
+      # it 'set the Github link for the commit sha' do
+      #   commit_link = ServiceDeployment.generate_github_link(service: service, commit_sha: 'a123e56')
+      #   expect(commit_link).to eq('https://github.com/some-organisation/some-repository/commit/a123e56')
+      # end
+
+      it 'set the Github link for the commit sha if git repository exists' do
+        subject.update_attributes(service: service, commit_sha: 'a123e56')
+        expect(subject.generate_github_link).to eq('https://github.com/some-organisation/some-repository/commit/a123e56')
+      end
+
+      it 'does not create a link for the commit sha if git reposity does not exist' do
+        service.git_repo_url = ''
+        subject.update_attributes(service: service, commit_sha: 'a123e56')
+        expect(subject.generate_github_link).to eq(nil)
       end
     end
   end

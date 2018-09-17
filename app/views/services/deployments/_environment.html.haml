@@ -3,8 +3,7 @@
     = ServiceEnvironment.find(environment.environment_slug).name
   %td
     - if environment.commit_sha.present?
-      = link_to(environment.commit_sha, ServiceDeployment.generate_github_link(service: environment.service,
-                                                                               commit_sha: environment.commit_sha))
+      = link_to(environment.commit_sha, environment.generate_github_link)
     - else
       \-
   %td
