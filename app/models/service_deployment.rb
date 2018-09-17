@@ -47,6 +47,13 @@ class ServiceDeployment < ActiveRecord::Base
     logger.info "attributes updated to #{attributes}"
   end
 
+  def self.generate_commit_link(service_id, commit_sha)
+    url_link = Service.find(service_id).git_repo_url
+    return if url_link.nil?
+    url_link.slice!('.git')
+    url_link << '/commit/' << commit_sha
+  end
+
   def pending?
     [STATUS[:queued], STATUS[:deploying]].include?(status)
   end

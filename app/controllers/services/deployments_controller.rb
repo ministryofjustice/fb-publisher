@@ -66,8 +66,9 @@ class Services::DeploymentsController < ApplicationController
   end
 
   def show
+    @git_url = ServiceDeployment.generate_commit_link(@deployment.service_id, @deployment.commit_sha)
     if request.xhr?
-      render partial: 'deployment', locals: {deployment: @deployment}
+      render partial: 'deployment', locals: {deployment: @deployment, commit_link: @git_url}
     else
       # default
     end
