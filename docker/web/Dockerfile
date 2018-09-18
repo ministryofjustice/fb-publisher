@@ -7,7 +7,7 @@ EXPOSE $APP_PORT
 
 # precompile assets
 ARG RAILS_ENV=production
-RUN RAILS_ENV=${RAILS_ENV} bundle exec rake assets:precompile --trace
+RUN RAILS_ENV=${RAILS_ENV} SECRET_KEY_BASE=$(bin/rake secret) bundle exec rake assets:precompile --trace
 
 # run the rails server
 ARG RAILS_ENV=production
