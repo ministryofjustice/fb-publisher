@@ -85,8 +85,11 @@ describe ServiceDeployment do
       end
 
       context 'when the git_repo_url does not exist' do
-        it 'does not create a link for the commit sha' do
+        before do
           service.git_repo_url = ''
+        end
+
+        it 'does not create a link for the commit sha' do
           expect(subject.generate_github_link).to eq(nil)
         end
       end
