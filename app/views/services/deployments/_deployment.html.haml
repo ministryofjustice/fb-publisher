@@ -10,7 +10,10 @@
     - else
       \-
   %td
-    = deployment.commit_sha
+    - if deployment.commit_sha.present?
+      = link_to(deployment.commit_sha, deployment.generate_github_link)
+    - else
+      \-
   %td
     %span{ class: ['status', ['status', deployment.status].join('-')].join(' ') }
       = t( deployment.status, scope: [:shared, :service_deployments, :status] )

@@ -59,4 +59,40 @@ describe ServiceDeployment do
       end
     end
   end
+
+  describe '#generate_commit_link' do
+    context 'given a service' do
+      let(:user) do
+        User.create(id: 'abc123', name: 'test user', email: 'test@example.justice.gov.uk')
+      end
+
+      let(:service) do
+        Service.create!(id: 'fed456',
+                        name: 'My New Service',
+                        slug: 'my-new-service',
+                        git_repo_url: 'https://github.com/some-organisation/some-repository.git',
+                        created_by_user: user)
+      end
+
+      before do
+        subject.update_attributes(service: service, commit_sha: 'a123e56')
+      end
+
+      context 'when the git_repo_url exists' do
+        it 'sets the Github link for the commit sha' do
+          expect(subject.generate_github_link).to eq('https://github.com/some-organisation/some-repository/commit/a123e56')
+        end
+      end
+
+      context 'when the git_repo_url does not exist' do
+        before do
+          service.git_repo_url = ''
+        end
+
+        it 'does not create a link for the commit sha' do
+          expect(subject.generate_github_link).to eq(nil)
+        end
+      end
+    end
+  end
 end
