@@ -12,6 +12,7 @@
       %th{ scope: 'col' }
         = t('.actions')
     %tbody
+      = pagy_nav(@pagy).html_safe
       = render partial: 'service', collection: @services
 
 = link_to t('.new_service'), new_service_path, class: 'button button-cta'

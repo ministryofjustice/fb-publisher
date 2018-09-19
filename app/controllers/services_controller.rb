@@ -2,9 +2,14 @@ class ServicesController < ApplicationController
   before_action :require_user!
   before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy, :show]
 
+  include Pagy::Backend
+
   def index
+    params[:per_page] ||= 10
+    params[:page] ||= 1
+
     authorize(Service)
-    @services = Service.visible_to(current_user)
+    @pagy, @services = pagy_array((Service.visible_to(current_user).sort_by &:name), items: params[:per_page])
   end
 
   def new
