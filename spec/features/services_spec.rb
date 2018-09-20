@@ -39,13 +39,17 @@ describe 'visiting /services' do
           visit '/services'
         end
 
-        it 'enables link to next page if service list is greater than 10' do
+        it 'enables link to next page' do
           expect(page).to have_link('Next')
         end
 
-        it 'enables link to previous page if not on the first page' do
-          click_link('Next')
-          expect(page).to have_link('Prev')
+        context 'if not on the first page' do
+          before do
+            click_link('Next')
+          end
+          it 'enables link to previous page' do
+            expect(page).to have_link('Prev')
+          end
         end
       end
 
