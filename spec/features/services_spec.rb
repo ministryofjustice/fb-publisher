@@ -6,7 +6,7 @@ describe 'visiting /services' do
   end
 
   context 'as a logged in user' do
-    let(:user){ User.create(id: 'abc123', name: 'test user', email: 'test@example.justice.gov.uk') }
+    let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
     before do
       login_as!(user)
     end
@@ -29,6 +29,49 @@ describe 'visiting /services' do
 
       it 'shows a New Service page' do
         expect(page).to have_content('New Service')
+      end
+    end
+
+    describe 'viewing service list' do
+      context 'when there are more than 10 services' do
+        before do
+          14.times { |i| create_service(i) }
+          visit '/services'
+        end
+
+        it 'enables link to next page' do
+          expect(page).to have_link('Next')
+        end
+
+        context 'if not on the first page' do
+          before do
+            click_link('Next')
+          end
+          it 'enables link to previous page' do
+            expect(page).to have_link('Prev')
+          end
+        end
+      end
+
+      context 'when there are less than 10 services' do
+        before do
+          9.times { |i| create_service(i) }
+          visit '/services'
+        end
+
+        it 'does not enable a link to the next page' do
+          expect(page).to_not have_link('Next')
+        end
+
+        it 'does not enable link to the previous page' do
+          expect(page).to_not have_link('Prev')
+        end
+      end
+
+      def create_service(number)
+        Service.create(name: 'Service ' + number.to_s,
+                       git_repo_url: 'https://github.com/ministryofjustice/fb-sample-json.git',
+                       created_by_user: user)
       end
     end
 
@@ -135,6 +178,7 @@ describe 'visiting /services' do
               expect(page).to have_content('Status of your service in the available environments')
             end
           end
+
           context 'to something invalid' do
             let(:new_name) { '?' }
 
