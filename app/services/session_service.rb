@@ -16,6 +16,18 @@ class SessionService
     asserted_identity = AssertedIdentity.from_auth0_userinfo(userinfo)
     existing_user = UserService.existing_user_with(asserted_identity)
 
+    # edge-case: if we have a user with a matching email, but
+    # not the oauth identity record
+    # This can happen in testing (User.create!(...) then login_as!)
+    # or if an existing user un-links their oauth account, and then
+    # logs in with it again
+    if existing_user
+      unless existing_user.has_identity?(asserted_identity)
+        # then add the oauth identity to this user
+        UserService.add_identity!(existing_user, asserted_identity)
+      end
+    end
+
     Auth0UserSession.new(
       new_user: (not existing_user.present?),
       user_id: existing_user.try(:id),

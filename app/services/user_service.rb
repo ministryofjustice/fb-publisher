@@ -1,9 +1,10 @@
 class UserService
   def self.existing_user_with(identity)
-    identity = Identity.where(
+    Identity.where(
       uid: identity.uid,
       provider: identity.provider
-    ).first.try(:user)
+    ).first.try(:user) || \
+      User.where(email: identity.email).first
   end
 
   def self.create!(identity)
@@ -11,12 +12,16 @@ class UserService
       name: identity.name,
       email: identity.email
     )
-    new_user.identities << Identity.new(
+    add_identity!(new_user, identity)
+    new_user
+  end
+
+  def self.add_identity!(user, identity)
+    user.identities << Identity.new(
       name: identity.name,
       email: identity.email,
       provider: identity.provider,
       uid: identity.uid
     )
-    new_user
   end
 end
