@@ -193,5 +193,52 @@ describe 'visiting /services' do
         end
       end
     end
+
+    describe 'viewing service status' do
+      context 'when I have a service' do
+        let(:service) do
+          Service.create!(name: 'ABC Service', git_repo_url: 'https://github.com/some-org/some-repo.git',
+                          created_by_user: user)
+        end
+
+        context 'with no deployments' do
+          before do
+            visit "/services/#{service.slug}"
+          end
+
+          it 'there is no status' do
+            expect(page).not_to have_selector('span.status')
+            expect(page).to have_selector('span', text: 'Not yet deployed')
+          end
+
+          it 'there is no `Check now` button' do
+            expect(page).not_to have_button('Check now')
+          end
+        end
+
+        context 'with deployments' do
+          before do
+            ServiceStatusCheck.create!(environment_slug: 'dev',
+                                       status: 1,
+                                       time_taken: 30.0,
+                                       timestamp: Time.new,
+                                       created_at: Time.new,
+                                       updated_at: Time.new,
+                                       url: 'url.test',
+                                       service: service)
+
+            visit "/services/#{service.slug}"
+          end
+
+          it 'there is a status' do
+            expect(page).to have_selector('span.status')
+          end
+
+          it 'there is a `Check now` button' do
+            expect(page).to have_button('Check now')
+          end
+        end
+      end
+    end
   end
 end

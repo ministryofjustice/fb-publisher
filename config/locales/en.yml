@@ -164,6 +164,7 @@ en:
     environment:
       checking: 'checking...'
       check_now: 'Check now'
+      no_deployment: 'Not yet deployed'
     index:
       actions: Actions
       caption: Your Services
