@@ -42,17 +42,33 @@ describe 'logging in as a particular user' do
     context 'and already exists' do
       before do
         user.save!
-        user.identities << Identity.new(provider: 'auth0', uid: 'google-oauth2|012345678900123456789', email: user.email, name: user.name)
+      end
+      context 'with the oauth identity' do
+        before do
+          user.identities << Identity.new(provider: 'auth0', uid: 'google-oauth2|012345678900123456789', email: user.email, name: user.name)
+        end
+
+        it 'redirects me to the services page' do
+          login_as!(user)
+          expect(page.current_url).to eq(services_url)
+        end
+
+        it 'shows me a welcome back message with my name' do
+          login_as!(user)
+          expect(page).to have_content("Welcome back, #{user.name}!")
+        end
       end
 
-      it 'redirects me to the services page' do
-        login_as!(user)
-        expect(page.current_url).to eq(services_url)
-      end
+      context 'without the oauth identity' do
+        it 'redirects me to the services page' do
+          login_as!(user)
+          expect(page.current_url).to eq(services_url)
+        end
 
-      it 'shows me a welcome back message with my name' do
-        login_as!(user)
-        expect(page).to have_content("Welcome back, #{user.name}!")
+        it 'shows me a welcome back message with my name' do
+          login_as!(user)
+          expect(page).to have_content("Welcome back, #{user.name}!")
+        end
       end
     end
   end
