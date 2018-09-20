@@ -7,10 +7,6 @@ class UserService
       User.where(email: identity.email).first
   end
 
-  def find_by_email(email)
-
-  end
-
   def self.create!(identity)
     new_user = User.create!(
       name: identity.name,
