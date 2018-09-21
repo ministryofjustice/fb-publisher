@@ -206,13 +206,13 @@ describe 'visiting /services' do
             visit "/services/#{service.slug}"
           end
 
-          it 'there is no status' do
+          it 'does not show a status' do
             expect(page).not_to have_selector('span.status')
-            expect(page).to have_selector('span', text: 'Not yet deployed')
+            expect(page).to have_selector('span', text: I18n.t('services.environment.no_deployment'))
           end
 
-          it 'there is no `Check now` button' do
-            expect(page).not_to have_button('Check now')
+          it 'does not show a `Check now` button' do
+            expect(page).not_to have_button(I18n.t('services.environment.check_now'))
           end
         end
 
@@ -230,12 +230,12 @@ describe 'visiting /services' do
             visit "/services/#{service.slug}"
           end
 
-          it 'there is a status' do
+          it 'does show a status' do
             expect(page).to have_selector('span.status')
           end
 
-          it 'there is a `Check now` button' do
-            expect(page).to have_button('Check now')
+          it 'does show a `Check now` button' do
+            expect(page).to have_button(I18n.t('services.environment.check_now'))
           end
         end
       end
