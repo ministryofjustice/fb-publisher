@@ -30,6 +30,12 @@ class Services::ConfigParamsController < ApplicationController
     authorize(@config_param)
 
     if @config_param.save
+      flash[:notice] = t(
+          :success,
+          scope: [:services, :config_params, :create],
+          name: @config_param.name,
+          environment: ServiceEnvironment.name_of(@config_param.environment_slug)
+      )
       redirect_to action: :index, service_id: @service, env: @config_param.environment_slug
     else
       render :new

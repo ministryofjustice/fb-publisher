@@ -121,7 +121,7 @@ en:
         edit: Edit
         empty_value: (empty)
       create:
-        success: Config Param '%{name}' (%{environment}) created successfully
+        success: Config Param '%{name}' (%{environment}) created successfully. For the changes to take effect this needs to be deployed
       edit:
         heading: Editing '%{name}' (%{environment})
       form:
@@ -131,7 +131,7 @@ en:
         lede_html:
           These will be passed to your service as environment variables
       update:
-        success: Config Param '%{name}' (%{environment}) updated successfully
+        success: Config Param '%{name}' (%{environment}) updated successfully. For the changes to take effect this needs to be deployed
     deployments:
       environments_nav:
         all_envs_status: '(all)'
