@@ -80,6 +80,10 @@ describe 'visiting /services' do
         visit new_service_path
       end
 
+      it 'does not have a token field' do
+        expect(page).to_not have_content(I18n.t(:token, scope: [:services, :form]))
+      end
+
       context 'when I fill in the Service name' do
         before do
           fill_in('Service name', with: name)
@@ -114,7 +118,7 @@ describe 'visiting /services' do
                 end
 
                 it 'shows me a notice saying it was created successfully' do
-                  expect(page).to have_content('Your new service has been created successfully')
+                  expect(page).to have_content(I18n.t(:success, scope: [:services, :create], service: name))
                 end
               end
             end
@@ -171,7 +175,7 @@ describe 'visiting /services' do
             let(:new_name) { 'My First Service v2' }
 
             it 'shows me a message saying it was updated successfully' do
-              expect(page).to have_content('Service "My First Service v2" updated successfully')
+              expect(page).to have_content(I18n.t(:success, scope: [:services, :update], service: new_name))
             end
 
             it 'shows me the status of my new service' do

@@ -49,6 +49,9 @@ en:
           <em>(optional)</em> This will form the first part of your services' initial URL.<br />
           Must contain 3-64 characters, and only letters, numbers and hyphens (-)<br />
           Must be unique. If you leave this blank, we'll generate one for you
+        token_html:
+          Clear this field to regenerate your service's token.<br />
+          If you're not sure what this means, leave this field as it is
       service_config_param:
         name_html:
           Must be 3-64 characters long, and contain only
@@ -67,6 +70,7 @@ en:
         git_repo_url: URL of the service config JSON Git repository
         name: Service name
         slug: Service "slug"
+        token: Secret token
       service_deployment:
         commit_sha: Commit SHA, branch, or tag
         json_sub_dir: Relative path to your service's JSON
@@ -77,8 +81,10 @@ en:
     all_done: 'ALL DONE'
     complete: 'Finished - writing status back to Deployment'
     configuring_params: 'Updating config params'
+    creating_service_token_secret: 'Creating secret for service token'
     deploying_service: 'Deploying service'
     exposing: 'Allowing inbound traffic'
+    failed: 'JOB FAILED!'
     reading_commit: 'Reading commit SHA'
     restarting: 'Restarting service'
     starting: 'Starting job %{job_id} for ServiceDeployment %{service_deployment_id}'
@@ -154,7 +160,7 @@ en:
         lede_html:
           Latest deployments for each environment
     create:
-      success: Your new service has been created successfully
+      success: Your new service has been created. You'll need to deploy your service to an environment to see it on the web.
     destroy:
       success: Service "%{service}" deleted successfully
     edit:
@@ -165,6 +171,8 @@ en:
       checking: 'checking...'
       check_now: 'Check now'
       no_deployment: 'Not yet deployed'
+    form:
+      token: Secret token (click to show/regenerate)
     index:
       actions: Actions
       caption: Your Services
@@ -209,7 +217,7 @@ en:
       timestamp: Checked at
       url: URL
     update:
-      success: Service "%{service}" updated successfully
+      success: Service "%{service}" updated successfully. You'll need to deploy your service for these changes to take effect on the web.
   teams:
     create:
       success: Your new team has been created successfully

@@ -20,6 +20,13 @@ class DeployServiceJob < ApplicationJob
       commit_sha: commit
     )
 
+    log_for_user(:creating_service_token_secret)
+    DeploymentService.create_service_token_secret(
+      config_dir: config_dir,
+      environment_slug: @deployment.environment_slug,
+      service: @deployment.service,
+    )
+
     log_for_user(:deploying_service)
     DeploymentService.setup_service(
       config_dir: config_dir,
@@ -62,6 +69,7 @@ class DeployServiceJob < ApplicationJob
   end
 
   def on_non_retryable_exception(error)
+    log_for_user(:failed)
     @deployment.fail!(retryable: false) if @deployment
     super
   end

@@ -24,6 +24,7 @@ describe DeployServiceJob do
     allow(DeploymentService).to receive(:expose).and_return('expose-result')
     allow(DeploymentService).to receive(:configure_env_vars).and_return('configure_env_vars-result')
     allow(DeploymentService).to receive(:restart_service).and_return('restart_service-result')
+    allow(DeploymentService).to receive(:create_service_token_secret).and_return('create_service_token_secret-result')
   end
 
   describe '#perform' do
@@ -117,7 +118,7 @@ describe DeployServiceJob do
     end
 
     it 'restarts the service' do
-      allow(DeploymentService).to receive(:restart_service).with(
+      expect(DeploymentService).to receive(:restart_service).with(
         service: service,
         environment_slug: 'myenv'
       )

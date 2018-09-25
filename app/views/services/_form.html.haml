@@ -5,4 +5,15 @@
     = f.text_field :slug, maxlength: 64
   .form-group
     = f.text_field :git_repo_url, maxlength: 2048, required: true
+  - if service.persisted?
+    .form-group
+      %details
+        %summary
+          %span.summary
+            = t '.token'
+        .panel.panel-border-narrow
+          %pre
+            = f.text_field :token, maxlength: 32, required: false
+
+  .form-group
     = f.submit button_label, class: 'button button-cta'
