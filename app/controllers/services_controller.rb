@@ -44,7 +44,7 @@ class ServicesController < ApplicationController
   end
 
   def show
-    @status_by_environment = StatusService.service_status(@service)
+    @status_by_environment = StatusService.service_status_deployment(service: @service)
   end
 
   private

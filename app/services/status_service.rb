@@ -31,6 +31,12 @@ class StatusService
 
   end
 
+  def self.service_status_deployment(service:)
+    status = StatusService.service_status(service)
+    deployments = DeploymentService.service_status(service)
+    service_status_collection(status: status, deployments: deployments)
+  end
+
   private
 
   def self.empty_check(service:, environment_slug:)
@@ -40,5 +46,18 @@ class StatusService
     )
     check.url = check.url_from_env_and_service
     check
+  end
+
+  def self.service_status_collection(status:, deployments:)
+    status_collection = []
+    status.each do |s|
+      deployments.each do |d|
+        next unless d.environment_slug == s.environment_slug
+        status_collection << { environment_slug: s.environment_slug,
+                               status: s.status, url: s.url, timestamp: s.timestamp,
+                               deployment_status: d.status, service: d.service }
+      end
+    end
+    status_collection
   end
 end
