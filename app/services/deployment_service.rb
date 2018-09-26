@@ -81,6 +81,15 @@ class DeploymentService
     )
   end
 
+  def self.create_service_token_secret(environment_slug:, service:, config_dir:)
+    adapter = adapter_for(environment_slug)
+    adapter.create_service_token_secret(
+      config_dir: config_dir,
+      service: service,
+      environment_slug: environment_slug
+    )
+  end
+
   def self.system_config_for(service:, deployment:, environment_slug:)
     {
       'SERVICEDATA' => File.join('/usr/app/', deployment.json_sub_dir.to_s),
