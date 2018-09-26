@@ -179,7 +179,6 @@ describe DeploymentService do
     end
   end
 
-
   describe '.url_for' do
     let(:adapter) { double('adapter') }
     before do
@@ -338,6 +337,32 @@ describe DeploymentService do
     it 'asks the adapter to delete_pods passing on all args except environment_slug' do
       expect(mock_adapter).to receive(:delete_pods).with(args.except(:environment_slug)).and_return(mock_adapter)
       described_class.restart_service(args)
+    end
+  end
+
+  describe '.last_successful_deployment' do
+    let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
+    let(:service) do
+      Service.create!(name: 'test', slug: 'Test', git_repo_url: 'https://github.com/some-org/some-repo.git',
+                      created_by_user: user)
+    end
+
+    let(:dev) { 'dev' }
+    let(:most_recent_date) { Time.utc(2018, 10, 3, 12, 0, 0) }
+
+    before do
+      ServiceDeployment.create!(environment_slug: dev, service: service, completed_at: most_recent_date,
+                                status: 'completed', created_by_user: user)
+      ServiceDeployment.create!(environment_slug: dev, service: service, completed_at: '2018-10-01 10:12:37',
+                                status: 'completed', created_by_user: user)
+      ServiceDeployment.create!(environment_slug: dev, service: service, completed_at: '2018-10-03 18:05:00',
+                                status: 'failed_non_retryable', created_by_user: user)
+    end
+
+    it 'returns the most recent successful deployment for an environment' do
+      expect(described_class.last_successful_deployment(service: service,
+                                                        environment_slug: 'dev'))
+        .to have_attributes(completed_at: most_recent_date, status: 'completed')
     end
   end
 end

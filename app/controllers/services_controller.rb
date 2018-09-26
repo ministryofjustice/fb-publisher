@@ -44,7 +44,16 @@ class ServicesController < ApplicationController
   end
 
   def show
-    @status_by_environment = StatusService.service_status(@service)
+    @status_by_environment = []
+    StatusService.service_status(@service).each do |status_service|
+      @status_by_environment << { environment_slug: status_service.environment_slug,
+                                  service_status: status_service,
+                                  service: @service,
+                                  deployment_status:
+                                      DeploymentService.last_successful_deployment(
+                                        service: @service,
+                                        environment_slug: status_service.environment_slug) }
+    end
   end
 
   private

@@ -1,26 +1,26 @@
-%tr{ id: environment.environment_slug }
+%tr{ id: environment[:environment_slug] }
   %th
-    = ServiceEnvironment.find(environment.environment_slug).name
+    = ServiceEnvironment.find(environment[:environment_slug]).name
   %td
-    - if environment.url.present?
-      = link_to(environment.url, environment.url)
+    - if environment[:service_status][:url].present?
+      = link_to(environment[:service_status][:url], environment[:service_status][:url])
     - else
       \-
   %td
-    - if environment.status
-      %span{ class: "status status-#{environment.status.to_s.first}xx" }
-        = environment.status
+    - if !environment[:service_status][:status].nil?
+      %span{ class: "status status-#{environment[:service_status][:status].to_s}xx" }
+      = environment[:service_status][:status]
     - else
       %span= t('.no_deployment')
   %td
-    = environment.timestamp ? localize(environment.timestamp) : "-"
+    = environment[:service_status][:timestamp] ? localize(environment[:service_status][:timestamp]) : "-"
   %td.actions
-    - if environment.status
+    - if !environment[:deployment_status].nil? && environment[:deployment_status][:status] == 'completed'
       = button_to t('.check_now'),
-                  service_status_checks_path(environment.service),
-                  params: {service_id: environment.service.slug, environment_slug: environment.environment_slug},
-                  class: 'button',
-                  remote: true,
-                  data: {disable_with: t('.checking')}
+                    service_status_checks_path(environment[:service]),
+                    params: {service_id: environment[:service].slug, environment_slug: environment[:environment_slug]},
+                    class: 'button',
+                    remote: true,
+                    data: {disable_with: t('.checking')}
     - else
       \-

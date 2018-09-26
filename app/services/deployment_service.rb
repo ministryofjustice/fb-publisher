@@ -134,6 +134,12 @@ class DeploymentService
     end
   end
 
+  def self.last_successful_deployment(service:, environment_slug:)
+    ServiceDeployment.where(service: service,
+                            environment_slug: environment_slug,
+                            status: 'completed').order(completed_at: :desc).first
+  end
+
   private
 
   def self.empty_deployment(service:, environment_slug:)
