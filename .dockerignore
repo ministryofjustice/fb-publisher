@@ -21,9 +21,6 @@ tmp/*
 # Ignore assets - we precompile them as part of the docker build
 /public/assets
 
-# Ignore master key for decrypting credentials and more.
-/config/master.key
-
 # dotenv gem loads .env files automatically
 .env
 *.env
