@@ -31,6 +31,6 @@ class TeamPolicy < ApplicationPolicy
 
   def is_editable_by?(user_id)
     user.id == record.created_by_user_id || \
-      Permission.for_user_id(user_id).where(service_id: record.id).exists?
+      record.members.where(user_id: user_id).exists?
   end
 end
