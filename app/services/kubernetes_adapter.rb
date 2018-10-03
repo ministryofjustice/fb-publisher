@@ -404,6 +404,10 @@ class KubernetesAdapter
             # individual secret for the service token, so that it can be
             # read by the user data store in isolation
             env:
+              - name: USER_DATASTORE_URL
+                value: #{@environment.user_datastore_url} 
+              - name: SERVICE_SLUG
+                value: #{name}
               - name: SERVICE_TOKEN
                 valueFrom:
                   secretKeyRef:

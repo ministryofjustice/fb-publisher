@@ -5,7 +5,8 @@ ALL_ENVS = {
     name: 'Development',
     namespace: 'formbuilder-services-dev',
     protocol: 'https://',
-    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io'
+    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io',
+    user_datastore_url: 'http://fb-user-datastore-api-svc-dev.formbuilder-platform-dev/'
   },
   staging: {
     deployment_adapter: 'cloud_platform',
@@ -13,7 +14,8 @@ ALL_ENVS = {
     name: 'Staging',
     namespace: 'formbuilder-services-staging',
     protocol: 'https://',
-    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io'
+    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io',
+    user_datastore_url: 'http://fb-user-datastore-api-svc-staging.formbuilder-platform-staging/'
   },
   production: {
     deployment_adapter: 'cloud_platform',
@@ -21,7 +23,8 @@ ALL_ENVS = {
     name: 'Production',
     namespace: 'formbuilder-services-production',
     protocol: 'https://',
-    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io'
+    url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io',
+    user_datastore_url: 'http://fb-user-datastore-api-svc-production.formbuilder-platform-production/'
   }
 }
 # only use minikube on local machines - i.e. dev
