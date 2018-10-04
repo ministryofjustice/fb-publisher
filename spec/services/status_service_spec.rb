@@ -80,6 +80,34 @@ describe StatusService do
     end
   end
 
+  describe '.service_status_deployment' do
+    let(:service) { Service.new(slug: 'my-new-service') }
+    it 'returns the result as an Array' do
+      expect(described_class.service_status_deployment(service: service)).to be_a_kind_of(Array)
+    end
+    it 'has an array length of three' do
+      expect(described_class.service_status_deployment(service: service).count).to eql(3)
+    end
+    it 'contains an environment_slug attribute' do
+      expect(described_class.service_status_deployment(service: service).first).to have_key(:environment_slug)
+    end
+    it 'contains a status attribute' do
+      expect(described_class.service_status_deployment(service: service).first).to have_key(:status)
+    end
+    it 'contains an url attribute' do
+      expect(described_class.service_status_deployment(service: service).first).to have_key(:url)
+    end
+    it 'contains a timestamp attribute' do
+      expect(described_class.service_status_deployment(service: service).first).to have_key(:timestamp)
+    end
+    it 'contains a deployment_status attribute' do
+      expect(described_class.service_status_deployment(service: service).first).to have_key(:deployment_status)
+    end
+    it 'contains a service attribute' do
+      expect(described_class.service_status_deployment(service: service).first).to have_key(:service)
+    end
+  end
+
   describe '.empty_check' do
     let(:service) { Service.new(slug: 'my-new-service') }
     describe 'return value' do
