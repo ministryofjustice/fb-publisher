@@ -32,7 +32,6 @@ describe 'viewing service status' do
         expect(page).not_to have_selector('span.status')
         expect(page).to have_selector('span', text: I18n.t('services.environment.no_deployment'))
       end
-
       it 'does show a `Check now` button' do
         expect(page).to have_button(I18n.t('services.environment.check_now'))
       end
@@ -40,11 +39,13 @@ describe 'viewing service status' do
   end
 
   describe 'service status checks' do
+    before do
+      ServiceStatusCheck.create!(environment_slug: 'dev', status: 404, time_taken: 30.0,
+                                 timestamp: Time.new, created_at: Time.new, updated_at: Time.new,
+                                 url: 'url.test', service: service)
+    end
     context 'with no deployments' do
       before do
-        ServiceStatusCheck.create!(environment_slug: 'dev', status: 404, time_taken: 30.0,
-                                   timestamp: Time.new, created_at: Time.new, updated_at: Time.new,
-                                   url: 'url.test', service: service)
         visit "/services/#{service.slug}"
       end
       it 'does show a status' do
@@ -56,20 +57,12 @@ describe 'viewing service status' do
     end
     context 'with completed deployments' do
       before do
-        ServiceStatusCheck.create!(environment_slug: 'dev', status: 200, time_taken: 30.0,
-                                   timestamp: Time.new - (60 * 60 )* 24,
-                                   created_at: Time.new - (60 * 60 )* 24,
-                                   updated_at: Time.new - (60 * 60 )* 24,
-                                   url: 'url.test', service: service)
-      end
-      before do
         completed_deployment
         visit "/services/#{service.slug}"
       end
       it 'does show a status' do
         expect(page).to have_selector('span.status')
       end
-
       it 'does show a `Check now` button' do
         expect(page).to have_button(I18n.t('services.environment.check_now'))
       end

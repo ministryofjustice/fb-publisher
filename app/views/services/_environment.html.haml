@@ -7,7 +7,7 @@
     - else
       \-
   %td
-    - if !environment[:service_status][:status].nil?
+    - if environment[:service_status][:status]
       %span{ class: "status status-#{environment[:service_status][:status].to_s}xx" }
       = environment[:service_status][:status]
     - else
