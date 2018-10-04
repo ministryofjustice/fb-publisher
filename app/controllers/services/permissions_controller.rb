@@ -26,12 +26,21 @@ class Services::PermissionsController < ApplicationController
         created_by_user: @current_user
       )
     )
-    authorize(@permission)
 
-    if @permission.save
+    begin
+      if params[:permission][:new_team].present?
+        team = Team.create!(name: params[:permission][:new_team], created_by_user: current_user)
+        @permission.team_id = team.id unless team.id.nil?
+      end
+
+      authorize(@permission)
+      @permission.save!
+      flash[:success] = I18n.t('services.permissions.create.success' )
       redirect_to action: :index, service_id: @service
-    else
-      render :new
+
+    rescue StandardError => e
+      permissions_error_message(e)
+      redirect_to action: :index, service_id: @service
     end
   end
 
@@ -77,5 +86,12 @@ class Services::PermissionsController < ApplicationController
       :team_id,
       :service_id
     )
+  end
+
+  def permissions_error_message(e)
+    scope = %i[services permissions create errors]
+    flash[:error] = I18n.t(e.class.name.underscore.gsub('/', '_'),
+                           scope: scope, message: e.class.name.underscore,
+                           default: I18n.t(:default, scope: scope))
   end
 end

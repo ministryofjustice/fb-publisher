@@ -74,6 +74,8 @@ en:
       service_deployment:
         commit_sha: Commit SHA, branch, or tag
         json_sub_dir: Relative path to your service's JSON
+      permission:
+        new_team: 'or create a new team called:'
   auth:
     existing_user:
       welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
@@ -195,6 +197,14 @@ en:
       form:
         submit: Next
     permissions:
+      create:
+        success: Permissions have been added successfully!
+        errors:
+          active_record_record_invalid: Error - Record is invalid
+          record_not_found: Error - Record could not be found
+          pundit_not_authorized_error: Error - You are not authorised to perform this action
+          name_error: Error - you tried to save a new team without providing a team name
+          default: Something went wrong %{message}
       form:
         submit: Grant permission
       index:
