@@ -9,7 +9,6 @@ describe StatusService do
     allow(DeploymentService).to receive(:url_for).and_return('url.test')
   end
 
-
   describe '.service_status' do
     describe 'given multiple environment_slugs' do
       let(:slugs) { [:dev, :staging] }
