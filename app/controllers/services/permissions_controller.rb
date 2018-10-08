@@ -26,6 +26,11 @@ class Services::PermissionsController < ApplicationController
         created_by_user: @current_user
       )
     )
+    if params[:permission][:team_name].present?
+      new_team = Team.create(params[:permission][:team_name])
+      params[:permission][:team_id] = new_team.id
+      params[:permission].delete(:team_name)
+    end
     authorize(@permission)
 
     if @permission.save
@@ -62,7 +67,6 @@ class Services::PermissionsController < ApplicationController
 
   def destroy
     @permission.destroy!
-    byebug
     redirect_to action: :index, service_id: @service
   end
 
