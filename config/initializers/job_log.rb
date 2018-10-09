@@ -2,7 +2,7 @@ url = ENV["REDISCLOUD_URL"] || ENV['REDIS_URL']
 job_log_adapter_class = FileLogAdapter
 if url.present?
   begin
-    uri_with_protocol = (ENV['REDIS_PROTOCOL'] || 'redis://') + url
+    uri_with_protocol = (ENV['REDIS_PROTOCOL'] || 'redis://') + url.to_s
     uri = URI.parse(uri_with_protocol)
     Rails.configuration.x.job_log_redis = Redis.new(url: uri_with_protocol, password:uri.password)
     job_log_adapter_class = RedisLogAdapter

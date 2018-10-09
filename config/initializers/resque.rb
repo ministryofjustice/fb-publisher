@@ -2,7 +2,7 @@
 url = (ENV["REDISCLOUD_URL"] || ENV['REDIS_URL'])
 
 begin
-  uri_with_protocol = (ENV['REDIS_PROTOCOL'] || 'redis://') + url
+  uri_with_protocol = (ENV['REDIS_PROTOCOL'] || 'redis://') + url.to_s
   uri = URI.parse(uri_with_protocol)
   Resque.redis = Redis.new(
     url: uri_with_protocol,
