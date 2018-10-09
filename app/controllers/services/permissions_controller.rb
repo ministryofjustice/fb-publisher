@@ -62,7 +62,6 @@ class Services::PermissionsController < ApplicationController
 
   def destroy
     @permission.destroy!
-    byebug
     redirect_to action: :index, service_id: @service
   end
 
