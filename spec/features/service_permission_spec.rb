@@ -108,17 +108,6 @@ describe 'visiting / service permissions' do
                                                   scope: [:services, :permissions, :create, :errors]))
             end
           end
-          context 'when there is a no record error' do
-            before do
-              a_team.delete
-              a_team.save
-            end
-            it 'displays the error message' do
-              click_button(I18n.t('services.permissions.form.submit'))
-              expect(page).to have_content(I18n.t(:name_error,
-                                                  scope: [:services, :permissions, :create, :errors]))
-            end
-          end
         end
       end
     end

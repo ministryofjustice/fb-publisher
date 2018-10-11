@@ -28,19 +28,13 @@ class Services::PermissionsController < ApplicationController
     )
 
     begin
-      if params[:permission][:new_team].present?
-        team = Team.create!(name: params[:permission][:new_team], created_by_user: current_user)
-        @permission.team_id = team.id unless team.id.nil?
-      elsif [params[:permission][:new_team].present?, params[:permission][:team_id].present?].none?
-        raise ActiveRecord::RecordNotFound
-      end
+      team = find_or_create_team
+      @permission.team_id = team.id
 
-      if params[:permission][:new_team].present? || params[:permission][:team_id].present?
-        authorize(@permission)
-        @permission.save!
-        flash[:success] = I18n.t('services.permissions.create.success' )
-        redirect_to action: :index, service_id: @service
-      end
+      authorize(@permission)
+      @permission.save!
+      flash[:success] = I18n.t('services.permissions.create.success' )
+      redirect_to action: :index, service_id: @service
 
     rescue StandardError => e
       permissions_error_message(e)
@@ -97,5 +91,13 @@ class Services::PermissionsController < ApplicationController
     flash[:error] = I18n.t(e.class.name.underscore.gsub('/', '_'),
                            scope: scope, message: e.class.name.underscore,
                            default: I18n.t(:default, scope: scope))
+  end
+
+  def find_or_create_team
+    if params[:permission][:new_team].present?
+      Team.create!(name: params[:permission][:new_team], created_by_user: current_user)
+    else
+      Team.find(params[:permission][:team_id])
+    end
   end
 end
