@@ -31,12 +31,16 @@ class Services::PermissionsController < ApplicationController
       if params[:permission][:new_team].present?
         team = Team.create!(name: params[:permission][:new_team], created_by_user: current_user)
         @permission.team_id = team.id unless team.id.nil?
+      elsif [params[:permission][:new_team].present?, params[:permission][:team_id].present?].none?
+        raise ActiveRecord::RecordNotFound
       end
 
-      authorize(@permission)
-      @permission.save!
-      flash[:success] = I18n.t('services.permissions.create.success' )
-      redirect_to action: :index, service_id: @service
+      if params[:permission][:new_team].present? || params[:permission][:team_id].present?
+        authorize(@permission)
+        @permission.save!
+        flash[:success] = I18n.t('services.permissions.create.success' )
+        redirect_to action: :index, service_id: @service
+      end
 
     rescue StandardError => e
       permissions_error_message(e)

@@ -201,9 +201,9 @@ en:
         success: Permissions have been added successfully!
         errors:
           active_record_record_invalid: Error - Record is invalid
-          record_not_found: Error - Record could not be found
+          active_record_record_not_found: Select an existing team or enter a new team
           pundit_not_authorized_error: Error - You are not authorised to perform this action
-          name_error: Error - you tried to save a new team without providing a team name
+          name_error: Error - name is invalid or undefined
           default: Something went wrong %{message}
       form:
         submit: Grant permission

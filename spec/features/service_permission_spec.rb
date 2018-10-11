@@ -20,7 +20,7 @@ describe 'visiting / service permissions' do
             click_button(I18n.t('services.permissions.form.submit'))
           end
           it 'displays an error message' do
-            expect(page).to have_content(I18n.t(:name_error,
+            expect(page).to have_content(I18n.t(:active_record_record_not_found,
                                                 scope: [:services, :permissions, :create, :errors]))
           end
         end
@@ -90,22 +90,32 @@ describe 'visiting / service permissions' do
           let(:other_user) do
             User.find_or_create_by(name: 'Another test user', email: 'another_test@example.justice.gov.uk')
           end
+          let(:a_team) { Team.find_by_name('A Team') }
 
           before do
             visit "/services/#{service.slug}/permissions"
             select 'A Team', from: 'permission[team_id]'
           end
 
-          context 'when there is an authorisation error' do
-            let(:a_team) { Team.find_by_name('A Team') }
-
+          context 'when there is a Pundit authorisation error' do
             before do
               a_team.created_by_user = other_user
               a_team.save
               click_button(I18n.t('services.permissions.form.submit'))
             end
-            it 'displays the Pundit authorisation error message' do
+            it 'displays the error message' do
               expect(page).to have_content(I18n.t(:pundit_not_authorized_error,
+                                                  scope: [:services, :permissions, :create, :errors]))
+            end
+          end
+          context 'when there is a no record error' do
+            before do
+              a_team.delete
+              a_team.save
+            end
+            it 'displays the error message' do
+              click_button(I18n.t('services.permissions.form.submit'))
+              expect(page).to have_content(I18n.t(:name_error,
                                                   scope: [:services, :permissions, :create, :errors]))
             end
           end
