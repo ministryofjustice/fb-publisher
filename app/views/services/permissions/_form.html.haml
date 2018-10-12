@@ -1,10 +1,12 @@
 = form_with model: @permission, url: update_or_create(@permission), local: true do |f|
   %tr.in-form
     %td
+      = f.label 'permission[team_id]', 'Select an existing team', class: 'form-label'
       = select_tag 'permission[team_id]',
                     options_from_collection_for_select( @possible_teams,
                                                         :id,
                                                         :name),
                     class: 'form-control'
+      = f.text_field :new_team, maxlength: 128
     %td.actions
       = f.submit t('.submit'), class: 'button button-cta'
