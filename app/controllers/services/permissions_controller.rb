@@ -28,7 +28,7 @@ class Services::PermissionsController < ApplicationController
     )
 
     begin
-      team = find_or_create_team
+      team = find_or_create_team!
       @permission.team_id = team.id
 
       authorize(@permission)
@@ -93,11 +93,11 @@ class Services::PermissionsController < ApplicationController
                            default: I18n.t(:default, scope: scope))
   end
 
-  def find_or_create_team
-    if params[:permission][:new_team].present?
-      Team.create!(name: params[:permission][:new_team], created_by_user: current_user)
+  def find_or_create_team!(opts = params[:permission])
+    if opts[:new_team].present?
+      Team.create!(name: opts[:new_team], created_by_user: current_user)
     else
-      Team.find(params[:permission][:team_id])
+      Team.find(opts[:team_id])
     end
   end
 end
