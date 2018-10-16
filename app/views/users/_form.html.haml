@@ -1,0 +1,6 @@
+= form_for @current_user do |f|
+  = f.label 'user[timezone_id]', I18n.t('users.form.label'), class: 'form-label'
+  = select_tag 'user[timezone]',
+                    options_for_select(@timezones),
+                    class: 'form-control'
+  = f.submit I18n.t('users.form.submit'), class: 'button button-cta'

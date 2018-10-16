@@ -1,0 +1,7 @@
+%h1.heading-xlarge
+  = I18n.t(:heading, scope: [:users, :edit], name: @current_user.name)
+
+%h3.heading-medium
+  = I18n.t(:lede_html, scope: [:users, :edit], timezone: @current_user.timezone)
+
+= render partial: 'users/form'
