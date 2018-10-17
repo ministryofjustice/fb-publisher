@@ -1,6 +1,7 @@
 class ServiceEnvironment
   attr_accessor :deployment_adapter, :kubectl_context, :name, :slug,
-                :namespace, :protocol, :url_root, :user_datastore_url
+                :namespace, :protocol, :url_root,
+                :user_datastore_url, :submitter_url
 
   def self.all
     Rails.configuration.x.service_environments.map do |key, values|
