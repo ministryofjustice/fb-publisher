@@ -2,7 +2,7 @@ require 'capybara_helper'
 
 describe 'View / Profile' do
   describe 'set user timezone' do
-    context 'as a logged in user' do
+    describe 'as a logged in user' do
       let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
 
       before do
@@ -20,7 +20,7 @@ describe 'View / Profile' do
         end
       end
 
-      context 'change default user timezone to Paris' do
+      context 'when selecting a timezone & submitting the form' do
         before do
           select 'Paris', from: 'user_timezone'
           click_button(I18n.t('users.form.submit'))
@@ -32,7 +32,7 @@ describe 'View / Profile' do
       end
     end
 
-    context 'as an unauthorised user' do
+    describe 'as an unauthorised user' do
       before do
         visit 'user/edit'
       end
