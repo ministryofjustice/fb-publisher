@@ -405,7 +405,9 @@ class KubernetesAdapter
             # read by the user data store in isolation
             env:
               - name: USER_DATASTORE_URL
-                value: #{@environment.user_datastore_url} 
+                value: #{@environment.user_datastore_url}
+              - name: SUBMITTER_URL
+                value: #{@environment.submitter_url}
               - name: SERVICE_SLUG
                 value: #{name}
               - name: SERVICE_TOKEN
