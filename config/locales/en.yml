@@ -285,11 +285,20 @@ en:
       success: The team "%{team}" was successfully deleted
     show:
       lede_html: ""
-
       timestamp: Checked at
       url: URL
     update:
       success: Team "%{team}" updated successfully
+  users:
+    edit:
+      heading: 'Profile: %{name}'
+      lede_html: 'Your current timezone is set to: %{timezone}'
+    form:
+      label: Select a timezone
+      submit: Update timezone
+    update:
+      success: Timezone has been successfully updated
+      error: Timezone could not be updated
   shared:
     errors_intro: There were some errors in that form
     service_deployments:

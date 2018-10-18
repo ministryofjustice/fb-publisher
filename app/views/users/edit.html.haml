@@ -1,0 +1,7 @@
+%h1.heading-xlarge
+  = t('.heading', name: @current_user.name)
+
+%h3.heading-medium
+  = t('.lede_html', timezone: @current_user.timezone)
+
+= render partial: 'users/form'
