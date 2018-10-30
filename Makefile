@@ -31,7 +31,7 @@ login: init
 push: login
 	docker push ${ECR_REPO_URL_ROOT}/fb-publisher-base:latest-${env_stub} && \
 		docker push ${ECR_REPO_URL_ROOT}/fb-publisher-worker:latest-${env_stub} && \
-		docker push ${ECR_REPO_URL_ROOT}/fb-publisher-api:latest-${env_stub}
+		docker push ${ECR_REPO_URL_ROOT}/fb-publisher-web:latest-${env_stub}
 
 
 .PHONY := init push build login
