@@ -24,6 +24,7 @@ before_script:
 script:
     - bundle exec rails db:reset db:setup db:migrate RAILS_ENV=test
     - bundle exec rspec
+    - make dev build push
 
 env:
   global:
