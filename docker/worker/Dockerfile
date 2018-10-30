@@ -1,4 +1,5 @@
-FROM aldavidson/fb-publisher-base
+ARG BASE_IMAGE=aldavidson/fb-publisher-base
+FROM $BASE_IMAGE
 
 # install kubectl as described at
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/
