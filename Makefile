@@ -11,7 +11,7 @@ production:
 	@true
 
 init:
-	$(eval export ECR_REPO_NAME_SUFFIXES=base web api)
+	$(eval export ECR_REPO_NAME_SUFFIXES=base web worker)
 	$(eval export ECR_REPO_URL_ROOT=926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder-dev)
 
 # install aws cli w/o sudo
