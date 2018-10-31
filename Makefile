@@ -22,16 +22,9 @@ install_build_dependencies: init
 
 
 # Needs ECR_REPO_NAME & ECR_REPO_URL env vars
-build: install_build_dependencies
-	TAG="latest-${env_stub}" REPO_SCOPE=${ECR_REPO_URL_ROOT} ./scripts/build_all.sh
+build_and_push: install_build_dependencies
+	TAG="latest-${env_stub}" REPO_SCOPE=${ECR_REPO_URL_ROOT} ./scripts/build_and_push_all.sh
 
-login: init
-	@eval $(shell aws ecr get-login --no-include-email --region eu-west-1)
-
-push: login
-	docker push ${ECR_REPO_URL_ROOT}/fb-publisher-base:latest-${env_stub} && \
-		docker push ${ECR_REPO_URL_ROOT}/fb-publisher-worker:latest-${env_stub} && \
-		docker push ${ECR_REPO_URL_ROOT}/fb-publisher-web:latest-${env_stub}
 
 
 .PHONY := init push build login
