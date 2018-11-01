@@ -27,7 +27,8 @@ class ServicesController < ApplicationController
     end
   end
 
-  def edit
+  def edit_confirm
+    @service = Service.find_by_slug(service_params[:slug])
   end
 
   def destroy
@@ -36,10 +37,10 @@ class ServicesController < ApplicationController
   end
 
   def update
-    if @service.update(service_params)
-      redirect_to service_path(@service), notice: t(:success, scope: [:services, :update], service: @service.name)
-    else
-      render :edit
+    if params[:commit] == t('services.edit_confirm.confirm') || @service.slug == service_params[:slug]
+      redirect(@service, service_params)
+    elsif @service.slug != service_params[:slug]
+      render :edit_confirm
     end
   end
 
@@ -65,5 +66,13 @@ class ServicesController < ApplicationController
 
   def service_params
     params[:service].permit([:git_repo_url, :name, :slug])
+  end
+
+  def redirect(service, params)
+    if @service.update(params)
+      redirect_to service_path(service), notice: t(:success, scope: [:services, :update], service: @service.name)
+    else
+      render :edit
+    end
   end
 end

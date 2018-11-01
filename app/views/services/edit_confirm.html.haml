@@ -1,0 +1,12 @@
+%h1.heading-xlarge
+  = t('services.edit_confirm.heading', name: @service.name)
+
+%p.lede
+  = t('services.update.confirm')
+
+= form_for @service, method: :patch do |f|
+  = f.hidden_field :name, value: params[:service][:name]
+  = f.hidden_field :slug, value: params[:service][:slug]
+  = f.hidden_field :git_repo_url, value: params[:service][:git_repo_url]
+  = link_to t('services.edit_confirm.dismiss'), edit_service_path(@service), class: 'button button-cta'
+  = f.submit t('services.edit_confirm.confirm'), class: 'button button-cta'
