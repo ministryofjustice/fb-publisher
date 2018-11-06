@@ -30,18 +30,12 @@ class DeploymentService
     versionned= [scoped, version].join(':')
   end
 
-  def self.default_runner_image_ref
-    # shiny new general-purpose runner:
-    "aldavidson/fb-runner-node:latest"
-  end
-
   def self.setup_service(
     environment_slug:,
     service:,
     deployment:,
     config_dir:,
-    container_port: 3000,
-    image: default_runner_image_ref
+    container_port: 3000
   )
     FileUtils.mkdir_p(config_dir)
 
@@ -51,8 +45,7 @@ class DeploymentService
       service: service,
       deployment: deployment,
       config_dir: config_dir,
-      container_port: container_port,
-      image: image
+      container_port: container_port
     )
   end
 

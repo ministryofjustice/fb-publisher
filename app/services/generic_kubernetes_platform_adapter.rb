@@ -74,4 +74,12 @@ class GenericKubernetesPlatformAdapter
   def token_secret_name(service)
     "fb-service-#{service.slug}-token-#{@environment.slug}"
   end
+
+  def default_runner_image_ref(
+    runner_repo: ENV['RUNNER_IMAGE_REPO'],
+    env_slug: @environment.slug
+  )
+    # shiny new general-purpose runner:
+    "#{runner_repo}:latest-#{env_slug}"
+  end
 end
