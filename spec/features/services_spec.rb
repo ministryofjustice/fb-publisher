@@ -128,9 +128,10 @@ describe 'visiting /services' do
     end
 
     context 'with an existing service' do
+      let(:service_name) { 'My First Service' }
       before do
         visit '/services/new'
-        fill_in('Service name', with: 'My First Service')
+        fill_in('Service name', with: service_name)
         fill_in('URL of the service config JSON Git repository', with: 'https://repo.url/repo.git')
         find('input[value="Next"]').click()
       end
@@ -163,13 +164,13 @@ describe 'visiting /services' do
         end
 
         it 'shows me the Edit Service form' do
-          expect(page).to have_content("Editing 'My First Service'")
+          expect(page).to have_content("Editing '#{service_name}'")
         end
 
         describe 'changing the name' do
           before do
             fill_in('Service name', with: new_name)
-            click_on('Update Service')
+            click_button 'Update Service'
           end
           context 'to something valid' do
             let(:new_name) { 'My First Service v2' }
@@ -192,6 +193,50 @@ describe 'visiting /services' do
 
             it 'keeps me editing my service' do
               expect(page).to have_content("Editing '#{new_name}'")
+            end
+          end
+        end
+
+        describe 'changing the slug' do
+          context 'to something valid' do
+            let(:slug_name) { 'test-slug' }
+            before do
+              fill_in('Service "slug"', with: slug_name)
+              click_button('Update Service')
+            end
+
+            it 'alerts user that renamed slug will clear related user data store records' do
+              expect(page).to have_content(I18n.t(:confirm, scope: [:services, :update]))
+            end
+
+            context 'when user confirms new slug name' do
+              before do
+                click_button(I18n.t(:confirm, scope: [:services, :edit_confirm]))
+              end
+              it 'successfully saves changes' do
+                expect(page).to have_content(I18n.t(:success, scope: [:services, :update], service: service_name))
+              end
+            end
+
+            context 'when user rejects new slug name' do
+              before do
+                click_link(I18n.t(:dismiss, scope: [:services, :edit_confirm]))
+              end
+
+              it 'returns user back to edit service screen' do
+                expect(page).to have_content("Editing '#{service_name}'")
+              end
+            end
+          end
+
+          context 'to something invalid' do
+            let(:slug_name) { '3' }
+            before do
+              fill_in('Service "slug"', with: slug_name)
+            end
+
+            it 'does not update the service slug' do
+              expect(page).to have_content("Editing '#{service_name}'")
             end
           end
         end
