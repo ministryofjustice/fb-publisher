@@ -95,7 +95,7 @@ en:
     login:
       link_text: Use your MoJ Google Account to sign in or sign up
     show:
-      heading: Welcome to MoJ Form Publisher
+      heading: 'Welcome to Form Builder: Publisher'
       lede_html:
         We're trialling a new service to let you publish
         <a href="%{link_url}">Form Specification</a> files
@@ -107,7 +107,7 @@ en:
   layouts:
     application:
       logo_link_title: Form Publisher home
-      title: "MoJ Form Publisher"
+      title: "Form Builder: Publisher"
     dev_tools:
       fake_login: Fake Login
     user_nav:
