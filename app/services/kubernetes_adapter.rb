@@ -416,6 +416,7 @@ class KubernetesAdapter
                     name: #{token_secret_name}
                     key: token
             image: #{image}
+            imagePullPolicy: Always
             ports:
             - containerPort: #{container_port}
             volumeMounts:
