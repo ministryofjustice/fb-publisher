@@ -27,8 +27,11 @@
 
       %nav#proposition-menu
         = link_to t('.title'), root_url, id: 'proposition-name'
+
         - if current_user
           = render partial: 'layouts/user_nav'
+        - else
+          = render partial: 'layouts/unsigned_user_nav'
 
 = content_for :content do
   %main{ class: "content inner cf", id: "content", role: "main" }
