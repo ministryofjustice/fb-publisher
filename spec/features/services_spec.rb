@@ -11,20 +11,20 @@ describe 'visiting /services' do
       login_as!(user)
     end
 
-    it 'shows a list of my services' do
+    it 'shows a list of my service forms' do
       visit '/services'
-      expect(page).to have_content('Your Services')
+      expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
     end
 
-    it 'has a link to create a new service' do
+    it 'has a link to create a new service form' do
       visit '/services'
-      expect(page).to have_link('Create a new service')
+      expect(page).to have_link(I18n.t(:new_service, scope: [:services, :index]))
     end
 
-    describe 'clicking "Create a new service"' do
+    describe 'clicking "Create form"' do
       before do
         visit '/services'
-        click_link('Create a new service')
+        click_link(I18n.t(:new_service, scope: [:services, :index]))
       end
 
       it 'shows a New Service page' do
@@ -145,7 +145,7 @@ describe 'visiting /services' do
         end
 
         it 'shows me the list of services' do
-          expect(page).to have_content('Your Services')
+          expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
         end
 
         it 'has deleted the service' do
