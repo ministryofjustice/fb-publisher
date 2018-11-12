@@ -91,11 +91,22 @@ en:
     restarting: 'Restarting service'
     starting: 'Starting job %{job_id} for ServiceDeployment %{service_deployment_id}'
     writing_commit: 'Writing commit SHA %{sha}'
+  help:
+    heading: Help getting started
+    lede: "Having signed in to the tool using your justice.gov.uk email, you'll need to:"
+    name: name your form
+    json: enter where the form’s JSON files are stored in Github
+    publisher_tool:
+      This enables the publisher tool to create development, staging and live environments that you can deploy your form to.
+    also: 'You can also choose to:'
+    configure:
+      configure environments by adding Google Analytics, tracking IDs, passwords and IDs
+    assign: assign permissions for individual team members
   home:
     login:
       link_text: Use your MoJ Google Account to sign in or sign up
     show:
-      heading: Welcome to MoJ Form Publisher
+      heading: 'Welcome to Form Builder: Publisher'
       lede_html:
         We're trialling a new service to let you publish
         <a href="%{link_url}">Form Specification</a> files
@@ -107,7 +118,7 @@ en:
   layouts:
     application:
       logo_link_title: Form Publisher home
-      title: "MoJ Form Publisher"
+      title: "Form Builder: Publisher"
     dev_tools:
       fake_login: Fake Login
     user_nav:
@@ -115,6 +126,9 @@ en:
       services: Services
       sign_out: Sign out
       teams: Teams
+    unsigned_user_nav:
+      help: Help
+      sign_in: Sign in
   phase_banner:
     content_html:
       This is a new service - your <a href="%{link_url}">feedback</a>
