@@ -124,6 +124,7 @@ en:
     user_nav:
       profile: Profile
       services: Services
+      create_form: Create form
       sign_out: Sign out
       teams: Teams
     unsigned_user_nav:
