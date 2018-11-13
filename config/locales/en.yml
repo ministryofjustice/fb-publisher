@@ -123,6 +123,8 @@ en:
       fake_login: Fake Login
     user_nav:
       profile: Profile
+      services: Services
+      create_form: Create form
       services: Your forms
       sign_out: Sign out
       teams: Teams

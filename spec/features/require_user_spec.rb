@@ -40,6 +40,10 @@ describe 'visiting the home page' do
     it 'shows a link for help' do
       expect(page).to have_link(I18n.t(:help, scope: [:layouts, :unsigned_user_nav]))
     end
+
+    it "shows a link to 'create form'" do
+      expect(page).to have_link(I18n.t('layouts.user_nav.create_form'))
+    end
   end
 end
 
