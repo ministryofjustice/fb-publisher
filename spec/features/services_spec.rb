@@ -24,7 +24,9 @@ describe 'visiting /services' do
     describe 'clicking "Create form"' do
       before do
         visit '/services'
-        click_link(I18n.t(:new_service, scope: [:services, :index]))
+        within('#content') do
+          click_link(I18n.t(:new_service, scope: [:services, :index]))
+        end
       end
 
       it 'shows a New Service page' do
