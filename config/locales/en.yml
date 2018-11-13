@@ -103,18 +103,18 @@ en:
       configure environments by adding Google Analytics, tracking IDs, passwords and IDs
     assign: assign permissions for individual team members
   home:
-    login:
-      link_text: Use your MoJ Google Account to sign in or sign up
     show:
       heading: 'Welcome to Form Builder: Publisher'
       lede_html:
-        We're trialling a new service to let you publish
-        <a href="%{link_url}">Form Specification</a> files
-        as digital services on the MoJ Cloud Platform
-      sign_in_or_sign_up:
-        Sign in or sign up
+        This tool enables you to publish (deploy) forms to online environments. You should use
+        the publisher tool after building <a href="%{link_url}" target="_blank">Form Specification files</a>.
+      info_html:
+        When you provide details about each form, the publisher tool will create development,
+        staging and live environments. You can then configure each environment and assign permissions
+        before deploying each form.<br>
+        <a href="%{help_url}">Find out more about the publisher tool</a>.
       warning_html:
-        To take part in the beta, you must have a justice.gov.uk email address
+        To use this tool, you must have an email address ending in justice.gov.uk
   layouts:
     application:
       logo_link_title: Form Publisher home
@@ -125,6 +125,7 @@ en:
       profile: Profile
       services: Services
       create_form: Create form
+      services: Your forms
       sign_out: Sign out
       teams: Teams
     unsigned_user_nav:
@@ -196,11 +197,10 @@ en:
       token: Secret token (click to show/regenerate)
     index:
       actions: Actions
-      caption: Your Services
-      heading: Your Services
-      name: Service name
+      heading: Your forms
+      name: Form name
       no_services_yet: You don't have any services yet.
-      new_service: Create a new service
+      new_service: Create form
     links:
       config_params: Config Params
       deployments: Deployments

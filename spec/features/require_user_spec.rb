@@ -10,8 +10,8 @@ describe 'visiting the home page' do
       clear_session!
     end
 
-    it 'shows a link to login' do
-      expect(page).to have_link(I18n.t(:link_text, scope: [:home, :login]))
+    it 'shows a button to login' do
+      expect(page).to have_button(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
     end
 
     it 'shows a link for help' do

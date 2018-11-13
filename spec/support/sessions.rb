@@ -35,7 +35,7 @@ def login_as!(user)
   # end
   stub_auth0_userinfo(user)
   visit '/'
-  page.find('.auth0-login a').click()
+  click_button(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
   #visit auth0_callback_path
 
 end
