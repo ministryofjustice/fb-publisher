@@ -1,17 +1,17 @@
-%h1.heading-xlarge
-  = t('.heading')
-%p.lede
-  = t('.lede_html', link_url: ENV['FB_DOCUMENTATION_ROOT_URL'])
+%div.column-two-thirds
+  %h1.heading-xlarge
+    = t('.heading')
 
-.notice
-  %i.icon.icon-important
-    %span.visually-hidden
-      Warning
-  %strong.bold-small
-    = t('.warning_html')
+  %p.lede
+    = t('.lede_html', link_url: ENV['FB_DOCUMENTATION_ROOT_URL'])
+  -# help_path this will not work at the moment as it needs to rebase from master with the changes made in last story
 
-%h2.heading-large
-  = t('.sign_in_or_sign_up')
+  %p.font-small
+    =t('.info_html', help_url: '#')
 
-.auth0-login
-  = render partial: 'home/login'
+  %div.panel.panel-border-wide
+    %p.font-small
+      = t('.warning_html')
+
+  %div
+    = button_to 'Sign in', '/auth/auth0', class: 'button button-start'

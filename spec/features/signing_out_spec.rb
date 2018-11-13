@@ -24,8 +24,8 @@ describe 'signing out' do
         expect(page.current_url).to eq(root_url)
       end
 
-      it 'shows a link to login' do
-        expect(page).to have_link(I18n.t(:link_text, scope: [:home, :login]))
+      it 'shows a button to login' do
+        expect(page).to have_button(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
       end
     end
   end
