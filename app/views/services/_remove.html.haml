@@ -1,0 +1,16 @@
+%br
+%div.notice
+  %i.icon.icon-important
+    %span.visually-hidden
+      = 'Warning'
+  %strong.bold-small
+    = t('services.show.warning')
+%div
+  %br
+    %p.lede
+      = link_to t('services.show.delete'),
+            service_path(service),
+            class: 'button warning',
+            method: :delete,
+            data: { confirm: t('services.service.delete_confirm', service: service.name),
+                    disable_with: t('services.service.deleting') }

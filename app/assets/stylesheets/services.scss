@@ -27,3 +27,7 @@
     width: 20%;
   }
 }
+
+.warning, .warning:visited {
+  background-color: $red;
+}

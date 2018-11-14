@@ -240,9 +240,11 @@ en:
       edit: Edit
       success: The service "%{service}" was successfully deleted
     show:
+      delete: Delete form
       lede_html:
         Status of your service in the available environments
       timestamp: Checked at
+      warning: Deleted forms cannot be restored. You cannot undo this action.
       url: URL
     update:
       success: Service "%{service}" updated successfully. You'll need to deploy your service for these changes to take effect on the web.
