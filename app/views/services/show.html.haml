@@ -19,3 +19,4 @@
 
   %tbody
     = render partial: 'environment', collection: @status_by_environment
+= render partial: 'remove', locals: {service: @service }

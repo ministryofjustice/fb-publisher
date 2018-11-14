@@ -10,6 +10,46 @@ describe 'viewing service status' do
     login_as!(user)
   end
 
+  describe 'deleting the service' do
+    before do
+      visit "/services/#{service.slug}"
+    end
+
+    it 'has a delete button' do
+      expect(page).to have_link(I18n.t(:delete, scope: [:services, :show]))
+    end
+
+    it 'has warning text for the delete button' do
+      expect(page).to have_content(I18n.t(:warning, scope: [:services, :show]))
+    end
+
+    context "clicking 'Delete form'", js: true do
+      let(:message) do
+        accept_confirm do
+          click_on(I18n.t(:delete, scope: [:services, :show]))
+        end
+      end
+
+      before do
+        message
+      end
+
+      it 'displays a confirmation alert pop-up' do
+        expect(message).to eq("Are you sure you want to delete the service '#{service.name}'?")
+      end
+
+      it 'successfully deletes the form' do
+        expect(page).to have_content(I18n.t(:success, scope: [:services, :destroy], service: service.name))
+      end
+
+      it "returns user to 'Your forms' page" do
+        within('#content') do
+          expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
+        end
+      end
+    end
+  end
+
   describe 'no service status checks' do
     context 'with no completed deployments' do
       before do
