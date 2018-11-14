@@ -4,12 +4,12 @@
   = t '.lede_html'
 
 %table#config-params
+
   %thead
     %tr
       %th
-        = t '.name'
+        Add Configuration Parameters
       %th.inline-nav
-        %p= t '.environments'
         %ul
           - @environments.each do |env|
             %li
@@ -18,11 +18,12 @@
                   = env.name
               - else
                 = link_to env.name, {env: env.slug}
-
       %th
-        = t '.actions'
-
-  %tbody
+      = render partial: 'form', locals: {config_param: @config_param}
+    %th
+      = t '.name'
+    %th
+      = t '.value'
+    %th
+      = t '.actions'
     = render partial: 'config_param', collection: @config_params
-
-    = render partial: 'form', locals: {config_param: @config_param}

@@ -150,9 +150,12 @@ en:
       form:
         submit: Save
       index:
-        environments: Values for environment
+        actions: Actions
+        environments: Add configuration parameters
         lede_html:
           These will be passed to your service as environment variables
+        name: Name
+        value: Value
       update:
         success: Config Param '%{name}' (%{environment}) updated successfully. For the changes to take effect this needs to be deployed
     deployments:
