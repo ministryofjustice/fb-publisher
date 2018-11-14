@@ -13,12 +13,16 @@ describe 'visiting /services' do
 
     it 'shows a list of my service forms' do
       visit '/services'
-      expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
+      within('h1') do
+        expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
+      end
     end
 
     it 'has a link to create a new service form' do
       visit '/services'
-      expect(page).to have_link(I18n.t(:new_service, scope: [:services, :index]))
+      within('#content') do
+        expect(page).to have_link(I18n.t(:new_service, scope: [:services, :index]))
+      end
     end
 
     describe 'clicking "Create form"' do
@@ -29,8 +33,10 @@ describe 'visiting /services' do
         end
       end
 
-      it 'shows a New Service page' do
-        expect(page).to have_content('New Service')
+      it "shows the 'Create form' page" do
+        within('h1') do
+          expect(page).to have_content(I18n.t(:heading, scope: [:services, :new]))
+        end
       end
     end
 
@@ -77,7 +83,7 @@ describe 'visiting /services' do
       end
     end
 
-    describe 'filling in the New Service form' do
+    describe "filling in the 'Create form'" do
       before do
         visit new_service_path
       end
@@ -93,13 +99,13 @@ describe 'visiting /services' do
         context 'with a valid name' do
           let(:name) { 'My new service' }
 
-          context 'and click Create Service' do
+          context 'and click Create form' do
             before do
-              click_on( 'Next' )
+              click_button(I18n.t(:submit, scope: [:services, :new, :form]))
             end
 
             it 'does not submit the form' do
-              expect(page).to have_content('New Service')
+              expect(page).to have_content(I18n.t(:errors_intro, scope: [:shared]))
             end
           end
 
@@ -110,9 +116,11 @@ describe 'visiting /services' do
             context 'with a valid https git repo url' do
               let(:url) { 'https://git.example.com/repo.git' }
 
-              context 'and click Create Service' do
+              context 'and click Create form' do
                 before do
-                  click_on( 'Next' )
+                  within('#content') do
+                    click_on(I18n.t(:submit, scope: [:services, :new, :form]))
+                  end
                 end
 
                 it 'shows me the status of my new service' do
@@ -135,7 +143,9 @@ describe 'visiting /services' do
         visit '/services/new'
         fill_in('Service name', with: service_name)
         fill_in('URL of the service config JSON Git repository', with: 'https://repo.url/repo.git')
-        find('input[value="Next"]').click()
+        within('#content') do
+          click_on(I18n.t(:submit, scope: [:services, :new, :form]))
+        end
       end
 
       describe 'Deleting a service', js: true do
@@ -147,7 +157,9 @@ describe 'visiting /services' do
         end
 
         it 'shows me the list of services' do
-          expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
+          within('#content') do
+            expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
+          end
         end
 
         it 'has deleted the service' do

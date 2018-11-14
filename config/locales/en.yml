@@ -123,7 +123,6 @@ en:
       fake_login: Fake Login
     user_nav:
       profile: Profile
-      services: Services
       create_form: Create form
       services: Your forms
       sign_out: Sign out
@@ -207,14 +206,14 @@ en:
       permissions: Permissions
       urls: Status
     new:
-      heading: New Service
+      heading: Create form
       lede_html:
         First, tell us some details about your service.
       notice:
         Nothing will be put live until you <em>deploy</em> your service -
         which you can do after creating it
       form:
-        submit: Next
+        submit: Create form
     permissions:
       create:
         success: Permissions have been added successfully!
