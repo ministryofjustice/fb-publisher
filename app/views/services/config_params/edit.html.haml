@@ -5,4 +5,4 @@
     t('.error_message', default: nil),
     t('.error_description', default: nil)
 %table
-  = render 'form', locals: {config_param: @config_param}
+  = render partial: 'form', locals: {config_param: @config_param, button_name: t('services.config_params.form.submit')}
