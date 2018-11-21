@@ -22,7 +22,7 @@ describe "visiting a service's config params page" do
         visit "/services/#{service.slug}/config_params"
         fill_in('Name', with: name)
         fill_in('Value', with: value)
-        click_button('Save')
+        click_button(I18n.t('.services.config_params.form.add'))
       end
 
       it 'displays a message advising the user to deploy for changes to take effect' do

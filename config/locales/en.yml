@@ -148,6 +148,7 @@ en:
       edit:
         heading: Editing '%{name}' (%{environment})
       form:
+        add: Add
         submit: Save
       index:
         actions: Actions
