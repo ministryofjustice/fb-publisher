@@ -1,20 +1,23 @@
-%div.column-full
+%div.column-two-thirds
   %h1.heading-xlarge
     = t('help.heading')
 
-  %p.lede
+  %p
     = t('help.lede')
   %ul.text.list.list-bullet
-    %li.lede
+    %li
       = t('help.name')
-    %li.lede
+    %li
       = t('help.json')
-  %p.lede.text
+  %p
     = t('help.publisher_tool')
-  %p.lede
+  %p
     = t('help.also')
   %ul.text.list.list-bullet
-    %li.lede
+    %li
       = t('help.configure')
-    %li.lede
+    %li
       = t('help.assign')
+  %div.row_space
+  - if current_user
+    = link_to t('services.index.new_service'), new_service_path, class: 'button button-cta'
