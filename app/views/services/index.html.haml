@@ -2,11 +2,11 @@
   %h1.heading-xlarge
     = t('.heading')
 
-%div.grid-row
+%div.grid-row.pad-bottom
   %div.column-two-thirds
-    %p
-  %div.column-one-third
     = link_to t('.new_service'), new_service_path, class: 'button button-cta'
+  %div.column-one-third
+    %p
 
 - if @services.empty?
   %p
