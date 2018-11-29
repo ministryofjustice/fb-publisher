@@ -248,7 +248,7 @@ en:
       lede_html:
         Status of your service in the available environments
       timestamp: Checked at
-      warning: Deleted forms cannot be restored. You cannot undo this action.
+      warning_html: Clicking delete removes the form from the publisher - you can still <a href='%{git_repo_url}'>access the form’s data</a>
       url: URL
     update:
       success: Service "%{service}" updated successfully. You'll need to deploy your service for these changes to take effect on the web.
