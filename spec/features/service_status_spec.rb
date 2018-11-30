@@ -19,8 +19,8 @@ describe 'viewing service status' do
       expect(page).to have_link(I18n.t(:delete, scope: [:services, :show]))
     end
 
-    it 'has warning text for the delete button' do
-      expect(page).to have_content(I18n.t(:warning, scope: [:services, :show]))
+    it "has a link to the form's git repo" do
+      expect(page).to have_selector("a[href='#{service.git_repo_url}']")
     end
 
     context "clicking 'Delete form'", js: true do
