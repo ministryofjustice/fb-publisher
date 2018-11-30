@@ -41,6 +41,7 @@ describe Service do
       end
     end
   end
+
   describe 'validation' do
     before do
       subject.name = "Apply for a license to do something"
@@ -61,6 +62,100 @@ describe Service do
 
         it 'equals to_slug(name)' do
           expect(slug).to eq(subject.send(:to_slug, subject.name))
+        end
+      end
+    end
+
+    context 'with a user generated slug' do
+      describe 'with invalid slug' do
+        context 'when the slug contains capital letters' do
+          before do
+            subject.slug = 'aCaptialLetter'
+          end
+
+          it 'adds an error on slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to_not be_empty
+          end
+        end
+
+        context 'when the slug contains spaces' do
+          before do
+            subject.slug = 'apply for a license'
+          end
+
+          it 'adds an error on slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to_not be_empty
+          end
+        end
+
+        context "when the slug contains a symbol '@'" do
+          before do
+            subject.slug = '99-problems@'
+          end
+
+          it 'adds an error on slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to_not be_empty
+          end
+        end
+
+        context "when the slugs first character is '-'" do
+          before do
+            subject.slug = '-apply-for-a-license'
+          end
+
+          it 'adds an error on slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to_not be_empty
+          end
+        end
+
+        context "when the slugs last character is'-'" do
+          before do
+            subject.slug = 'apply-for-a-license-'
+          end
+
+          it 'adds an error on slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to_not be_empty
+          end
+        end
+
+        context "when the slug contains the character '_'" do
+          before do
+            subject.slug = '.apply_for_a_license'
+          end
+
+          it 'adds an error on slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to_not be_empty
+          end
+        end
+      end
+
+      describe 'with a valid slug' do
+        context 'when the slug only contains lowercase letters and hypens' do
+          before do
+            subject.slug = 'apply-for-a-license-to-do-something'
+          end
+
+          it 'does not add an error on the slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to be_empty
+          end
+        end
+
+        context "when the slug contains the character '.' " do
+          before do
+            subject.slug = 'example.com'
+          end
+
+          it 'does not add an error on the slug' do
+            subject.valid?
+            expect(subject.errors[:slug]).to be_empty
+          end
         end
       end
     end

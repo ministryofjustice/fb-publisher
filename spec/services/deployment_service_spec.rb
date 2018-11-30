@@ -337,7 +337,7 @@ describe DeploymentService do
   describe '.last_successful_deployment' do
     let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
     let(:service) do
-      Service.create!(name: 'test', slug: 'Test', git_repo_url: 'https://github.com/some-org/some-repo.git',
+      Service.create!(name: 'test', slug: 'test', git_repo_url: 'https://github.com/some-org/some-repo.git',
                       created_by_user: user)
     end
 
