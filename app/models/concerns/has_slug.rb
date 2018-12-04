@@ -5,7 +5,7 @@ module Concerns
     extend ActiveSupport::Concern
 
     included do
-      validates :slug, format: { with: /\A[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\z/,
+      validates :slug, format: { with: /\A[a-z0-9]+([-.a-z0-9]?[a-z0-9])*[a-z0-9]*\z/,
                                  message: I18n.t('errors.service.slug.invalid')},
                        uniqueness: true,
                        length: { maximum: 64, minimum: 3 }
