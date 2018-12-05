@@ -212,6 +212,8 @@ GEM
       bundler (>= 1.3.0)
       railties (= 5.2.1.1)
       sprockets-rails (>= 2.0.0)
+    rails-data-migrations (1.1.0)
+      rails (>= 4.0.0)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
@@ -364,6 +366,7 @@ DEPENDENCIES
   pundit
   rack-cors
   rails (~> 5.2.1.1)
+  rails-data-migrations
   resque
   rspec (~> 3.6.0)
   rspec-rails
