@@ -430,6 +430,10 @@ class KubernetesAdapter
   end
 
   def config_map(vars: {}, name:)
+    # Mapping of vars ensures that all values are quoted to ensure that 
+    # characters such as { do not cause the resulting YAML to be invalid
+    # NB. if this method is used to generate config maps that contain numbers
+    # this will need updating accordingly
     <<~ENDHEREDOC
     apiVersion: v1
     kind: ConfigMap
@@ -437,7 +441,7 @@ class KubernetesAdapter
       name: #{name}
       namespace: #{@environment.namespace}
     data:
-    #{vars.map {|k,v| "  #{k}: #{v}" }.join("\n")}
+    #{vars.map {|k,v| "#  {k}: \"#{v.gsub '"', '\"'}\"" }.join("\n")}
     ENDHEREDOC
   end
 
