@@ -8,6 +8,7 @@ class Team < ActiveRecord::Base
   has_many    :services, through: :permissions
 
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
+  validate :only_one_super_admin
 
   # A user can see teams created by them, or
   # for which they are a member
@@ -32,4 +33,7 @@ class Team < ActiveRecord::Base
 
   private
 
+  def only_one_super_admin
+    errors.add(:super_admin, I18n.t('errors.team.super_admin')) if Team.find_by_super_admin(true).present?
+  end
 end

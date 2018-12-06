@@ -42,4 +42,24 @@ describe Team do
       end
     end
   end
+
+  describe 'validation' do
+    let(:user) { User.create!(name: 'test user', email: 'test@example.com') }
+    let(:team) { Team.create!(name: 'Admin', super_admin: true, created_by_user: user) }
+
+    describe 'when creating a super admin' do
+      it 'is valid if no other super admin team exists' do
+        expect(team.errors[:super_admin]).to eq([])
+      end
+    end
+
+    describe 'when there is already a team with super admin rights' do
+      let(:another_team) { Team.create!(name: 'Another Team', super_admin: true, created_by_user: user)}
+
+      it 'is not valid if another super admin team exists' do
+        another_team.valid?
+        expect(another_team.errors[:super_admin]).to eq([I18n.t('errors.team.super_admin')])
+      end
+    end
+  end
 end
