@@ -5,9 +5,12 @@ module Concerns
     extend ActiveSupport::Concern
 
     included do
-      validates :slug, length: {maximum: 64, minimum: 3}, uniqueness: true
+      validates :slug, format: { with: /\A[a-z0-9]+([-.a-z0-9]?[a-z0-9])*[a-z0-9]*\z/,
+                                 message: I18n.t('errors.service.slug.invalid')},
+                       uniqueness: true,
+                       length: { maximum: 64, minimum: 3 }
       before_validation :generate_slug_if_blank!
-      
+
       def to_param
         slug
       end

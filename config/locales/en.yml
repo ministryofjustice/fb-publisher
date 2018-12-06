@@ -35,6 +35,8 @@ en:
       git_repo_url:
         not_valid_scheme: "must be a valid https: or file: URL"
         invalid_uri: "is not a valid https: or file: URL"
+      slug:
+        invalid: "is invalid (can only contain lower case letters or numbers, '-' or '.', and must start and end with a letter or number)"
   helpers:
     hint:
       service:
