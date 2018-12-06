@@ -12,7 +12,7 @@ describe GenericKubernetesPlatformAdapter do
     let(:user) { User.new(name: 'user', email: 'user@example.com') }
     let!(:service) { Service.create!(name: 'my service', created_by_user: user, git_repo_url: 'https://git/repo') }
     let!(:dev_param) do
-      ServiceConfigParam.create!(service: service, environment_slug: :dev, name: 'PARAM_1', value: 'dev value 1', last_updated_by_user: user)
+      ServiceConfigParam.create!(service: service, environment_slug: :dev, name: 'PARAM_1', value: 'dev "{value}\' 1', last_updated_by_user: user)
     end
     let!(:staging_param) do
       ServiceConfigParam.create!(service: service, environment_slug: :staging, name: 'PARAM_1', value: 'staging value 1', last_updated_by_user: user)
@@ -26,7 +26,7 @@ describe GenericKubernetesPlatformAdapter do
       expect(subject.kubernetes_adapter).to receive(:set_environment_vars).with(
         service: service,
         config_dir: config_dir,
-        vars: {'PARAM_1' => 'dev value 1', 'system_var_1' => 'system value 1'}
+        vars: {'PARAM_1' => 'dev "{value}\' 1', 'system_var_1' => 'system value 1'}
       ).and_return({'key' => 'value'})
       subject.configure_env_vars(service: service, config_dir: config_dir, system_config: system_config)
     end
