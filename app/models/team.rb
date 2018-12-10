@@ -34,6 +34,6 @@ class Team < ActiveRecord::Base
   private
 
   def only_one_super_admin
-    errors.add(:super_admin, I18n.t('errors.team.super_admin')) if Team.find_by(super_admin: true).present?
+    errors.add(:super_admin, I18n.t('errors.team.super_admin')) if Team.find_by(super_admin: true).present? && super_admin == true
   end
 end
