@@ -31,6 +31,14 @@ class ServicePolicy < ApplicationPolicy
 
   def is_editable_by?(user_id)
     user.id == record.created_by_user_id || \
-      Permission.for_user_id(user_id).where(service_id: record.id).exists?
+      Permission.for_user_id(user_id).where(service_id: record.id).exists? || \
+      super_admin?(user_id)
+  end
+
+  def super_admin?(user_id)
+    admin = Team.find_by(super_admin: true)
+    return false if admin.nil?
+
+    TeamMember.where(team_id: admin.id, user_id: user_id).exists?
   end
 end

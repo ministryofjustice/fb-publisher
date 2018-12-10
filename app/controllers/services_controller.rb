@@ -21,6 +21,7 @@ class ServicesController < ApplicationController
     @service = Service.new(service_params.merge(created_by_user: current_user))
     authorize(@service)
     if @service.save
+      add_to_super_admin_team(@service)
       redirect_to service_path(@service), notice: t(:success, scope: [:services, :create])
     else
       render :new
@@ -66,4 +67,12 @@ class ServicesController < ApplicationController
       render :edit
     end
   end
+
+  def add_to_super_admin_team(service)
+    admin = Team.find_by(super_admin: true)
+    return if admin.nil?
+
+    Permission.create(service_id: service.id, team_id: admin.id, created_by_user_id: current_user.id)
+  end
+
 end
