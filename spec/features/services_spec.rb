@@ -192,7 +192,7 @@ describe 'visiting /services' do
 
       context 'when I fill in the Service name' do
         before do
-          fill_in('Service name', with: name)
+          fill_in(I18n.t(:name, scope: [:helpers, :label, :service]), with: name)
         end
         context 'with a valid name' do
           let(:name) { 'My new service' }
@@ -209,7 +209,7 @@ describe 'visiting /services' do
 
           context 'and fill in the git repo url' do
             before do
-              fill_in('URL of the service config JSON Git repository', with: url)
+              fill_in(I18n.t(:git_repo_url, scope: [:helpers, :label, :service]), with: url)
             end
             context 'with a valid https git repo url' do
               let(:url) { 'https://git.example.com/repo.git' }
@@ -239,8 +239,8 @@ describe 'visiting /services' do
       let(:service_name) { 'My First Service' }
       before do
         visit '/services/new'
-        fill_in('Service name', with: service_name)
-        fill_in('URL of the service config JSON Git repository', with: 'https://repo.url/repo.git')
+        fill_in(I18n.t(:name, scope: [:helpers, :label, :service]), with: service_name)
+        fill_in(I18n.t(:git_repo_url, scope: [:helpers, :label, :service]), with: 'https://repo.url/repo.git')
         within('#content') do
           click_on(I18n.t(:submit, scope: [:services, :new, :form]))
         end
@@ -281,7 +281,7 @@ describe 'visiting /services' do
 
         describe 'changing the name' do
           before do
-            fill_in('Service name', with: new_name)
+            fill_in(I18n.t(:name, scope: [:helpers, :label, :service]), with: new_name)
             click_button 'Update Service'
           end
           context 'to something valid' do
@@ -300,7 +300,7 @@ describe 'visiting /services' do
             let(:new_name) { '?' }
 
             it 'shows me an error message' do
-              expect(page).to have_content('Service name is too short')
+              expect(page).to have_content('Form name is too short')
             end
 
             it 'keeps me editing my service' do
@@ -313,7 +313,7 @@ describe 'visiting /services' do
           context 'to something valid' do
             let(:slug_name) { 'test-slug' }
             before do
-              fill_in('Service "slug"', with: slug_name)
+              fill_in(I18n.t(:slug, scope: [:helpers, :label, :service]), with: slug_name)
               click_button('Update Service')
             end
 
@@ -344,7 +344,7 @@ describe 'visiting /services' do
           context 'to something invalid' do
             let(:slug_name) { '3' }
             before do
-              fill_in('Service "slug"', with: slug_name)
+              fill_in(I18n.t(:slug, scope: [:helpers, :label, :service]), with: slug_name)
             end
 
             it 'does not update the service slug' do
