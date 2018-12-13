@@ -9,7 +9,7 @@ describe ServicesController do
   describe '#index' do
     context 'for a logged-in user' do
       let(:user) { User.create!(name: 'user', email: 'user@example.com') }
-      let(:user_services)  do
+      let(:user_services) do
         [
           Service.create!(name: 'service 1', git_repo_url: 'https://some/repo/1', created_by_user_id: user.id),
           Service.create!(name: 'service 2', git_repo_url: 'https://some/repo/2', created_by_user_id: user.id)
@@ -22,7 +22,7 @@ describe ServicesController do
       end
 
       it 'retrieves services visible_to that user' do
-        expect(Service).to receive(:visible_to).with(user).and_return(user_services)
+        expect(ServicePolicy.new(user, user_services).record).to eq(user_services)
         get :index
       end
     end
