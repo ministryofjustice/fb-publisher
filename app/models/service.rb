@@ -21,7 +21,6 @@ class Service < ActiveRecord::Base
   # Which will not scale well past a few hundred IDs
   def self.visible_to(user_or_user_id)
     user_id = user_or_user_id.is_a?(User) ? user_or_user_id.id : user_or_user_id
-
     service_ids = where(created_by_user_id: user_id).pluck(:id)
     service_ids += with_permissions_for_user(user_id).pluck(:id)
 

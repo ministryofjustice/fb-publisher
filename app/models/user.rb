@@ -23,4 +23,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def super_admin?
+    admin = Team.find_by(super_admin: true)
+    return false if admin.nil?
+
+    TeamMember.where(team_id: admin.id, user_id: id).exists?
+  end
 end

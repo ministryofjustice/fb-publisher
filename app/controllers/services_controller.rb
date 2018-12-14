@@ -8,8 +8,7 @@ class ServicesController < ApplicationController
     params[:per_page] ||= 10
     params[:page] ||= 1
 
-    authorize(Service)
-    @pagy, @services = pagy_array((Service.visible_to(current_user).sort_by &:name), items: params[:per_page])
+    @pagy, @services = pagy_array((policy_scope(Service).sort_by &:name), items: params[:per_page])
   end
 
   def new
