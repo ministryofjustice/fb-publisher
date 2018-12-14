@@ -40,6 +40,104 @@ describe 'visiting /services' do
       end
     end
 
+    describe 'filtering service list' do
+      let(:another_user) { User.find_or_create_by(name: 'another user', email: 'another@example.justice.gov.uk') }
+      let(:admin_user) { User.find_or_create_by(name: 'admin user', email: 'admin@example.justice.gov.uk') }
+      let(:admin_team) { Team.create!(name: 'Super Admin', created_by_user_id: admin_user.id, super_admin: true) }
+
+      before do
+        TeamMember.create!(user_id: admin_user.id, team_id: admin_team.id, created_by_user_id: user.id)
+        named_service('Test Service', user)
+        named_service('Leavers Service', user)
+        named_service('Joiners Service', user)
+        named_service('IOJ Form', another_user)
+        named_service('Flexible Working Service', another_user)
+        named_service('Admin Form', admin_user)
+      end
+
+      describe 'when no filtering is applied' do
+        before do
+          visit '/services'
+        end
+
+        it 'list includes Test Service' do
+          within('table') do
+            expect(page).to have_content('Test Service')
+          end
+        end
+
+        it 'list includes Leavers Service' do
+          within('table') do
+            expect(page).to have_content('Leavers Service')
+          end
+        end
+
+        it 'list includes Joiners Service' do
+          within('table') do
+            expect(page).to have_content('Joiners Service')
+          end
+        end
+
+        it 'list does not include IOJ Service' do
+          within('table') do
+            expect(page).not_to have_content('IOJ Service')
+          end
+        end
+
+        it 'list does not include Admin Service' do
+          expect(page).not_to have_content('Admin Service')
+        end
+      end
+
+      describe 'when filtering is applied that matches a form available to the user' do
+        before do
+          visit '/services?utf8=&query=ers&commit=Filter'
+        end
+
+        it 'list includes Leavers Service' do
+          within('table') do
+            expect(page).to have_content('Leavers Service')
+          end
+        end
+
+        it 'list includes Joiners Service' do
+          within('table') do
+            expect(page).to have_content('Joiners Service')
+          end
+        end
+
+        it 'list does not includes Test Service' do
+          within('table') do
+            expect(page).not_to have_content('Test Service')
+          end
+        end
+      end
+
+      describe 'when filtering is applied that does not match a form available to the user' do
+        before do
+          visit '/services?utf8=&query=working&commit=Filter'
+        end
+
+        it 'list does not includes Flexible Working Service' do
+          within('table') do
+            expect(page).not_to have_content('Flexible Working Service')
+          end
+        end
+
+        it 'list includes ALL available forms user is able to access' do
+          expect(page).to have_content('Test Service')
+          expect(page).to have_content('Joiners Service')
+          expect(page).to have_content('Leavers Service')
+        end
+      end
+
+      def named_service(name, user)
+        Service.create(name: name,
+                       git_repo_url: 'https://github.com/ministryofjustice/fb-sample-json.git',
+                       created_by_user: user)
+      end
+    end
+
     describe 'viewing service list' do
       context 'when there are more than 10 services' do
         before do

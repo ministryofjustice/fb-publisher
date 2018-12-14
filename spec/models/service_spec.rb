@@ -318,4 +318,20 @@ describe Service do
       end
     end
   end
+
+  describe '.contains' do
+    let(:user) { User.create!(name: 'test user', email: 'test@example.com') }
+    let(:other_user) { User.create!(name: 'Other User', email: 'otheruser@example.com') }
+    let(:example_service) { Service.create(name: 'Example', git_repo_url: 'https://some/repo', created_by_user: user) }
+    let(:user_service) { Service.create(name: 'Test Service', git_repo_url: 'https://some/repo', created_by_user: user) }
+    let(:deed_poll_service) { Service.create(name: 'Deed Poll', git_repo_url: 'https://some/repo', created_by_user: user) }
+
+    it "returns any services name that contains the word 'test'" do
+      expect(Service.contains('test')).to include(user_service)
+    end
+
+    it 'returns an empty record if an empty string is entered' do
+      expect(Service.contains('')).eql?([])
+    end
+  end
 end

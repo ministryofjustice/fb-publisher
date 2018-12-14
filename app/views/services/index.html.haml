@@ -3,10 +3,10 @@
     = t('.heading')
 
 %div.grid-row.pad-bottom
-  %div.column-two-thirds
-    = link_to t('.new_service'), new_service_path, class: 'button button-cta'
   %div.column-one-third
-    %p
+    = link_to t('.new_service'), new_service_path, class: 'button button-cta'
+  %div.column-two-thirds.right-align
+    = render partial: 'filter'
 
 - if @services.empty?
   %p
@@ -20,4 +20,5 @@
         = t('.actions')
     %tbody
       = render partial: 'service', collection: @services
+%div.pad-top
 = pagy_nav(@pagy).html_safe

@@ -200,6 +200,9 @@ en:
       checking: 'checking...'
       check_now: 'Check now'
       no_deployment: 'Not yet deployed'
+    filter:
+      label: 'Filter by form name:'
+      submit: Filter
     form:
       token: Secret token (click to show/regenerate)
     index:

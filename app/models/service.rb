@@ -16,6 +16,8 @@ class Service < ActiveRecord::Base
 
   before_validation :ensure_token_is_present
 
+  scope :contains, -> (name) { where("lower(name) like ?", "%#{name}%".downcase)}
+
   # NOTE: uses same naive implementation as Team.visible_to -
   # two separate queries for IDs, then a single WHERE id IN(?)
   # Which will not scale well past a few hundred IDs
