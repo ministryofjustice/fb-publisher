@@ -14,6 +14,9 @@ class KubernetesAdapter
         name: config_map_name(service: service)
       )
     end
+    filedata = File.read(config_file_path)
+    Rails.logger.info('FILEDATA')
+    Rails.logger.info(filedata)
     create_or_update_config_map(
       file: config_file_path,
       name: config_map_name(service: service)
@@ -441,7 +444,7 @@ class KubernetesAdapter
       name: #{name}
       namespace: #{@environment.namespace}
     data:
-    #{vars.map {|k,v| "#  {k}: \"#{v.gsub '"', '\"'}\"" }.join("\n")}
+    #{vars.map {|k,v| "  #{k}: \"#{v.gsub '"', '\"'}\"" }.join("\n")}
     ENDHEREDOC
   end
 
