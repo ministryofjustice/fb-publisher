@@ -58,5 +58,44 @@ describe "visiting a service's config params page" do
                                                    name: changed_name, environment: environment))
       end
     end
+
+    describe 'when a user is part of a team' do
+      let(:another_user) { User.create!(name: 'another user', email: 'another_user@example.justice.gov.uk') }
+      let(:team) { Team.create!(name: 'MOJ Team', created_by_user_id: another_user.id) }
+
+      before do
+        TeamMember.create!(user_id: user.id, team_id: team.id, created_by_user: another_user)
+        TeamMember.create!(user_id: another_user.id, team_id: team.id, created_by_user: another_user)
+      end
+
+      context 'they can see the config params on a form edited by another user' do
+        let(:another_service) do
+          Service.create!(name: 'Another Service',
+                          created_by_user: another_user,
+                          git_repo_url: 'https://github.com/some_org/some_repo.git')
+        end
+        let(:config_name) { 'HELLO' }
+        let(:config_value) { 'World' }
+
+        before do
+          Permission.create!(service_id: another_service.id, team_id: team.id, created_by_user_id: another_user.id)
+          ServiceConfigParam.create!(environment_slug: 'dev',
+                                     name: config_name,
+                                     value: config_value,
+                                     last_updated_by_user_id: another_user.id,
+                                     service_id: another_service.id)
+
+          visit "/services/#{another_service.slug}/config_params"
+        end
+
+        it "shows the config name set for 'Another Service'" do
+          expect(page).to have_content(config_name)
+        end
+
+        it "shows the config value set for 'Another Service'" do
+          expect(page).to have_content(config_value)
+        end
+      end
+    end
   end
 end
