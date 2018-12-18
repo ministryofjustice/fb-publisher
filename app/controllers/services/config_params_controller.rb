@@ -10,10 +10,12 @@ class Services::ConfigParamsController < ApplicationController
   def index
     params[:env] ||= 'dev'
     params[:order] ||= 'name'
-    @config_params = @service.service_config_params
-                            .visible_to(@current_user)
-                            .where(environment_slug: params[:env])
-                            .order(params[:order] || :name)
+
+    @config_params = policy_scope(Service).find_by(id: @service.id)
+                                          .service_config_params
+                                          .where(environment_slug: params[:env])
+                                          .order(params[:order] || :name)
+
     @environments = ServiceEnvironment.all
     @config_param = ServiceConfigParam.new( service: @service,
                                             environment_slug: params[:env] )
