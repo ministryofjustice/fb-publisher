@@ -8,10 +8,10 @@ class ServicesController < ApplicationController
     params[:per_page] ||= 10
     params[:page] ||= 1
 
-    filter_service = policy_scope(Service).contains(filter_params[:query]).sort_by &:name
-    filter_service = policy_scope(Service).sort_by &:name if filter_service.empty?
+    services = policy_scope(Service).contains(filter_params[:query]).sort_by &:name
+    services = policy_scope(Service).sort_by &:name if services.empty?
 
-    @pagy, @services = pagy_array(filter_service, items: params[:per_page])
+    @pagy, @services = pagy_array(services, items: params[:per_page])
   end
 
   def new
