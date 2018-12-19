@@ -8,7 +8,10 @@ class ServicesController < ApplicationController
     params[:per_page] ||= 10
     params[:page] ||= 1
 
-    @pagy, @services = pagy_array((policy_scope(Service).sort_by &:name), items: params[:per_page])
+    services = policy_scope(Service).contains(filter_params[:query]).sort_by &:name
+    services = policy_scope(Service).sort_by &:name if services.empty?
+
+    @pagy, @services = pagy_array(services, items: params[:per_page])
   end
 
   def new
@@ -56,6 +59,10 @@ class ServicesController < ApplicationController
 
   def service_params
     params[:service].permit([:git_repo_url, :name, :slug])
+  end
+
+  def filter_params
+    params.permit([:query])
   end
 
   def redirect(service, params)
