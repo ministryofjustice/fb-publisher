@@ -31,6 +31,10 @@
 
 en:
   errors:
+    pundit:
+      pundit_not_authorized_error: You are not authorised to perform this action
+      pundit_not_defined_error: The action you requested could not be found
+      default: Something went wrong %{message}
     service:
       git_repo_url:
         not_valid_scheme: "must be a valid https: or file: URL"
@@ -267,7 +271,6 @@ en:
       success: Team "%{team}" deleted successfully
     edit:
       heading: Editing '%{name}'
-
     environment:
       checking: 'checking...'
       check_now: 'Check now'
@@ -341,7 +344,6 @@ en:
         failed_retryable: Failed (retrying)
         failed_non_retryable: Failed
         queued: Queued
-
   user_sessions:
     destroy:
       success: "Signed out successfully"
