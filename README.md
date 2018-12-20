@@ -19,6 +19,10 @@ Form Builder Publisher Web application
 
 # Setup
 
+## To deploy and run on Cloud Platforms
+
+See `fb-publisher-deploy`
+
 ## To run via Docker
 
 ### Environment Variables
