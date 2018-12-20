@@ -31,8 +31,11 @@ describe TeamPolicy do
   end
 
   describe 'show?' do
-    it 'is always true' do
-      expect(subject.show?).to eq(true)
+    before do
+      allow(subject).to receive(:is_editable_by?).with(user.id).and_return('is editable by result')
+    end
+    it 'is the value of is_editable_by? for the user_id' do
+      expect(subject.edit?).to eq(subject.send(:is_editable_by?, user.id))
     end
   end
 
@@ -41,7 +44,7 @@ describe TeamPolicy do
       allow(subject).to receive(:is_editable_by?).with(user.id).and_return('is editable by result')
     end
     it 'is the value of is_editable_by? for the user_id' do
-      expect(subject.edit?).to eq(subject.send(:is_editable_by?,user.id))
+      expect(subject.edit?).to eq(subject.send(:is_editable_by?, user.id))
     end
   end
 
