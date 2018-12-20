@@ -18,9 +18,6 @@
     %span{ class: ['status', ['status', deployment.status].join('-')].join(' ') }
       = t( deployment.status, scope: [:shared, :service_deployments, :status] )
   %td
-    - if can?(:show, deployment.created_by_user)
-      = link_to deployment.created_by_user.name, user_path(deployment.created_by_user)
-    - else
-      = deployment.created_by_user.name
+    = deployment.created_by_user.name
   %td
     = link_to t('.view_log'), log_service_deployment_path(@service, deployment)
