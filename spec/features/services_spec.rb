@@ -354,5 +354,43 @@ describe 'visiting /services' do
         end
       end
     end
+
+    context 'accessing a form via url that you do not have permissions to view' do
+      let(:other_user) {User.create(name: 'other user', email: 'other_user@example.justice.gov.uk') }
+      let(:other_service) do
+        Service.create(name: 'Leavers Form',
+                       git_repo_url: 'https://some-repo.git',
+                       created_by_user: other_user)
+      end
+      before do
+        visit "/services/#{other_service.slug}"
+      end
+
+      it 'redirects user to services index page' do
+        within('h1') do
+          expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
+        end
+      end
+
+      it 'displays an error alert message' do
+        expect(page).to have_content(I18n.t(:pundit_not_authorized_error, scope: [:errors, :pundit]))
+      end
+    end
+
+    describe 'entering a form name via url that does not exist' do
+      before do
+        visit '/services/a-non-existent-form'
+      end
+
+      it 'redirects user to services index page' do
+        within('h1') do
+          expect(page).to have_content(I18n.t(:heading, scope: [:services, :index]))
+        end
+      end
+
+      it 'displays an error alert message' do
+        expect(page).to have_content(I18n.t(:pundit_not_defined_error, scope: [:errors, :pundit]))
+      end
+    end
   end
 end
