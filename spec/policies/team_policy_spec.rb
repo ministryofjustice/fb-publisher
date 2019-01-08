@@ -30,48 +30,39 @@ describe TeamPolicy do
     end
   end
 
-  describe 'show?' do
+  describe 'receive is_editable_by?' do
     before do
-      allow(subject).to receive(:is_editable_by?).with(user.id).and_return('is editable by result')
+      allow(subject).to receive(:is_editable_by?).with(user.id).and_return(:result_from_is_editable_by?)
     end
-    it 'is the value of is_editable_by? for the user_id' do
-      expect(subject.edit?).to eq(subject.send(:is_editable_by?, user.id))
-    end
-  end
 
-  describe 'edit?' do
-    before do
-      allow(subject).to receive(:is_editable_by?).with(user.id).and_return('is editable by result')
+    describe 'show?' do
+      it 'is the value of is_editable_by? for the user_id' do
+        expect(subject.show?).to eq(:result_from_is_editable_by?)
+      end
     end
-    it 'is the value of is_editable_by? for the user_id' do
-      expect(subject.edit?).to eq(subject.send(:is_editable_by?, user.id))
-    end
-  end
 
-  describe 'create?' do
-    before do
-      allow(subject).to receive(:is_editable_by?).with(user.id).and_return('is editable by result')
+    describe 'edit?' do
+      it 'is the value of is_editable_by? for the user_id' do
+        expect(subject.edit?).to eq(:result_from_is_editable_by?)
+      end
     end
-    it 'is the value of is_editable_by? for the user_id' do
-      expect(subject.create?).to eq(subject.send(:is_editable_by?,user.id))
-    end
-  end
 
-  describe 'update?' do
-    before do
-      allow(subject).to receive(:is_editable_by?).with(user.id).and_return('is editable by result')
+    describe 'create?' do
+      it 'is the value of is_editable_by? for the user_id' do
+        expect(subject.create?).to eq(:result_from_is_editable_by?)
+      end
     end
-    it 'is the value of is_editable_by? for the user_id' do
-      expect(subject.update?).to eq(subject.send(:is_editable_by?,user.id))
-    end
-  end
 
-  describe 'destroy?' do
-    before do
-      allow(subject).to receive(:is_editable_by?).with(user.id).and_return('is editable by result')
+    describe 'update?' do
+      it 'is the value of is_editable_by? for the user_id' do
+        expect(subject.update?).to eq(:result_from_is_editable_by?)
+      end
     end
-    it 'is the value of is_editable_by? for the user_id' do
-      expect(subject.destroy?).to eq(subject.send(:is_editable_by?,user.id))
+
+    describe 'destroy?' do
+      it 'is the value of is_editable_by? for the user_id' do
+        expect(subject.destroy?).to eq(:result_from_is_editable_by?)
+      end
     end
   end
 
@@ -82,7 +73,7 @@ describe TeamPolicy do
       end
 
       it 'is true' do
-        expect(subject.send(:is_editable_by?,user.id)).to eq(true)
+        expect(subject.send(:is_editable_by?, user.id)).to eq(true)
       end
     end
 
