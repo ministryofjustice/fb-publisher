@@ -1,3 +1,7 @@
+dev:
+	$(eval export env_stub=dev)
+	@true
+
 test:
 	$(eval export env_stub=test)
 	@true
