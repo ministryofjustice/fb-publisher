@@ -1,6 +1,9 @@
 %h1.heading-xlarge
   = t('.heading')
 
+= link_to t('.new_team'), new_team_path, class: 'button button-cta'
+
+%div.pad-bottom
 - if @teams.empty?
   %p
     = t('.no_teams_yet')
@@ -14,4 +17,5 @@
     %tbody
       = render partial: 'team', collection: @teams
 
-= link_to t('.new_team'), new_team_path, class: 'button button-cta'
+%div.pad-top
+= pagy_nav(@pagy).html_safe

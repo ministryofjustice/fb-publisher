@@ -7,27 +7,71 @@ describe 'visiting /teams' do
       login_as!(user)
     end
 
-    context 'accessing a team via url that you did not create nor are not a member of' do
-      let(:other_user) {User.create(name: 'other user', email: 'other_user@example.justice.gov.uk') }
-      let(:team) do
-        Team.create!(name: 'Formbuilder', created_by_user: other_user)
-      end
-      before do
-        visit "/teams/#{team.slug}"
+    describe 'access team show page' do
+      context 'accessing a team via url that you did not create nor are not a member of' do
+        let(:other_user) {User.create(name: 'other user', email: 'other_user@example.justice.gov.uk') }
+        let(:team) do
+          Team.create!(name: 'Formbuilder', created_by_user: other_user)
+        end
+
+        before do
+          visit "/teams/#{team.slug}"
+        end
+
+        it 'shows flash not authorised error message' do
+          expect(page).to have_content(I18n.t(:pundit_not_authorized_error, scope: [:errors, :pundit]))
+        end
       end
 
-      it 'shows flash not authorised error message' do
-        expect(page).to have_content(I18n.t(:pundit_not_authorized_error, scope: [:errors, :pundit]))
+      context 'attempting to access a non-existing team via url' do
+        before do
+          visit "/teams/not-a-real-team"
+        end
+
+        it 'shows flash not found error message' do
+          expect(page).to have_content(I18n.t(:pundit_not_defined_error, scope: [:errors, :pundit]))
+        end
       end
     end
 
-    context 'attempting to access a non-existing team via url' do
-      before do
-        visit "/teams/not-a-real-team"
+    describe 'viewing team index page' do
+      context 'when there are more than 10 teams' do
+        before do
+          16.times { |i| create_team(i) }
+          visit '/teams'
+        end
+
+        it 'enables link to the next page' do
+          expect(page).to have_link('Next')
+        end
+
+        context 'if not on the first page' do
+          before do
+            click_link('Next')
+          end
+          it 'enables link to the previous page' do
+            expect(page).to have_link('Prev')
+          end
+        end
       end
 
-      it 'shows flash not found error message' do
-        expect(page).to have_content(I18n.t(:pundit_not_defined_error, scope: [:errors, :pundit]))
+      context 'when there are less than 10 teams' do
+        before do
+          9.times { |i| create_team(i) }
+          visit '/teams'
+        end
+
+        it 'does not enable a link to the next page' do
+          expect(page).to_not have_link('Next')
+        end
+
+        it 'does not enable link to the previous page' do
+          expect(page).to_not have_link('Prev')
+        end
+      end
+
+      def create_team(number)
+        Team.create(name: 'Team ' + number.to_s, created_by_user: user)
       end
     end
   end

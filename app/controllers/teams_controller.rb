@@ -2,9 +2,14 @@ class TeamsController < ApplicationController
   before_action :require_user!
   before_action :load_and_authorize_resource!, only: [:edit, :update, :destroy, :show]
 
+  include Pagy::Backend
+
   def index
-    authorize(Team)
-    @teams = Team.visible_to(current_user)
+    params[:per_page] ||= 10
+    params[:page] ||= 1
+
+    teams = Team.visible_to(@current_user)
+    @pagy, @teams = pagy_array(teams, items: params[:per_page])
   end
 
   def new
@@ -22,8 +27,7 @@ class TeamsController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def destroy
     @team.destroy!
@@ -38,9 +42,7 @@ class TeamsController < ApplicationController
     end
   end
 
-  def show
-
-  end
+  def show; end
 
   private
 
@@ -54,11 +56,3 @@ class TeamsController < ApplicationController
   end
 end
 
-
-class TeamsController < ApplicationController
-  before_action :require_user!
-
-  def index
-    @teams = Team.visible_to(@current_user)
-  end
-end
