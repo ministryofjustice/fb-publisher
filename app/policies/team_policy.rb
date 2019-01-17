@@ -8,7 +8,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def show?
-    true
+    is_editable_by?(user.id)
   end
 
   def edit?
