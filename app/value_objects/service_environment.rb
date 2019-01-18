@@ -38,7 +38,8 @@ class ServiceEnvironment
   end
 
   def url_for(service)
-    as_string = [protocol, [service.slug, slug].join('-'), '.', url_root].join
+    # TODO: pass in PLATFORM_ENV as an argument rather than using a global environment variable?
+    as_string = [protocol, [service.slug, ENV['PLATFORM_ENV'], slug].join('-'), '.', url_root].join
     URI.join(as_string, '/').to_s
   end
 
