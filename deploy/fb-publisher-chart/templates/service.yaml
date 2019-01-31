@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: "fb-publisher-svc-{{ .Values.environmentName }}"
+  labels:
+    app: "fb-publisher-web-{{ .Values.environmentName }}"
+    appGroup: "fb-publisher"
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 3000
+  selector:
+    app: "fb-publisher-web-{{ .Values.environmentName }}"

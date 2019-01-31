@@ -1,5 +1,23 @@
 {
   "name": "fb-publisher",
   "private": true,
-  "dependencies": {}
+  "version": "1.0.0",
+  "description": "Form Builder Submitter",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ministryofjustice/fb-publisher.git"
+  },
+  "author": "Alex Robinson <alex.robinson@digital.justice.gov.uk>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ministryofjustice/fb-publisher/issues"
+  },
+  "homepage": "https://github.com/ministryofjustice/fb-publisher#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@ministryofjustice/fb-deploy-utils": "^1.0.1"
+  }
 }

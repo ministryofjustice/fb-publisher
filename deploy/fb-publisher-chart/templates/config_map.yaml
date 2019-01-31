@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fb-publisher-env-{{ .Values.environmentName }}
+  namespace: formbuilder-publisher-{{ .Values.environmentName }}
+data:
+  PLATFORM_ENV: {{ .Values.environmentName }}
+  AUTH0_DOMAIN: mojds-trial.eu.auth0.com
+  RAILS_ENV: production
+  RAILS_FULL_URL_ROOT: https://fb-publisher-{{ .Values.environmentName }}.apps.cloud-platform-live-0.k8s.integration.dsd.io
+  REDIS_PROTOCOL: rediss://
+  FB_DOCUMENTATION_ROOT_URL: https://ministryofjustice.github.io/cloud-platform-user-docs/
+  RAILS_SERVE_STATIC_FILES: "true"
+  RUNNER_IMAGE_REPO: 926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder/fb-runner-node
+  QUEUES: "*"
