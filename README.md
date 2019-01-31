@@ -21,7 +21,7 @@ Form Builder Publisher Web application
 
 ## To deploy and run on Cloud Platforms
 
-See `fb-publisher-deploy`
+See [deployment instructions](DEPLOY.md)
 
 ## To run via Docker
 
