@@ -95,8 +95,8 @@ See the `Makefile` for more info.
     Auth0 credentials
 
   - `secrets/$PLATFORM_ENV-$DEPLOYMENT_ENV-secrets-values.yaml`
-    - `KUBECTL_BEARER_TOKEN_SUFFIX`
-      Can be determined from the 5-letter suffix of the secret beginning `formbuilder-publisher-workers-$PLATFORM_ENV-token-` created in the `formbuilder-publisher-$PLATFORM_ENV` namespace
+    - `KUBECTL_BEARER_TOKEN`
+      Can be determined from the secret called `formbuilder-publisher-workers-$PLATFORM_ENV-token-XXXXX` created in the `formbuilder-publisher-$PLATFORM_ENV` namespace
     - `secret_key_base`
       Rails secret
 
