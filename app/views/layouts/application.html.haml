@@ -9,7 +9,6 @@
   = t('.logo_link_title')
 
 = content_for :body_end do
-  = render partial: 'layouts/debug', locals: {var: current_user, var_name: 'current_user'}
   .javascript
     = javascript_include_tag "application.js"
 
