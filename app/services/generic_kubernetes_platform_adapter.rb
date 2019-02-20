@@ -13,7 +13,12 @@ class GenericKubernetesPlatformAdapter
       .where(environment_slug: environment.slug)
       .order(:name)
     )
-
+    Rails.logger.info('environment.slug')
+    Rails.logger.info(environment.slug)
+    Rails.logger.info('env_vars')
+    Rails.logger.info(env_vars.inspect)
+    Rails.logger.info('system_config')
+    Rails.logger.info(system_config.inspect)
     begin
       kubernetes_adapter.set_environment_vars(
         vars: env_vars.merge(system_config),
@@ -72,7 +77,7 @@ class GenericKubernetesPlatformAdapter
   end
 
   def token_secret_name(service)
-    "fb-service-#{service.slug}-token-#{@environment.slug}"
+    "fb-service-#{service.slug}-token-#{ENV['PLATFORM_ENV']}-#{@environment.slug}"
   end
 
   def default_runner_image_ref(
@@ -80,6 +85,6 @@ class GenericKubernetesPlatformAdapter
     env_slug: @environment.slug
   )
     # shiny new general-purpose runner:
-    "#{runner_repo}:latest-#{env_slug}"
+    "#{runner_repo}:latest-#{ENV['PLATFORM_ENV']}"
   end
 end

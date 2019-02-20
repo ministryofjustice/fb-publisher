@@ -41,10 +41,14 @@ describe ServiceEnvironment do
     subject { ServiceEnvironment.new(protocol: 'myprotocol://', url_root:'root.host.name', slug: 'newenv') }
 
     context 'given a service' do
+      before do
+        allow(ENV).to receive(:[]).with('PLATFORM_ENV').and_return('urlforPlatformEnv')
+      end
       let(:service){ Service.new(slug: 'my-service-slug')}
-
+      # # NB. this next line does not clean up then PLATFORM_ENV environment variable
+      # ENV['PLATFORM_ENV'] = 'platformenv'
       it 'returns a string combining the protocol, slug+env, and url_root, ending with a slash' do
-        expect(subject.url_for(service)).to eq('myprotocol://my-service-slug-newenv.root.host.name/')
+        expect(subject.url_for(service)).to eq('myprotocol://my-service-slug-urlforPlatformEnv-newenv.root.host.name/')
       end
     end
   end

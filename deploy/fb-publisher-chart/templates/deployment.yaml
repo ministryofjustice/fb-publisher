@@ -1,0 +1,143 @@
+---
+# web front-end
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "fb-publisher-web-{{ .Values.environmentName }}"
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "fb-publisher-web-{{ .Values.environmentName }}"
+        appGroup: "fb-publisher"
+        tier: "frontend"
+    spec:
+      containers:
+      - name: "fb-publisher-web-{{ .Values.environmentName }}"
+        image: "926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder/fb-publisher-web:latest-{{ .Values.environmentName }}"
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 3000
+        # non-secret env vars
+        # defined in config_map.yaml
+        envFrom:
+          - configMapRef:
+              name: fb-publisher-env-{{ .Values.environmentName }}
+        env:
+          # external secrets
+          # defined in secrets.yml
+          - name: AUTH0_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: auth0_client_id
+          - name: AUTH0_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: auth0_client_secret
+          # secrets created by terraform
+          # which may or may not depend on values
+          # canonically defined in secrets.tfvars
+          # Some assets aren't loading properly yet
+          # ...maybe an issue with how they're referenced,
+          # maybe something else - re-enabled this later
+          # - name: RAILS_ASSET_HOST
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: fb-publisher-infrastructure-{{ .Values.environmentName }}
+          #       key: cloudfront_host
+          #
+          # Created by cloud-platforms-environments
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: rds-instance-formbuilder-publisher-{{ .Values.environmentName }}
+                key: url
+          - name: REDIS_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: elasticache-formbuilder-publisher-{{ .Values.environmentName }}
+                key: auth_token
+          - name: REDIS_URL
+            valueFrom:
+              secretKeyRef:
+                name: elasticache-formbuilder-publisher-{{ .Values.environmentName }}
+                key: primary_endpoint_address
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: secret_key_base
+---
+# workers
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "fb-publisher-workers-{{ .Values.environmentName }}"
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "fb-publisher-workers-{{ .Values.environmentName }}"
+        appGroup: "fb-publisher"
+        tier: "workers"
+    spec:
+      serviceAccountName: "formbuilder-publisher-workers-{{ .Values.environmentName }}"
+      containers:
+      - name: "fb-publisher-worker"
+        image: "926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder/fb-publisher-worker:latest-{{ .Values.environmentName }}"
+        imagePullPolicy: Always
+        # command:
+        #   - "cd /var/www/fb-publisher && bundle exec rake resque:work"
+        # ports:
+        #   - containerPort: 3000
+        # non-secret env vars
+        # defined in config_map.yaml
+        envFrom:
+          - configMapRef:
+              name: fb-publisher-env-{{ .Values.environmentName }}
+        env:
+          # external secrets
+          # defined in secrets.yml
+          - name: AUTH0_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: auth0_client_id
+          - name: AUTH0_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: auth0_client_secret
+          # secrets created by terraform
+          # defined in secrets.tfvars
+          #
+          # Created by cloud-platforms-environments
+          - name: KUBECTL_BEARER_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.KUBECTL_BEARER_TOKEN }}
+                key: token
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: rds-instance-formbuilder-publisher-{{ .Values.environmentName }}
+                key: url
+          - name: REDIS_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: elasticache-formbuilder-publisher-{{ .Values.environmentName }}
+                key: auth_token
+          - name: REDIS_URL
+            valueFrom:
+              secretKeyRef:
+                name: elasticache-formbuilder-publisher-{{ .Values.environmentName }}
+                key: primary_endpoint_address
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: secret_key_base

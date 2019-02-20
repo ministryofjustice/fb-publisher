@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "fb-publisher-ing-{{ .Values.environmentName }}"
+spec:
+  rules:
+  - host: fb-publisher-{{ .Values.environmentName }}.apps.cloud-platform-live-0.k8s.integration.dsd.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: fb-publisher-svc-{{ .Values.environmentName }}
+          servicePort: 80

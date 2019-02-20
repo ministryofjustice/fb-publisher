@@ -437,6 +437,8 @@ class KubernetesAdapter
     # characters such as { do not cause the resulting YAML to be invalid
     # NB. if this method is used to generate config maps that contain numbers
     # this will need updating accordingly
+    Rails.logger.info('config_map VARS')
+    Rails.logger.info(vars.inspect)
     <<~ENDHEREDOC
     apiVersion: v1
     kind: ConfigMap

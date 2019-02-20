@@ -1,29 +1,6 @@
-.byebug_history
-.dockerignore
-.env
-.*.env
-.git
-log/*
-tmp/*
-
-# Mac Finder image thumbnail dbs
-.DS_Store
-
-# Ignore bundler config.
-/.bundle
-
-# Ignore uploaded files in development
-/storage/*
-
-/node_modules
-/yarn-error.log
-
-# Ignore assets - we precompile them as part of the docker build
-/public/assets
-
-# dotenv gem loads .env files automatically
-.env
-*.env
-
-# test coverage reports
-/coverage
+deploy/
+scripts/
+tmp/
+node_modules/
+package.json
+package_lock.json
