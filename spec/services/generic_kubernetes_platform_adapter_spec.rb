@@ -166,11 +166,9 @@ describe GenericKubernetesPlatformAdapter do
     end
   end
 
-  # TODO: understand why the first context using allow(ENV) and the second explicitly setting the  ENV var seems to be the only combo that works
   describe 'default_runner_image_ref' do
     context 'given a runner_repo' do
       before do
-        # ENV['PLATFORM_ENV'] = 'platformEnv'
         allow(ENV).to receive(:[]).with('PLATFORM_ENV').and_return('runnerImagePlatformEnv')
       end
       let(:args) { {runner_repo: 'my-repo'} }
@@ -191,8 +189,8 @@ describe GenericKubernetesPlatformAdapter do
     context 'given no runner_repo' do
       let(:args) { {} }
       before do
-        ENV['RUNNER_IMAGE_REPO'] = 'some-repo'
-        # allow(ENV).to receive(:[]).with('RUNNER_IMAGE_REPO').and_return('some-repo')
+        allow(ENV).to receive(:[]).with('PLATFORM_ENV')
+        allow(ENV).to receive(:[]).with('RUNNER_IMAGE_REPO').and_return('some-repo')
       end
       it 'uses the environment variable RUNNER_IMAGE_REPO' do
         expect(subject.default_runner_image_ref(args)).to start_with("some-repo:")
