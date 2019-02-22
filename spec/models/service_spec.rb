@@ -334,4 +334,15 @@ describe Service do
       expect(Service.contains('')).eql?([])
     end
   end
+
+  describe 'callbacks' do
+    context 'after create' do
+      let(:user) { User.create(name: 'test user', email: 'test@example.com') }
+      subject { described_class.new(name: 'Example', git_repo_url: 'https://some/repo', created_by_user: user) }
+
+      it 'populates secret config params for each environment' do
+        expect { subject.save }.to change(ServiceConfigParam, :count).by(3)
+      end
+    end
+  end
 end

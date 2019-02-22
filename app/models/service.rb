@@ -16,6 +16,8 @@ class Service < ActiveRecord::Base
 
   before_validation :ensure_token_is_present
 
+  after_create :generate_secret_config_params
+
   scope :contains, -> (name) { where("lower(name) like ?", "%#{name}%".downcase)}
 
   # NOTE: uses same naive implementation as Team.visible_to -
@@ -50,6 +52,11 @@ class Service < ActiveRecord::Base
 
   private
 
+  def generate_secret_config_params
+    ServiceEnvironment.all_slugs.each do |slug|
+      ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_SECRET', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user)
+    end
+  end
 
   def ensure_token_is_present
     generate_token! if token.blank?
