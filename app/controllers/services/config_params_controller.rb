@@ -41,7 +41,8 @@ class Services::ConfigParamsController < ApplicationController
       )
       redirect_to action: :index, service_id: @service, env: @config_param.environment_slug
     else
-      render :new
+      flash[:error] = @config_param.errors.full_messages.join(', ')
+      redirect_to service_config_params_path(@service)
     end
   end
 
