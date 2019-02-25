@@ -39,8 +39,8 @@ describe "visiting a service's config params page" do
           click_button(I18n.t('.services.config_params.form.add'))
         end
 
-        it 'redirects back to index page' do
-          expect(page.current_url).to eql('http://www.example.com/services/test-service/config_params')
+        it 'redirects back to index page with correct service env' do
+          expect(page.current_url).to eql('http://www.example.com/services/test-service/config_params?env=dev')
         end
 
         it 'displays error message' do
