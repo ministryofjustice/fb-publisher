@@ -340,8 +340,8 @@ describe Service do
       let(:user) { User.create(name: 'test user', email: 'test@example.com') }
       subject { described_class.new(name: 'Example', git_repo_url: 'https://some/repo', created_by_user: user) }
 
-      it 'populates secret config params for each environment' do
-        expect { subject.save }.to change(ServiceConfigParam, :count).by(3)
+      it 'populates privileged service_secret config params for each environment' do
+        expect { subject.save }.to change(ServiceConfigParam.privileged, :count).by(3)
       end
     end
   end

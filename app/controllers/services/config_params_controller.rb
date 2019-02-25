@@ -14,6 +14,7 @@ class Services::ConfigParamsController < ApplicationController
     @config_params = policy_scope(Service).find_by(id: @service.id)
                                           .service_config_params
                                           .where(environment_slug: params[:env])
+                                          .unprivileged
                                           .order(params[:order] || :name)
 
     @environments = ServiceEnvironment.all

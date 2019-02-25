@@ -2,6 +2,8 @@ class ServiceConfigParam < ActiveRecord::Base
   belongs_to :service
   belongs_to :last_updated_by_user, class_name: "User", foreign_key: :last_updated_by_user_id
 
+  scope :privileged, -> { where(privileged: true) }
+  scope :unprivileged, -> { where(privileged: false) }
 
   validates :name, length: { minimum: 3, maximum: 64 },
                    format: { without: /[^A-Z0-9_]/ },
