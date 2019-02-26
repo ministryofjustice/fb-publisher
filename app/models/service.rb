@@ -45,6 +45,8 @@ class Service < ActiveRecord::Base
 
   def generate_secret_config_params
     ServiceEnvironment.all_slugs.each do |slug|
+      ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_TOKEN', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user, privileged: true)
+
       ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_SECRET', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user, privileged: true)
     end
   end

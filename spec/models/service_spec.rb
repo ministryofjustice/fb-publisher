@@ -330,7 +330,13 @@ describe Service do
       subject { described_class.new(name: 'Example', git_repo_url: 'https://some/repo', created_by_user: user) }
 
       it 'populates privileged service_secret config params for each environment' do
-        expect { subject.save }.to change(ServiceConfigParam.privileged, :count).by(3)
+        subject.save
+        expect(subject.service_config_params.where(name: 'SERVICE_SECRET', privileged: true).count).to eql(3)
+      end
+
+      it 'populates privileged service_secret config params for each environment' do
+        subject.save
+        expect(subject.service_config_params.where(name: 'SERVICE_TOKEN', privileged: true).count).to eql(3)
       end
     end
   end
