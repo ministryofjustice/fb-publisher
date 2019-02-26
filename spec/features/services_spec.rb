@@ -186,10 +186,6 @@ describe 'visiting /services' do
         visit new_service_path
       end
 
-      it 'does not have a token field' do
-        expect(page).to_not have_content(I18n.t(:token, scope: [:services, :form]))
-      end
-
       context 'when I fill in the Service name' do
         before do
           fill_in(I18n.t(:name, scope: [:helpers, :label, :service]), with: name)

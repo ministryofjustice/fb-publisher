@@ -12,7 +12,7 @@ describe ServiceDeploymentStatus do
                         name: 'My First Service',
                         slug: 'my-first-slug',
                         git_repo_url: 'https://github.com/ministryofjustice/fb-sample-json.git',
-                        created_by_user: user, token: 'my-first-service-service-token-5')
+                        created_by_user: user)
       end
 
       let(:status_service) do

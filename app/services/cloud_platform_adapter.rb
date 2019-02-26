@@ -45,8 +45,7 @@ class CloudPlatformAdapter < GenericKubernetesPlatformAdapter
       image: image,
       json_repo: service.git_repo_url,
       commit_ref: deployment.commit_sha,
-      config_map_name: kubernetes_adapter.config_map_name(service: service),
-      token_secret_name: token_secret_name(service)
+      config_map_name: kubernetes_adapter.config_map_name(service: service)
     )
   end
 

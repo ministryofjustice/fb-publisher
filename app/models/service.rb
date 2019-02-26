@@ -12,9 +12,6 @@ class Service < ActiveRecord::Base
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
   validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
   validate  :git_repo_url_must_use_https
-  validates :token, length: {minimum: 32, maximum: 32}, uniqueness: true
-
-  before_validation :ensure_token_is_present
 
   after_create :generate_secret_config_params
 
@@ -44,22 +41,12 @@ class Service < ActiveRecord::Base
                        .where(team_members: {user_id: user_id})
   end
 
-  # called on create, and also when explicitly clicked in the UI
-  def generate_token!
-    # 16 hex digits == 32 characters == 256 bits in UTF-8
-    self.token = SecureRandom.hex(16)
-  end
-
   private
 
   def generate_secret_config_params
     ServiceEnvironment.all_slugs.each do |slug|
       ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_SECRET', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user, privileged: true)
     end
-  end
-
-  def ensure_token_is_present
-    generate_token! if token.blank?
   end
 
   def git_repo_url_must_use_https

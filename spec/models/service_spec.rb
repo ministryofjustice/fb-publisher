@@ -244,17 +244,6 @@ describe Service do
         end
       end
     end
-
-    context 'with an empty token' do
-      before do
-        subject.token = nil
-      end
-
-      it 'generates a token' do
-        expect{ subject.valid? }.to change(subject, :token)
-        expect(subject.token).to_not be_blank
-      end
-    end
   end
 
   describe '#to_param' do

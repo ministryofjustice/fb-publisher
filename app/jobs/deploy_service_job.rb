@@ -20,12 +20,6 @@ class DeployServiceJob < ApplicationJob
       commit_sha: commit
     )
 
-    log_for_user(:creating_service_token_secret)
-    DeploymentService.create_service_token_secret(
-      config_dir: config_dir,
-      environment_slug: @deployment.environment_slug,
-      service: @deployment.service,
-    )
     log_for_user(:configuring_params)
     DeploymentService.configure_env_vars(
       config_dir: config_dir,

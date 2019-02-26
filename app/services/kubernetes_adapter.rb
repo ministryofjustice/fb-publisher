@@ -23,22 +23,6 @@ class KubernetesAdapter
     )
   end
 
-  def create_secret(name:, key_ref:, value:, config_dir:)
-    config_file_path = File.join(config_dir, 'service-token-secret.yml')
-
-    write_config_file(
-      file: config_file_path,
-      content: secret(
-        name: name,
-        key_ref: key_ref,
-        value: value,
-      )
-    )
-
-    apply_file(file: config_file_path)
-  end
-
-
   def namespace_exists?
     begin
       ShellAdapter.exec(
@@ -169,8 +153,7 @@ class KubernetesAdapter
       image:,
       json_repo:,
       commit_ref:,
-      config_map_name:,
-      token_secret_name:
+      config_map_name:
     )
     file = File.join(config_dir, 'deployment.yml')
     write_config_file(
@@ -181,8 +164,7 @@ class KubernetesAdapter
           image: image,
           json_repo: json_repo,
           commit_ref: commit_ref,
-          config_map_name: config_map_name,
-          token_secret_name: token_secret_name
+          config_map_name: config_map_name
       )
     )
     apply_file(file: file)
@@ -372,7 +354,7 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:, token_secret_name:)
+  def deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
     cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     <<~ENDHEREDOC
     apiVersion: apps/v1beta2
@@ -404,8 +386,6 @@ class KubernetesAdapter
             envFrom:
             - configMapRef:
                 name: #{config_map_name}
-            # individual secret for the service token, so that it can be
-            # read by the user data store in isolation
             env:
               - name: USER_DATASTORE_URL
                 value: #{@environment.user_datastore_url}
@@ -413,11 +393,6 @@ class KubernetesAdapter
                 value: #{@environment.submitter_url}
               - name: SERVICE_SLUG
                 value: #{name}
-              - name: SERVICE_TOKEN
-                valueFrom:
-                  secretKeyRef:
-                    name: #{token_secret_name}
-                    key: token
             image: #{image}
             imagePullPolicy: Always
             ports:
