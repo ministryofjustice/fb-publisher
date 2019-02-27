@@ -86,6 +86,7 @@ en:
     all_done: 'ALL DONE'
     complete: 'Finished - writing status back to Deployment'
     configuring_params: 'Updating config params'
+    creating_service_token_secret: 'Creating secret for service token'
     deploying_service: 'Deploying service'
     exposing: 'Allowing inbound traffic'
     failed: 'JOB FAILED!'

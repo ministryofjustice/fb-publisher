@@ -4,6 +4,7 @@ describe GenericKubernetesPlatformAdapter do
   subject do
     described_class.new(environment: double('dev', slug: 'dev'))
   end
+
   describe '#configure_env_vars' do
     let(:system_config) do
       {'system_var_1' => 'system value 1'}
@@ -200,6 +201,25 @@ describe GenericKubernetesPlatformAdapter do
       it 'uses the environment variable RUNNER_IMAGE_REPO' do
         expect(subject.default_runner_image_ref(args)).to start_with("some-repo:")
       end
+    end
+  end
+
+  describe '#create_service_token_secret' do
+    let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
+    let(:service) do
+      Service.create(name: 'Test Service',
+                     git_repo_url: 'https://github.com/some_org/some_repo.git',
+                     created_by_user: user)
+    end
+
+    subject do
+      described_class.new(environment: double('dev', slug: 'dev', namespace: 'namespace', kubectl_context: 'kube-context'))
+    end
+
+    it 'can create service token' do
+      allow(subject.kubernetes_adapter).to receive(:apply_file)
+
+      subject.create_service_token_secret(environment_slug: :dev, service: service, config_dir: '/tmp')
     end
   end
 end

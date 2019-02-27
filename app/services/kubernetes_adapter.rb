@@ -23,6 +23,21 @@ class KubernetesAdapter
     )
   end
 
+  def create_secret(name:, key_ref:, value:, config_dir:)
+    config_file_path = File.join(config_dir, 'service-token-secret.yml')
+
+    write_config_file(
+      file: config_file_path,
+      content: secret(
+        name: name,
+        key_ref: key_ref,
+        value: value,
+      )
+    )
+
+    apply_file(file: config_file_path)
+  end
+
   def namespace_exists?
     begin
       ShellAdapter.exec(

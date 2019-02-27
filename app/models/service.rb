@@ -17,6 +17,10 @@ class Service < ActiveRecord::Base
 
   scope :contains, -> (name) { where("lower(name) like ?", "%#{name}%".downcase)}
 
+  def service_token_for_environment(environment_slug)
+    service_config_params.find_by(name: 'SERVICE_TOKEN', environment_slug: environment_slug)
+  end
+
   # NOTE: uses same naive implementation as Team.visible_to -
   # two separate queries for IDs, then a single WHERE id IN(?)
   # Which will not scale well past a few hundred IDs

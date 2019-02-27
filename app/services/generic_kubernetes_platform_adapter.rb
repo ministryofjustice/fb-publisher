@@ -30,6 +30,15 @@ class GenericKubernetesPlatformAdapter
     end
   end
 
+  def create_service_token_secret(environment_slug:, service:, config_dir:)
+    kubernetes_adapter.create_secret(
+      name: token_secret_name(service),
+      key_ref: "token",
+      value: service.service_token_for_environment(environment_slug).value,
+      config_dir: config_dir
+    )
+  end
+
   def service_is_running?(service:)
     kubernetes_adapter.exists_in_namespace?(
       name: service.slug,
@@ -65,6 +74,10 @@ class GenericKubernetesPlatformAdapter
     if deployment_exists?(service: service)
       delete_deployment(service: service)
     end
+  end
+
+  def token_secret_name(service)
+    "fb-service-#{service.slug}-token-#{ENV['PLATFORM_ENV']}-#{@environment.slug}"
   end
 
   def default_runner_image_ref(
