@@ -4,3 +4,4 @@ tmp/
 node_modules/
 package.json
 package_lock.json
+log/*.log
