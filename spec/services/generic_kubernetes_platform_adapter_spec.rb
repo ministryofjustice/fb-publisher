@@ -4,6 +4,7 @@ describe GenericKubernetesPlatformAdapter do
   subject do
     described_class.new(environment: double('dev', slug: 'dev'))
   end
+
   describe '#configure_env_vars' do
     let(:system_config) do
       {'system_var_1' => 'system value 1'}
@@ -11,6 +12,8 @@ describe GenericKubernetesPlatformAdapter do
     let(:config_dir) { '/config/dir' }
     let(:user) { User.new(name: 'user', email: 'user@example.com') }
     let!(:service) { Service.create!(name: 'my service', created_by_user: user, git_repo_url: 'https://git/repo') }
+    let(:service_token) { service.service_config_params.find_by(name: 'SERVICE_TOKEN', environment_slug: :dev).value }
+    let(:service_secret) { service.service_config_params.find_by(name: 'SERVICE_SECRET', environment_slug: :dev).value }
     let!(:dev_param) do
       ServiceConfigParam.create!(service: service, environment_slug: :dev, name: 'PARAM_1', value: 'dev "{value}\' 1', last_updated_by_user: user)
     end
@@ -26,7 +29,10 @@ describe GenericKubernetesPlatformAdapter do
       expect(subject.kubernetes_adapter).to receive(:set_environment_vars).with(
         service: service,
         config_dir: config_dir,
-        vars: {'PARAM_1' => 'dev "{value}\' 1', 'system_var_1' => 'system value 1'}
+        vars: {'PARAM_1' => 'dev "{value}\' 1',
+               'SERVICE_TOKEN' => service_token,
+               'SERVICE_SECRET' => service_secret,
+               'system_var_1' => 'system value 1'}
       ).and_return({'key' => 'value'})
       subject.configure_env_vars(service: service, config_dir: config_dir, system_config: system_config)
     end
@@ -166,11 +172,9 @@ describe GenericKubernetesPlatformAdapter do
     end
   end
 
-  # TODO: understand why the first context using allow(ENV) and the second explicitly setting the  ENV var seems to be the only combo that works
   describe 'default_runner_image_ref' do
     context 'given a runner_repo' do
       before do
-        # ENV['PLATFORM_ENV'] = 'platformEnv'
         allow(ENV).to receive(:[]).with('PLATFORM_ENV').and_return('runnerImagePlatformEnv')
       end
       let(:args) { {runner_repo: 'my-repo'} }
@@ -191,12 +195,31 @@ describe GenericKubernetesPlatformAdapter do
     context 'given no runner_repo' do
       let(:args) { {} }
       before do
-        ENV['RUNNER_IMAGE_REPO'] = 'some-repo'
-        # allow(ENV).to receive(:[]).with('RUNNER_IMAGE_REPO').and_return('some-repo')
+        allow(ENV).to receive(:[]).with('PLATFORM_ENV')
+        allow(ENV).to receive(:[]).with('RUNNER_IMAGE_REPO').and_return('some-repo')
       end
       it 'uses the environment variable RUNNER_IMAGE_REPO' do
         expect(subject.default_runner_image_ref(args)).to start_with("some-repo:")
       end
+    end
+  end
+
+  describe '#create_service_token_secret' do
+    let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
+    let(:service) do
+      Service.create(name: 'Test Service',
+                     git_repo_url: 'https://github.com/some_org/some_repo.git',
+                     created_by_user: user)
+    end
+
+    subject do
+      described_class.new(environment: double('dev', slug: 'dev', namespace: 'namespace', kubectl_context: 'kube-context'))
+    end
+
+    it 'can create service token' do
+      allow(subject.kubernetes_adapter).to receive(:apply_file)
+
+      subject.create_service_token_secret(environment_slug: :dev, service: service, config_dir: '/tmp')
     end
   end
 end

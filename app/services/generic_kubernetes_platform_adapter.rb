@@ -34,7 +34,7 @@ class GenericKubernetesPlatformAdapter
     kubernetes_adapter.create_secret(
       name: token_secret_name(service),
       key_ref: "token",
-      value: service.token,
+      value: service.service_token_for_environment(environment_slug).value,
       config_dir: config_dir
     )
   end

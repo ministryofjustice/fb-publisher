@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_05_135308) do
+ActiveRecord::Schema.define(version: 2019_02_26_130946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 2018_12_05_135308) do
     t.datetime "updated_at", null: false
     t.uuid "last_updated_by_user_id"
     t.uuid "service_id"
+    t.boolean "privileged", default: false, null: false
     t.index ["service_id"], name: "index_service_config_params_on_service_id"
   end
 
@@ -93,8 +94,6 @@ ActiveRecord::Schema.define(version: 2018_12_05_135308) do
     t.uuid "created_by_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "token"
-    t.index ["token"], name: "index_services_on_token", unique: true
   end
 
   create_table "team_members", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

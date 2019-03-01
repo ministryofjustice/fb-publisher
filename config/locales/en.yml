@@ -56,9 +56,6 @@ en:
           <em>(optional)</em> This will form the first part of your forms' initial URL.<br />
           Must contain 3-64 characters, and only letters, numbers and hyphens (-)<br />
           Must be unique. If you leave this blank, we'll generate one for you
-        token_html:
-          Clear this field to regenerate your service's token.<br />
-          If you're not sure what this means, leave this field as it is
       service_config_param:
         name_html:
           Must be 3-64 characters long, and contain only
@@ -77,7 +74,6 @@ en:
         git_repo_url: GitHub repository location
         name: Form name
         slug: Form "slug"
-        token: Secret token
       service_deployment:
         commit_sha: Commit SHA, branch, or tag
         json_sub_dir: Relative path to your service's JSON
@@ -206,8 +202,6 @@ en:
     filter:
       label: 'Filter by form name:'
       submit: Filter
-    form:
-      token: Secret token (click to show/regenerate)
     index:
       actions: Actions
       heading: Your forms

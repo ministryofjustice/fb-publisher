@@ -14,6 +14,7 @@ class Services::ConfigParamsController < ApplicationController
     @config_params = policy_scope(Service).find_by(id: @service.id)
                                           .service_config_params
                                           .where(environment_slug: params[:env])
+                                          .unprivileged
                                           .order(params[:order] || :name)
 
     @environments = ServiceEnvironment.all
@@ -40,7 +41,8 @@ class Services::ConfigParamsController < ApplicationController
       )
       redirect_to action: :index, service_id: @service, env: @config_param.environment_slug
     else
-      render :new
+      flash[:error] = @config_param.errors.full_messages.join(', ')
+      redirect_to service_config_params_path(@service, env: @config_param.environment_slug)
     end
   end
 

@@ -244,17 +244,6 @@ describe Service do
         end
       end
     end
-
-    context 'with an empty token' do
-      before do
-        subject.token = nil
-      end
-
-      it 'generates a token' do
-        expect{ subject.valid? }.to change(subject, :token)
-        expect(subject.token).to_not be_blank
-      end
-    end
   end
 
   describe '#to_param' do
@@ -332,6 +321,23 @@ describe Service do
 
     it 'returns an empty record if an empty string is entered' do
       expect(Service.contains('')).eql?([])
+    end
+  end
+
+  describe 'callbacks' do
+    context 'after create' do
+      let(:user) { User.create(name: 'test user', email: 'test@example.com') }
+      subject { described_class.new(name: 'Example', git_repo_url: 'https://some/repo', created_by_user: user) }
+
+      it 'populates privileged service_secret config params for each environment' do
+        subject.save
+        expect(subject.service_config_params.where(name: 'SERVICE_SECRET', privileged: true).count).to eql(3)
+      end
+
+      it 'populates privileged service_secret config params for each environment' do
+        subject.save
+        expect(subject.service_config_params.where(name: 'SERVICE_TOKEN', privileged: true).count).to eql(3)
+      end
     end
   end
 end

@@ -49,4 +49,9 @@ Rails.application.configure do
 
   # see https://github.com/omniauth/omniauth/wiki/Integration-Testing
   OmniAuth.config.test_mode = true
+
+  logger           = ActiveSupport::Logger.new(Rails.root.join('log', "#{Rails.env}.log"))
+  logger.formatter = config.log_formatter
+  config.log_tags  = [:subdomain, :uuid]
+  config.logger    = ActiveSupport::TaggedLogging.new(logger)
 end

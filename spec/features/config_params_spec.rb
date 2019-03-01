@@ -30,6 +30,23 @@ describe "visiting a service's config params page" do
                                       text: I18n.t('services.config_params.create.success',
                                                    name: name, environment: environment))
       end
+
+      context 'and environment variable already exists' do
+        before do
+          visit "/services/#{service.slug}/config_params"
+          fill_in('Name', with: name)
+          fill_in('Value', with: value)
+          click_button(I18n.t('.services.config_params.form.add'))
+        end
+
+        it 'redirects back to index page with correct service env' do
+          expect(page.current_url).to eql('http://www.example.com/services/test-service/config_params?env=dev')
+        end
+
+        it 'displays error message' do
+          expect(page).to have_content('Name has already been taken')
+        end
+      end
     end
 
     context 'when changing existing environment variables' do

@@ -14,7 +14,7 @@ describe ServiceDeployment do
       allow(Time).to receive(:now).and_return(now)
     end
     after do
-      Time.unstub(:now)
+      allow(Time).to receive(:now).and_call_original
     end
     it 'updates attributes with status completed and completed_at now' do
       expect(subject).to receive(:update_attributes).with(
@@ -31,7 +31,7 @@ describe ServiceDeployment do
       allow(Time).to receive(:now).and_return(now)
     end
     after do
-      Time.unstub(:now)
+      allow(Time).to receive(:now).and_call_original
     end
 
     it 'updates attributes with completed_at now' do

@@ -12,11 +12,14 @@ class Service < ActiveRecord::Base
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
   validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
   validate  :git_repo_url_must_use_https
-  validates :token, length: {minimum: 32, maximum: 32}, uniqueness: true
 
-  before_validation :ensure_token_is_present
+  after_create :generate_secret_config_params
 
   scope :contains, -> (name) { where("lower(name) like ?", "%#{name}%".downcase)}
+
+  def service_token_for_environment(environment_slug)
+    service_config_params.find_by(name: 'SERVICE_TOKEN', environment_slug: environment_slug)
+  end
 
   # NOTE: uses same naive implementation as Team.visible_to -
   # two separate queries for IDs, then a single WHERE id IN(?)
@@ -42,17 +45,14 @@ class Service < ActiveRecord::Base
                        .where(team_members: {user_id: user_id})
   end
 
-  # called on create, and also when explicitly clicked in the UI
-  def generate_token!
-    # 16 hex digits == 32 characters == 256 bits in UTF-8
-    self.token = SecureRandom.hex(16)
-  end
-
   private
 
+  def generate_secret_config_params
+    ServiceEnvironment.all_slugs.each do |slug|
+      ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_TOKEN', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user, privileged: true)
 
-  def ensure_token_is_present
-    generate_token! if token.blank?
+      ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_SECRET', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user, privileged: true)
+    end
   end
 
   def git_repo_url_must_use_https

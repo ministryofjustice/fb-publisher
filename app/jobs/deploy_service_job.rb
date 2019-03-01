@@ -15,6 +15,7 @@ class DeployServiceJob < ApplicationJob
       repo_url: @deployment.service.git_repo_url,
       ref: @deployment.commit_sha
     )
+
     log_for_user(:writing_commit, sha: commit)
     @deployment.update_attributes(
       commit_sha: commit
@@ -26,6 +27,7 @@ class DeployServiceJob < ApplicationJob
       environment_slug: @deployment.environment_slug,
       service: @deployment.service,
     )
+
     log_for_user(:configuring_params)
     DeploymentService.configure_env_vars(
       config_dir: config_dir,
