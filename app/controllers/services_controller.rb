@@ -34,6 +34,12 @@ class ServicesController < ApplicationController
   end
 
   def destroy
+    # add job to remove the deployments for each environment(if they exist) of a service
+    # then delete the service
+    ServiceEnvironment.all_slugs.each do |env|
+      deployment = DeploymentService.last_status(service: @service, environment_slug: env)
+      DeployServiceJob.perform_later(service_deployment_id: deployment.id) unless deployment.nil?
+    end
     @service.destroy!
     redirect_to services_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
   end

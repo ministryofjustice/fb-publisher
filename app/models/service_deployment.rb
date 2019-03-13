@@ -56,4 +56,9 @@ class ServiceDeployment < ActiveRecord::Base
     url_link.slice!('.git')
     url_link << '/commit/' << commit_sha
   end
+
+  # Delete the database record
+  def remove!
+    delete
+  end
 end
