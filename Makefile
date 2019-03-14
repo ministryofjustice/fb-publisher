@@ -1,3 +1,9 @@
+ifdef TARGET
+TARGETDEFINED="true"
+else
+TARGETDEFINED="false"
+endif
+
 dev:
 	$(eval export env_stub=dev)
 	@true
@@ -13,6 +19,15 @@ integration:
 live:
 	$(eval export env_stub=live)
 	@true
+
+target:
+ifeq ($(TARGETDEFINED), "true")
+	$(eval export env_stub=${TARGET})
+	@true
+else 
+	$(info Must set TARGET)
+	@false
+endif
 
 init:
 	$(eval export ECR_REPO_NAME_SUFFIXES=base web worker)
