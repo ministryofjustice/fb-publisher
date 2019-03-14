@@ -12,7 +12,7 @@ class UndeployServiceJob < ApplicationJob
     )
 
     log_for_user(:removed)
-    @deployment.remove!
+    @deployment.destroy
 
     log_for_user(:all_done)
   end

@@ -18,7 +18,7 @@ describe UndeployServiceJob do
     allow(JobLogService).to receive(:log)
     allow(ServiceDeployment).to receive(:find).with('my-deployment-id').and_return(deployment)
     allow(DeploymentService).to receive(:stop_service).and_return('stop_service-result')
-    allow(deployment).to receive(:remove!)
+    allow(deployment).to receive(:destroy)
   end
 
   describe 'perform' do
@@ -34,12 +34,11 @@ describe UndeployServiceJob do
     context 'when the job does not throw an error' do
       it 'removes the deployment' do
         expect(ServiceDeployment).to receive(:find).with('my-deployment-id').and_return(deployment)
-        expect(deployment).to receive(:remove!)
+        expect(deployment).to receive(:destroy)
         subject.perform(service_deployment_id: deployment.id)
       end
     end
 
-    # Not sure that I will need this \_@_/
     context 'when the job throws a retryable error' do
       before do
         allow(DeploymentService).to receive(:stop_service).and_raise(Net::OpenTimeout.new("expected exception"))
@@ -47,7 +46,7 @@ describe UndeployServiceJob do
       end
 
       it 'does not remove the deployment' do
-        expect(deployment).to_not receive(:remove!)
+        expect(deployment).to_not receive(:destroy)
         perform_and_handle_error
       end
 
@@ -62,7 +61,6 @@ describe UndeployServiceJob do
       end
     end
 
-    # Not sure that I will need this \_@_/
     context 'when the job throws a non-retryable error' do
       before do
         allow(DeploymentService).to receive(:stop_service).and_raise(CmdFailedError.new("expected exception"))
@@ -70,7 +68,7 @@ describe UndeployServiceJob do
       end
 
       it 'does not remove! the deployment' do
-        expect(deployment).to_not receive(:remove!)
+        expect(deployment).to_not receive(:destroy)
         perform_and_handle_error
       end
 
