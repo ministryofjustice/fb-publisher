@@ -97,6 +97,11 @@ class DeploymentService
     )
   end
 
+  def self.stop_service_by_slug(environment_slug:, slug:)
+    adapter = adapter_for(environment_slug)
+    adapter.stop_service_by_slug(slug: slug)
+  end
+
   def self.start_service(environment_slug:, service:, tag:)
     adapter = adapter_for(environment_slug)
     adapter.start_service(

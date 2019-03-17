@@ -1,42 +1,33 @@
 class UndeployServiceJob < ApplicationJob
   queue_as :default
 
-  def perform(service_deployment_id:)
-    @service_deployment_id = service_deployment_id
-    @deployment = ServiceDeployment.find(service_deployment_id)
+  def perform(env:, service_slug:)
+    @slug = service_slug
+    @env = env
 
     log_for_user(:stop_service)
-    DeploymentService.stop_service(
-      environment_slug: @deployment.environment_slug,
-      service: @deployment.service
-    )
-
-    log_for_user(:removed)
-    @deployment.destroy
-
+    DeploymentService.stop_service_by_slug(environment_slug: env.to_sym, slug: service_slug)
     log_for_user(:all_done)
   end
 
   def on_retryable_exception(error)
-    logger.warn "RETRYABLE EXCEPTION! @deployment #{@deployment.inspect}"
-    @deployment.fail!(retryable: true) if @deployment
+    logger.warn "RETRYABLE EXCEPTION! un-deployment failure #{@slug}, #{@env}"
     super
   end
 
   def on_non_retryable_exception(error)
     log_for_user(:failed)
-    @deployment.fail!(retryable: false) if @deployment
     super
   end
 
-  def self.log_tag(service_deployment_id)
-    ['ServiceDeploymentId', service_deployment_id].join(':')
+  def self.log_tag
+    ['environment slug', @env].join(':')
   end
 
   def log_for_user(message_key, args={})
     i18n_args = {
       scope: [:undeploy_service_job],
-      service_deployment_id: @service_deployment_id,
+      service_slug: @slug,
       job_id: job_id
     }.merge(args)
 
@@ -46,7 +37,7 @@ class UndeployServiceJob < ApplicationJob
         i18n_args
       ),
       job: self,
-      tag: self.class.log_tag(@service_deployment_id)
+      tag: self.class.log_tag
     )
   end
 end

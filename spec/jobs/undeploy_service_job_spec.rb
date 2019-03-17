@@ -1,86 +1,58 @@
 require 'rails_helper'
 
-describe UndeployServiceJob do
-  let(:json_sub_dir) { nil }
-  let(:service) { double('service', git_repo_url: 'https://some/repo', slug: 'some-slug') }
-  let(:deployment) do
-    double('deployment',
-           id: 'my-deployment-id',
-           commit_sha: 'tag:5678',
-           json_sub_dir: json_sub_dir,
-           service: service,
-           environment_slug: 'mydev',
-           status: 'completed'
-    )
+describe UndeployServiceJob, type: :job do
+  include ActiveJob::TestHelper
+
+  subject(:un_deploy_job) { described_class.perform_later(env: 'mydev', service_slug: 'some-slug') }
+
+  it 'queues the job' do
+    expect { un_deploy_job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
   end
 
-  before do
-    allow(JobLogService).to receive(:log)
-    allow(ServiceDeployment).to receive(:find).with('my-deployment-id').and_return(deployment)
-    allow(DeploymentService).to receive(:stop_service).and_return('stop_service-result')
-    allow(deployment).to receive(:destroy)
+  it 'is in default queue' do
+    expect(UndeployServiceJob.new.queue_name).to eq('default')
   end
 
-  describe 'perform' do
+  it 'executes perform' do
+    expect(DeploymentService).to receive(:stop_service_by_slug).with(environment_slug: :mydev, slug: 'some-slug')
+    perform_enqueued_jobs { un_deploy_job }
+  end
+
+  context 'when the job throws a retryable error' do
+    it 'handles no results error' do
+      allow(DeploymentService).to receive(:stop_service_by_slug).and_raise(Net::OpenTimeout.new("expected exception"))
+
+      perform_enqueued_jobs do
+        expect_any_instance_of(UndeployServiceJob).to receive(:retry_job).with(wait: 10.seconds)
+
+        un_deploy_job
+      end
+    end
+  end
+
+  context 'when something unexpected happens' do
     let(:perform_and_handle_error) do
       begin
-        described_class.perform_now(service_deployment_id: deployment.id)
+        described_class.perform_now(env: 'mydev', service_slug: 'some-slug')
 
       rescue CmdFailedError => e
         Rails.logger.info "expected error -- #{e.message}"
       end
     end
 
-    context 'when the job does not throw an error' do
-      it 'removes the deployment' do
-        expect(ServiceDeployment).to receive(:find).with('my-deployment-id').and_return(deployment)
-        expect(deployment).to receive(:destroy)
-        subject.perform(service_deployment_id: deployment.id)
+    it 'does something I do not understand' do
+      allow(DeploymentService).to receive(:stop_service_by_slug).and_raise(CmdFailedError.new("expected exception"))
+      perform_enqueued_jobs do
+        perform_and_handle_error
+        expect_any_instance_of(UndeployServiceJob).not_to receive(:retry_job)
+
+        un_deploy_job
       end
     end
+  end
 
-    context 'when the job throws a retryable error' do
-      before do
-        allow(DeploymentService).to receive(:stop_service).and_raise(Net::OpenTimeout.new("expected exception"))
-        allow(deployment).to receive(:fail!)
-      end
-
-      it 'does not remove the deployment' do
-        expect(deployment).to_not receive(:destroy)
-        perform_and_handle_error
-      end
-
-      it 'logs the error' do
-        expect_any_instance_of(described_class).to receive(:log_error)
-        perform_and_handle_error
-      end
-
-      it 'fail!s the un-deployment passing true for retryable' do
-        expect(deployment).to receive(:fail!).with(retryable: true)
-        perform_and_handle_error
-      end
-    end
-
-    context 'when the job throws a non-retryable error' do
-      before do
-        allow(DeploymentService).to receive(:stop_service).and_raise(CmdFailedError.new("expected exception"))
-        allow(deployment).to receive(:fail!)
-      end
-
-      it 'does not remove! the deployment' do
-        expect(deployment).to_not receive(:destroy)
-        perform_and_handle_error
-      end
-
-      it 'logs the error' do
-        expect_any_instance_of(described_class).to receive(:log_error)
-        perform_and_handle_error
-      end
-
-      it 'fail!s the deployment passing false for retryable' do
-        expect(deployment).to receive(:fail!).with(retryable: false)
-        perform_and_handle_error
-      end
-    end
+  after do
+    clear_enqueued_jobs
+    clear_performed_jobs
   end
 end
