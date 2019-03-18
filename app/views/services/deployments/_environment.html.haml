@@ -21,3 +21,8 @@
       = link_to t('.deploy_now'),
                   new_service_deployment_path(environment.service, env: environment.environment_slug),
                   class: 'button'
+    - if environment.status == 'completed'
+      = link_to 'Un-deploy',  service_deployments_path(environment.service),
+                  method: :delete,
+                  data: { confirm: t('.delete_confirm', name: environment.service, environment: environment.environment_slug),
+                          disable_with: t('.deleting') }

@@ -181,6 +181,8 @@ en:
           Your JSON repository is at <strong><a href='%{git_repo_url}'>%{git_repo_url}</a></strong>
         submit: Deploy now
       status:
+        delete_confirm: Are you sure you want to delete %{name} in the %{environment} environment?
+        deleting: Deleting...
         lede_html:
           Latest deployments for each environment
     create:
