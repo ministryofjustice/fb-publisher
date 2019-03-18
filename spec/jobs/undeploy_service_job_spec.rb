@@ -30,7 +30,7 @@ describe UndeployServiceJob, type: :job do
     end
   end
 
-  context 'when something unexpected happens' do
+  context 'when the job throws a non-retryable error' do
     let(:perform_and_handle_error) do
       begin
         described_class.perform_now(env: 'mydev', service_slug: 'some-slug')
@@ -40,7 +40,7 @@ describe UndeployServiceJob, type: :job do
       end
     end
 
-    it 'does something I do not understand' do
+    it 'does not attempt to retry the job' do
       allow(DeploymentService).to receive(:stop_service_by_slug).and_raise(CmdFailedError.new("expected exception"))
       perform_enqueued_jobs do
         perform_and_handle_error
