@@ -20,8 +20,8 @@ class UndeployServiceJob < ApplicationJob
     super
   end
 
-  def self.log_tag
-    ['environment slug', @env].join(':')
+  def self.log_tag(slug, env)
+    "service-slug: #{slug}, environment-slug: #{env}"
   end
 
   def log_for_user(message_key, args={})
@@ -37,7 +37,7 @@ class UndeployServiceJob < ApplicationJob
         i18n_args
       ),
       job: self,
-      tag: self.class.log_tag
+      tag: self.class.log_tag(@slug, @env)
     )
   end
 end
