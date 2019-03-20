@@ -3,6 +3,9 @@ kind: Ingress
 metadata:
   name: "fb-publisher-ing-{{ .Values.environmentName }}"
 spec:
+  tls:
+  - hosts:
+    - fb-publisher-{{ .Values.environmentName }}.apps.cloud-platform-live-0.k8s.integration.dsd.io
   rules:
   - host: fb-publisher-{{ .Values.environmentName }}.apps.cloud-platform-live-0.k8s.integration.dsd.io
     http:
