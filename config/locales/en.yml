@@ -317,6 +317,10 @@ en:
       url: URL
     update:
       success: Team "%{team}" updated successfully
+  undeploy_service_job:
+    all_done: 'ALL DONE'
+    failed: 'JOB FAILED!'
+    stop_service: 'Stopped service'
   users:
     edit:
       heading: 'Profile: %{name}'

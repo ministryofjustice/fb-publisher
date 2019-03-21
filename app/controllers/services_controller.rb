@@ -34,6 +34,13 @@ class ServicesController < ApplicationController
   end
 
   def destroy
+    ServiceEnvironment.all_slugs.each do |env|
+      deployment = DeploymentService.last_status(service: @service, environment_slug: env)
+      unless deployment.nil?
+        UndeployServiceJob.perform_later(env: env.to_s, service_slug: @service.slug)
+      end
+    end
+
     @service.destroy!
     redirect_to services_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
   end
