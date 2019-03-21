@@ -10,6 +10,7 @@ ALL_ENVS = {
     protocol: 'https://',
     url_root: "apps.cloud-platform-live-0.k8s.integration.dsd.io",
     user_datastore_url: "http://fb-user-datastore-api-svc-#{ENV['PLATFORM_ENV']}-dev.formbuilder-platform-#{ENV['PLATFORM_ENV']}-dev/",
+    user_filestore_url: "http://fb-user-filestore-api-svc-#{ENV['PLATFORM_ENV']}-dev.formbuilder-platform-#{ENV['PLATFORM_ENV']}-dev/",
     submitter_url: "http://fb-submitter-api-svc-#{PLATFORM_ENV}-dev.formbuilder-platform-#{ENV['PLATFORM_ENV']}-dev/"
   },
   staging: {
@@ -20,6 +21,7 @@ ALL_ENVS = {
     protocol: 'https://',
     url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io',
     user_datastore_url: "http://fb-user-datastore-api-svc-#{PLATFORM_ENV}-staging.formbuilder-platform-#{PLATFORM_ENV}-staging/",
+    user_filestore_url: "http://fb-user-filestore-api-svc-#{PLATFORM_ENV}-staging.formbuilder-platform-#{PLATFORM_ENV}-staging/",
     submitter_url: "http://fb-submitter-api-svc-#{PLATFORM_ENV}-staging.formbuilder-platform-#{PLATFORM_ENV}-staging/"
   },
   production: {
@@ -30,6 +32,7 @@ ALL_ENVS = {
     protocol: 'https://',
     url_root: 'apps.cloud-platform-live-0.k8s.integration.dsd.io',
     user_datastore_url: "http://fb-user-datastore-api-svc-#{PLATFORM_ENV}-production.formbuilder-platform-#{PLATFORM_ENV}-production/",
+    user_filestore_url: "http://fb-user-filestore-api-svc-#{PLATFORM_ENV}-production.formbuilder-platform-#{PLATFORM_ENV}-production/",
     submitter_url: "http://fb-submitter-api-svc-#{PLATFORM_ENV}-production.formbuilder-platform-#{PLATFORM_ENV}-production/"
   }
 }

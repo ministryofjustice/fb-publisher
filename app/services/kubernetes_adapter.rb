@@ -404,6 +404,8 @@ class KubernetesAdapter
             env:
               - name: USER_DATASTORE_URL
                 value: #{@environment.user_datastore_url}
+              - name: USER_FILESTORE_URL
+                value: #{@environment.user_filestore_url}
               - name: SUBMITTER_URL
                 value: #{@environment.submitter_url}
               - name: SERVICE_SLUG
