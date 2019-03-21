@@ -1,7 +1,7 @@
 class ServiceEnvironment
   attr_accessor :deployment_adapter, :kubectl_context, :name, :slug,
                 :namespace, :protocol, :url_root,
-                :user_datastore_url, :submitter_url
+                :user_datastore_url, :user_filestore_url, :submitter_url
 
   def self.all
     Rails.configuration.x.service_environments.map do |key, values|
@@ -45,7 +45,7 @@ class ServiceEnvironment
 
   def to_h
     h = {}
-    [:kubectl_context, :name, :namespace, :protocol, :url_root, :user_datastore_url].each do |key|
+    [:kubectl_context, :name, :namespace, :protocol, :url_root, :user_datastore_url, :user_filestore_url].each do |key|
       h[key] = send(key)
     end
     h
