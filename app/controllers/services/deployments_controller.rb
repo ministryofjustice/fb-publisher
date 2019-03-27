@@ -61,8 +61,9 @@ class Services::DeploymentsController < ApplicationController
   end
 
   def destroy
+    UndeployServiceJob.perform_later(env: @deployment.environment_slug.to_s, service_slug: @service.slug)
     @deployment.destroy!
-    redirect_to action: :index, service_id: @service, env: @deployment.environment_slug
+    redirect_to action: :status
   end
 
   def show

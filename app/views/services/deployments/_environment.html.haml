@@ -14,7 +14,7 @@
         = t( environment.status, scope: [:shared, :service_deployments, :status] )
     - else
       \-
-  %td.actions
+  %td.actions.actions-width
     - if can?(:index, ServiceDeployment.new(service: environment.service))
       = link_to t('.history'), service_deployments_path(environment.service, params: {env: environment.environment_slug})
     - if can?(:new, ServiceDeployment.new(service: environment.service, environment_slug: environment.environment_slug))
@@ -22,7 +22,9 @@
                   new_service_deployment_path(environment.service, env: environment.environment_slug),
                   class: 'button'
     - if environment.status == 'completed'
-      = link_to 'Un-deploy',  service_deployments_path(environment.service),
-                  method: :delete,
-                  data: { confirm: t('.delete_confirm', name: environment.service, environment: environment.environment_slug),
+      = link_to 'Un-deploy',
+                service_deployment_path(environment.service, environment.id),
+                class: "button warning button-space",
+                method: :delete,
+                data: { confirm: t('.delete_confirm', name: environment.service.name, environment: environment.environment_slug),
                           disable_with: t('.deleting') }

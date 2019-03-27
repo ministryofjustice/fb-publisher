@@ -133,13 +133,27 @@ describe 'visiting services/deployment' do
       end
 
       context 'when user clicks on `Un-deploy button`', js: true do
-        xit 'alerts the user' do
+        before do
+          create_deployment('dev', 'completed')
         end
 
-        xit 'does not remove the deployment if user clicks `cancel`' do
+        it 'removes the deployment if user confirms the alert' do
+          visit "/services/#{service.slug}/deployments/status"
+          accept_alert do
+            click_link('Un-deploy')
+          end
+
+          expect(page).to_not have_link('Un-deploy')
         end
 
-        xit 'removes the deployment if the user clicks `Yes`' do
+        it 'does not remove the deployment if user dismisses the alert' do
+          visit "/services/#{service.slug}/deployments/status"
+
+          dismiss_confirm do
+            click_link 'Un-deploy'
+          end
+
+          expect(page).to have_link('Un-deploy', count: 1)
         end
       end
     end
