@@ -453,6 +453,9 @@ class KubernetesAdapter
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
     spec:
+      tls:
+        - hosts:
+          - #{hostname}
       rules:
       - host: #{hostname}
         http:
