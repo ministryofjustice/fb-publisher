@@ -335,8 +335,10 @@ class KubernetesAdapter
       namespace: #{@environment.namespace}
     spec:
       initContainers:
-      - name: clone-git-repo-into-volume
-        image: radial/busyboxplus:git
+      - name: init-clone-repo
+        image: asmega/deploy
+        securityContext:
+          runAsUser: 1001
         command: ["/bin/sh", "-c", "#{cmd}"]
         volumeMounts:
         - mountPath: /usr/app
@@ -344,13 +346,14 @@ class KubernetesAdapter
       containers:
       - name: #{name}
         image: #{image}
+        securityContext:
+          runAsUser: 1001
         imagePullPolicy: Always
         ports:
         - containerPort: #{container_port}
         volumeMounts:
         - name: json-repo
           mountPath: /usr/app
-
       volumes:
       - emptyDir: {}
         name: json-repo
@@ -390,14 +393,18 @@ class KubernetesAdapter
             run: #{name}
         spec:
           initContainers:
-          - name: clone-git-repo-into-volume
-            image: radial/busyboxplus:git
+          - name: init-clone-repo
+            image: asmega/deploy
+            securityContext:
+              runAsUser: 1001
             command: ["/bin/sh", "-c", "#{cmd}"]
             volumeMounts:
             - mountPath: /usr/app
               name: json-repo
           containers:
           - name: #{name}
+            securityContext:
+              runAsUser: 1001
             envFrom:
             - configMapRef:
                 name: #{config_map_name}
@@ -417,7 +424,6 @@ class KubernetesAdapter
             volumeMounts:
             - name: json-repo
               mountPath: /usr/app
-
           volumes:
           - emptyDir: {}
             name: json-repo
