@@ -7,7 +7,7 @@ RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
-RUN bundle install --jobs 20 --retry 5
+RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
 COPY . .
 ADD . $RAILS_ROOT
