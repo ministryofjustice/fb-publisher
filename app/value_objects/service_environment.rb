@@ -37,9 +37,14 @@ class ServiceEnvironment
     end
   end
 
+  # e.g. https://dev-ioj.test.form.service.justice.gov.uk/
   def url_for(service)
-    # TODO: pass in PLATFORM_ENV as an argument rather than using a global environment variable?
-    as_string = [protocol, [service.slug, ENV['PLATFORM_ENV'], slug].join('-'), '.', url_root].join
+    if slug.to_sym == :production
+      as_string = [protocol, service.slug, '.', url_root].join
+    else
+      as_string = [protocol, service.slug, '.', slug, '.', url_root].join
+    end
+
     URI.join(as_string, '/').to_s
   end
 
