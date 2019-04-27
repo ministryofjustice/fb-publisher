@@ -107,6 +107,16 @@ class KubernetesAdapter
     )
   end
 
+  def delete_ingress(name:)
+    ShellAdapter.exec(
+      kubectl_binary,
+      'delete',
+      'ingresses.extensions',
+      name,
+      std_args
+    )
+  end
+
   # just writes an updated timestamp annotation -
   # quickest, smoothest and easiest way to refresh a deployment
   # so that it can pick up new configmaps, etc

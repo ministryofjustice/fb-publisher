@@ -106,6 +106,25 @@ describe GenericKubernetesPlatformAdapter do
     end
   end
 
+  describe '.remove_ingress' do
+    let(:service) { Service.new(name: 'my service', slug: 'my-service') }
+    let(:result) { 'oh yes' }
+    before do
+      allow(subject.kubernetes_adapter).to receive(:delete_ingress).and_return(result)
+    end
+
+    it 'asks the kubernetes_adapter to delete ingress with the a specific name' do
+      expect(subject.kubernetes_adapter).to receive(:delete_ingress).with(
+        name: "#{service.slug}-ingress"
+      ).and_return(result)
+      subject.remove_ingress(slug: service.slug)
+    end
+
+    it 'returns the result of the kubernetes_adapter call' do
+      expect(subject.remove_ingress(slug: service.slug)).to eq(result)
+    end
+  end
+
   describe '.delete_deployment' do
     let(:service) { Service.new(name: 'my service', slug: 'my-service') }
     let(:result) { 'oh yes' }
