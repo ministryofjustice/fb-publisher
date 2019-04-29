@@ -462,6 +462,7 @@ class KubernetesAdapter
       tls:
         - hosts:
           - #{hostname}
+          secretName: tls-certificate
       rules:
       - host: #{hostname}
         http:
