@@ -6,6 +6,10 @@ FROM $BASE_IMAGE
 ENV APP_PORT 3000
 EXPOSE $APP_PORT
 
+RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
+RUN chown -R deploy:deploy .
+USER 1001
+
 # precompile assets
 ARG RAILS_ENV=production
 RUN RAILS_ENV=${RAILS_ENV} SECRET_KEY_BASE=$(bin/rake secret) bundle exec rake assets:precompile --trace

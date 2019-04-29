@@ -21,7 +21,7 @@ login_to_ecr_with_creds_for() {
   echo "Logging in with per-repo credentials ${KEY_VAR_NAME} ${SECRET_VAR_NAME}"
   export AWS_ACCESS_KEY_ID=${!KEY_VAR_NAME}
   export AWS_SECRET_ACCESS_KEY=${!SECRET_VAR_NAME}
-  eval $(aws ecr get-login --no-include-email --region eu-west-1)
+  eval $(aws ecr get-login --no-include-email --region eu-west-2)
 }
 
 for TYPE in base web worker

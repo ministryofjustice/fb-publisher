@@ -13,9 +13,11 @@ spec:
         appGroup: "fb-publisher"
         tier: "frontend"
     spec:
+      securityContext:
+        runAsUser: 1001
       containers:
       - name: "fb-publisher-web-{{ .Values.environmentName }}"
-        image: "926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder/fb-publisher-web:latest-{{ .Values.environmentName }}"
+        image: "754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-publisher-web:latest-{{ .Values.environmentName }}"
         imagePullPolicy: Always
         ports:
           - containerPort: 3000
@@ -85,10 +87,12 @@ spec:
         appGroup: "fb-publisher"
         tier: "workers"
     spec:
+      securityContext:
+        runAsUser: 1001
       serviceAccountName: "formbuilder-publisher-workers-{{ .Values.environmentName }}"
       containers:
       - name: "fb-publisher-worker"
-        image: "926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder/fb-publisher-worker:latest-{{ .Values.environmentName }}"
+        image: "754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-publisher-worker:latest-{{ .Values.environmentName }}"
         imagePullPolicy: Always
         # command:
         #   - "cd /var/www/fb-publisher && bundle exec rake resque:work"

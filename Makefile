@@ -31,7 +31,7 @@ endif
 
 init:
 	$(eval export ECR_REPO_NAME_SUFFIXES=base web worker)
-	$(eval export ECR_REPO_URL_ROOT=926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder)
+	$(eval export ECR_REPO_URL_ROOT=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder)
 
 # install aws cli w/o sudo
 install_build_dependencies: init

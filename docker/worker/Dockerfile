@@ -10,5 +10,11 @@ RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/ap
 RUN apt-get update
 RUN apt-get install -y kubectl
 
+RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
+RUN chown -R deploy:deploy .
+RUN usermod -aG sudo deploy
+
+USER 1001
+
 ARG RAILS_ENV=production
 CMD bundle exec rake resque:work
