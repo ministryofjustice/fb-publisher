@@ -168,7 +168,8 @@ class KubernetesAdapter
       image:,
       json_repo:,
       commit_ref:,
-      config_map_name:
+      config_map_name:,
+      service:
     )
     file = File.join(config_dir, 'deployment.yml')
     write_config_file(
@@ -179,7 +180,8 @@ class KubernetesAdapter
           image: image,
           json_repo: json_repo,
           commit_ref: commit_ref,
-          config_map_name: config_map_name
+          config_map_name: config_map_name,
+          service: service
       )
     )
     apply_file(file: file)
@@ -372,7 +374,7 @@ class KubernetesAdapter
     ENDHEREDOC
   end
 
-  def deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:)
+  def deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:, service:)
     cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     <<~ENDHEREDOC
     apiVersion: apps/v1beta2
@@ -417,6 +419,12 @@ class KubernetesAdapter
                 value: #{@environment.submitter_url}
               - name: SERVICE_SLUG
                 value: #{name}
+              - name: FORM_URL
+                value: #{@environment.url_for(service).gsub(/\/*\z/, '')}
+              - name: PLATFORM_ENV
+                value: #{ENV['PLATFORM_ENV']}
+              - name: DEPLOYMENT_ENV
+                value: #{@environment.slug}
             image: #{image}
             imagePullPolicy: Always
             ports:
