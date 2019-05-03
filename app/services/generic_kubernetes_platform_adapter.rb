@@ -79,6 +79,12 @@ class GenericKubernetesPlatformAdapter
   def stop_service_by_slug(slug:)
     kubernetes_adapter.delete_service(name: slug) if kubernetes_adapter.exists_in_namespace?(name: slug, type: 'service')
     kubernetes_adapter.delete_deployment(name: slug) if kubernetes_adapter.exists_in_namespace?(name: slug, type: 'deployment')
+    remove_ingress(slug: slug)
+  end
+
+  def remove_ingress(slug:)
+    ingress_name = "#{slug}-ingress"
+    kubernetes_adapter.delete_ingress(name: ingress_name)
   end
 
   def token_secret_name(service)
