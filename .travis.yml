@@ -24,7 +24,6 @@ before_script:
 script:
     - bundle exec rails db:reset db:setup db:migrate RAILS_ENV=test
     - bundle exec rspec
-    - if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then make dev build_and_push; fi # only build & push containers on a merged PR
 
 env:
   global:
