@@ -13,3 +13,4 @@ data:
   RAILS_SERVE_STATIC_FILES: "true"
   RUNNER_IMAGE_REPO: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-runner-node
   QUEUES: "*"
+  RAILS_LOG_TO_STDOUT: "true"
