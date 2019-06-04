@@ -40,7 +40,7 @@ describe ServicesController do
 
   describe 'POST #create' do
     let(:do_post!) do
-      post :create, params: { service: { git_repo_url: 'https://github.com/ministryofjustice/fb-ioj', name: 'ioj', deploy_key: 'private_key' } }
+      post :create, params: { service: { git_repo_url: 'https://github.com/ministryofjustice/fb-ioj', name: 'ioj', deploy_key: '' } }
     end
 
     it 'persists the service' do
@@ -55,7 +55,28 @@ describe ServicesController do
 
       expect(service.git_repo_url).to eql('https://github.com/ministryofjustice/fb-ioj')
       expect(service.name).to eql('ioj')
-      expect(service.deploy_key).to eql('private_key')
+      expect(service.deploy_key).to eql('')
+    end
+
+    context 'with optional values' do
+      let(:do_post!) do
+        post :create, params: { service: { git_repo_url: 'https://github.com/ministryofjustice/fb-ioj', name: 'ioj', deploy_key: file_fixture('id_rsa').read } }
+      end
+
+      it 'persists the service' do
+        expect do
+          do_post!
+        end.to change(Service, :count).by(1)
+      end
+
+      it 'persist correct values' do
+        do_post!
+        service = Service.last
+
+        expect(service.git_repo_url).to eql('https://github.com/ministryofjustice/fb-ioj')
+        expect(service.name).to eql('ioj')
+        expect(service.deploy_key).to eql(file_fixture('id_rsa').read)
+      end
     end
   end
 end

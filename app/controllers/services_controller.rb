@@ -22,6 +22,7 @@ class ServicesController < ApplicationController
   def create
     @service = Service.new(service_params.merge(created_by_user: current_user))
     authorize(@service)
+
     if @service.save
       redirect_to service_path(@service), notice: t(:success, scope: [:services, :create])
     else

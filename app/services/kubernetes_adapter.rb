@@ -197,28 +197,6 @@ class KubernetesAdapter
     apply_file(file: file)
   end
 
-  def create_pod(
-      config_dir:,
-      name:,
-      container_port:,
-      image:,
-      json_repo:,
-      commit_ref:
-    )
-    file = File.join(config_dir, 'pod.yml')
-    write_config_file(
-      file: file,
-      content: pod_with_volume(
-          name: name,
-          container_port: container_port,
-          image: image,
-          json_repo: json_repo,
-          commit_ref: commit_ref
-      )
-    )
-    apply_file(file: file)
-  end
-
   def write_config_file(file:, content:)
     FileUtils.mkdir_p(File.dirname(file))
     File.open(file, 'w+') do |f|
@@ -337,41 +315,6 @@ class KubernetesAdapter
     "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"updated_at\":\"`date +'%s'`\"}}}}}"
   end
 
-  def pod_with_volume(name:, container_port:, image:, json_repo:, commit_ref:)
-    cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
-    <<~ENDHEREDOC
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: #{name}
-      namespace: #{@environment.namespace}
-    spec:
-      initContainers:
-      - name: init-clone-repo
-        image: asmega/deploy
-        securityContext:
-          runAsUser: 1001
-        command: ["/bin/sh", "-c", "#{cmd}"]
-        volumeMounts:
-        - mountPath: /usr/app
-          name: json-repo
-      containers:
-      - name: #{name}
-        image: #{image}
-        securityContext:
-          runAsUser: 1001
-        imagePullPolicy: Always
-        ports:
-        - containerPort: #{container_port}
-        volumeMounts:
-        - name: json-repo
-          mountPath: /usr/app
-      volumes:
-      - emptyDir: {}
-        name: json-repo
-    ENDHEREDOC
-  end
-
   def secret(name:, key_ref:, value:)
     <<~ENDHEREDOC
     apiVersion: v1
@@ -385,7 +328,14 @@ class KubernetesAdapter
   end
 
   def deployment(name:, json_repo:, commit_ref:, container_port:, image:, config_map_name:, service:)
-    cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+    deploy_key = service.deploy_key
+
+    if deploy_key.present?
+      cmd = "mkdir ~/.ssh && echo '#{deploy_key}' > ~/.ssh/deploy_key && cat ~/transform_deploy_key.rb && ~/transform_deploy_key.rb ~/.ssh/deploy_key ~/.ssh/deploy_key && echo 'HERE' && cat ~/.ssh/deploy_key && chmod 0600 ~/.ssh/deploy_key && ssh-keyscan -H github.com > ~/.ssh/known_hosts && GIT_SSH_COMMAND='ssh -i ~/.ssh/deploy_key' git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+    else
+      cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+    end
+
     <<~ENDHEREDOC
     apiVersion: apps/v1beta2
     kind: Deployment
@@ -406,7 +356,7 @@ class KubernetesAdapter
         spec:
           initContainers:
           - name: init-clone-repo
-            image: asmega/deploy
+            image: asmega/deploy:latest
             securityContext:
               runAsUser: 1001
             command: ["/bin/sh", "-c", "#{cmd}"]
