@@ -65,7 +65,7 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params[:service].permit([:git_repo_url, :name, :slug])
+    params[:service].permit([:git_repo_url, :name, :slug, :deploy_key])
   end
 
   def filter_params
