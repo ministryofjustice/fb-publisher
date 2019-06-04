@@ -36,11 +36,12 @@ class Services::DeploymentsController < ApplicationController
         status: ServiceDeployment::STATUS[:queued]
       )
     )
+
     authorize(@deployment)
 
     if @deployment.save
       DeployServiceJob.perform_later(service_deployment_id: @deployment.id)
-      redirect_to action: :index, service_slug: @service, env: @deployment.environment_slug
+      redirect_to with_env_service_deployments_path(service_slug: @service, env: @deployment.environment_slug)
     else
       @environment = ServiceEnvironment.find(@deployment.environment_slug)
       render :new
@@ -99,7 +100,8 @@ class Services::DeploymentsController < ApplicationController
       :name,
       :service_id,
       :value,
-      :json_sub_dir
+      :json_sub_dir,
+      :commit_sha
     )
   end
 end
