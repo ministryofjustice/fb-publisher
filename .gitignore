@@ -19,7 +19,6 @@
 # Ignore uploaded files in development
 /storage/*
 
-/node_modules
 /yarn-error.log
 
 /public/assets
@@ -34,3 +33,7 @@
 
 # coverage reports
 coverage
+
+# Ignore node_modules and package-lock.json
+node_modules
+package-lock.json
