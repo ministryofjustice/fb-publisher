@@ -68,7 +68,8 @@ gem 'sprockets', '~>3.7.2'
 gem 'typhoeus'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-# Use Uglifier as compressor for JavaScript assets
+
+gem 'therubyracer'
 gem 'uglifier', '>= 1.3.0'
 
 gem 'resque'
