@@ -25,7 +25,7 @@ jobs:
           name: test
           command: 'bundle exec rspec'
   build:
-    working_directory: ~/circle/git/fb-pusblisher
+    working_directory: ~/circle/git/fb-publisher
     docker:
       - image: asmega/fb-builder:latest
     steps:
@@ -34,8 +34,8 @@ jobs:
           fingerprints:
             - "34:fd:9e:ad:18:04:69:2c:c7:5c:9f:25:82:84:6d:38"
       - run:
-          name: checkout fb-pusblisher-deploy
-          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-pusblisher-deploy.git ~/circle/git/fb-pusblisher-deploy"
+          name: checkout fb-publisher-deploy
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
       - run:
           name: npm install
           command: 'npm install'
@@ -57,7 +57,7 @@ jobs:
           command: 'kubectl config use-context circleci'
       - run:
           name: build and push docker images
-          command: 'cd ~/circle/git/fb-pusblisher && ./scripts/build_platform_images.sh -p test'
+          command: 'cd ~/circle/git/fb-publisher && ./scripts/build_platform_images.sh -p test'
 
 workflows:
   version: 2
