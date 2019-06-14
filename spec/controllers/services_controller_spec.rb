@@ -60,7 +60,7 @@ describe ServicesController do
 
     context 'with optional values' do
       let(:do_post!) do
-        post :create, params: { service: { git_repo_url: 'https://github.com/ministryofjustice/fb-ioj', name: 'ioj', deploy_key: file_fixture('id_rsa').read } }
+        post :create, params: { service: { git_repo_url: 'https://github.com/ministryofjustice/fb-ioj', name: 'ioj', deploy_key: file_fixture('keys/rsa.private.key').read } }
       end
 
       it 'persists the service' do
@@ -75,7 +75,7 @@ describe ServicesController do
 
         expect(service.git_repo_url).to eql('https://github.com/ministryofjustice/fb-ioj')
         expect(service.name).to eql('ioj')
-        expect(service.deploy_key).to eql(file_fixture('id_rsa').read)
+        expect(service.deploy_key).to eql(file_fixture('keys/rsa.private.key').read)
       end
     end
   end

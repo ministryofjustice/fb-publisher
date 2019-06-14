@@ -3,7 +3,7 @@ require 'uri/ssh_git'
 class Service < ActiveRecord::Base
   include Concerns::HasSlug
 
-  DEPLOY_KEY_REGEX = /\A-----BEGIN RSA PRIVATE KEY-----\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[\/+0-9A-Za-z]{64}\n[=\/+0-9A-Za-z]{56}\n-----END RSA PRIVATE KEY-----\n?\z/.freeze
+  DEPLOY_KEY_REGEX = /\A[=+\/\n\rA-Za-z0-9 -]+\z/
 
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by_user_id
 
