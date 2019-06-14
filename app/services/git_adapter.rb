@@ -4,7 +4,7 @@ class GitAdapter
   # TODO: this is not thread/process safe and does not scale
   def self.clone_repo(repo_url:, deploy_key:, to_dir: dir)
     if deploy_key.present?
-      FileUtils.mkdir "#{ENV['HOME']}/.ssh"
+      FileUtils.mkdir "#{ENV['HOME']}/.ssh" unless File.directory?("#{ENV['HOME']}/.ssh")
       File.open("#{ENV['HOME']}/.ssh/deploy_key", 'w') do |f|
         f.write deploy_key
       end
