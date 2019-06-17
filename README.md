@@ -1,4 +1,5 @@
 # fb-publisher
+[![CircleCI](https://circleci.com/gh/ministryofjustice/fb-publisher/tree/master.svg?style=svg)](https://circleci.com/gh/ministryofjustice/fb-publisher/tree/master)
 [![Build Status](https://travis-ci.org/ministryofjustice/fb-publisher.svg?branch=master)](https://travis-ci.org/ministryofjustice/fb-publisher)
 
 Form Builder Publisher Web application

@@ -6,10 +6,6 @@ ruby '2.5.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 
-# Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.1.0', require: false
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
@@ -72,7 +68,8 @@ gem 'sprockets', '~>3.7.2'
 gem 'typhoeus'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-# Use Uglifier as compressor for JavaScript assets
+
+gem 'therubyracer'
 gem 'uglifier', '>= 1.3.0'
 
 gem 'resque'

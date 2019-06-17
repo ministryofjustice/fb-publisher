@@ -1,26 +1,23 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # exit as soon as any command fails
 set -e
 
 REPO_SCOPE=${REPO_SCOPE:-aldavidson}
 TAG=${TAG:-latest}
-AWS_ACCESS_KEY_ID_BASE=${AWS_ACCESS_KEY_ID_BASE:-${AWS_ACCESS_KEY_ID}}
-AWS_SECRET_ACCESS_KEY_BASE=${AWS_SECRET_ACCESS_KEY_BASE:-${AWS_SECRET_ACCESS_KEY}}
-AWS_ACCESS_KEY_ID_WEB=${AWS_ACCESS_KEY_ID_WEB:-${AWS_ACCESS_KEY_ID}}
-AWS_SECRET_ACCESS_KEY_WEB=${AWS_SECRET_ACCESS_KEY_WEB:-${AWS_SECRET_ACCESS_KEY}}
-AWS_ACCESS_KEY_ID_WORKER=${AWS_ACCESS_KEY_ID_WORKER:-${AWS_ACCESS_KEY_ID}}
-AWS_SECRET_ACCESS_KEY_WORKER=${AWS_SECRET_ACCESS_KEY_WORKER:-${AWS_SECRET_ACCESS_KEY}}
-
-concat_and_uppercase() {
-  echo "$1_$2" | tr '[:lower:]' '[:upper:]'
-}
 
 login_to_ecr_with_creds_for() {
-  KEY_VAR_NAME=$(concat_and_uppercase "AWS_ACCESS_KEY_ID" $1)
-  SECRET_VAR_NAME=$(concat_and_uppercase "AWS_SECRET_ACCESS_KEY" $1)
-  echo "Logging in with per-repo credentials ${KEY_VAR_NAME} ${SECRET_VAR_NAME}"
-  export AWS_ACCESS_KEY_ID=${!KEY_VAR_NAME}
-  export AWS_SECRET_ACCESS_KEY=${!SECRET_VAR_NAME}
+  AWS_ACCESS_KEY_ID_ENCODED=`kubectl -n formbuilder-repos get secrets ecr-repo-fb-publisher-$TYPE -o jsonpath='{.data.access_key_id}'`
+  AWS_SECRET_ACCESS_KEY_ENCODED=`kubectl -n formbuilder-repos get secrets ecr-repo-fb-publisher-$TYPE -o jsonpath='{.data.secret_access_key}'`
+
+  if [ `uname` == 'Darwin' ]
+  then
+    export AWS_ACCESS_KEY_ID=`echo $AWS_ACCESS_KEY_ID_ENCODED | base64 --decode`
+    export AWS_SECRET_ACCESS_KEY=`echo $AWS_SECRET_ACCESS_KEY_ENCODED | base64 --decode`
+  else
+    export AWS_ACCESS_KEY_ID=`echo $AWS_ACCESS_KEY_ID_ENCODED | base64 -d`
+    export AWS_SECRET_ACCESS_KEY=`echo $AWS_SECRET_ACCESS_KEY_ENCODED | base64 -d`
+  fi
+
   eval $(aws ecr get-login --no-include-email --region eu-west-2)
 }
 
@@ -33,5 +30,4 @@ do
   login_to_ecr_with_creds_for ${TYPE}
   echo "Pushing ${REPO_NAME}"
   docker push ${REPO_NAME}:${TAG}
-
 done
