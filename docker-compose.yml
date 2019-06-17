@@ -6,7 +6,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./docker/app/Dockerfile
+      dockerfile: ./docker/base/Dockerfile
     # depends_on:
       # - db
     environment:

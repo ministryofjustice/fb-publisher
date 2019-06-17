@@ -24,7 +24,7 @@ target:
 ifeq ($(TARGETDEFINED), "true")
 	$(eval export env_stub=${TARGET})
 	@true
-else 
+else
 	$(info Must set TARGET)
 	@false
 endif
@@ -33,12 +33,23 @@ init:
 	$(eval export ECR_REPO_NAME_SUFFIXES=base web worker)
 	$(eval export ECR_REPO_URL_ROOT=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder)
 
+build: stop
+	docker-compose build
+
+stop:
+	docker-compose down
+	docker-compose kill
+	docker-compose rm -f
+
+lint:
+	$(MAKE) build
+	docker-compose run --rm web bundle exec rubocop
+
 # install aws cli w/o sudo
 install_build_dependencies: init
 	docker --version
 	pip install --user awscli
 	$(eval export PATH=${PATH}:${HOME}/.local/bin/)
-
 
 # Needs ECR_REPO_NAME & ECR_REPO_URL env vars
 build_and_push: install_build_dependencies
@@ -46,4 +57,4 @@ build_and_push: install_build_dependencies
 
 
 
-.PHONY := init push build login
+.PHONY := init push build login lint
