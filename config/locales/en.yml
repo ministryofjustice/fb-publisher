@@ -89,6 +89,7 @@ en:
     creating_service_token_secret: 'Creating secret for service token'
     deploying_service: 'Deploying service'
     exposing: 'Allowing inbound traffic'
+    creating_network_policy: 'Creating network policy'
     failed: 'JOB FAILED!'
     reading_commit: 'Reading commit SHA'
     restarting: 'Restarting service'

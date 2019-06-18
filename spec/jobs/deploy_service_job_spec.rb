@@ -22,6 +22,7 @@ describe DeployServiceJob do
     allow(VersionControlService).to receive(:checkout).and_return('some-sha')
     allow(DeploymentService).to receive(:setup_service).and_return('setup_service-result')
     allow(DeploymentService).to receive(:expose).and_return('expose-result')
+    allow(DeploymentService).to receive(:create_network_policy)
     allow(DeploymentService).to receive(:configure_env_vars).and_return('configure_env_vars-result')
     allow(DeploymentService).to receive(:restart_service).and_return('restart_service-result')
     allow(DeploymentService).to receive(:create_service_token_secret).and_return('create_service_token_secret-result')
@@ -39,6 +40,11 @@ describe DeployServiceJob do
       rescue CmdFailedError => e
         Rails.logger.info "expected error -- #{e.message}"
       end
+    end
+
+    it 'calls create_network_policy' do
+      expect(DeploymentService).to receive(:create_network_policy)
+      perform
     end
 
     it 'loads the deployment' do
