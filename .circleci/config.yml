@@ -37,6 +37,12 @@ jobs:
           name: checkout fb-publisher-deploy
           command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
       - run:
+          name: persist git crypt key to disk
+          command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
+      - run:
+          name: unlock git crypt
+          command: "cd ~/circle/git/fb-publisher-deploy && git-crypt unlock /root/circle/git_crypt.key"
+      - run:
           name: npm install
           command: 'npm install'
       - setup_remote_docker
@@ -58,6 +64,21 @@ jobs:
       - run:
           name: build and push docker images
           command: 'cd ~/circle/git/fb-publisher && ./scripts/build_platform_images.sh -p test'
+      - run:
+          name: kubectl configure credentials
+          command: 'kubectl config set-credentials "circleci_test" --token="$KUBE_TOKEN_TEST"'
+      - run:
+          name: kubectl configure context
+          command: 'kubectl config set-context "circleci_test" --cluster="$KUBE_CLUSTER" --user="circleci_test" --namespace="formbuilder-publisher-test"'
+      - run:
+          name: kubectl use circleci context
+          command: 'kubectl config use-context circleci_test'
+      - run:
+          name: apply kubernetes changes to test dev
+          command: './scripts/deploy_platform.sh -p test'
+      - run:
+          name: delete pods in test dev
+          command: './scripts/restart_platform_pods.sh -p test -c circleci_test'
 
 workflows:
   version: 2

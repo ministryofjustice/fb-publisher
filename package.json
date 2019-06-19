@@ -18,6 +18,6 @@
   "homepage": "https://github.com/ministryofjustice/fb-publisher#readme",
   "dependencies": {},
   "devDependencies": {
-    "@ministryofjustice/fb-deploy-utils": "^1.0.0"
+    "@ministryofjustice/fb-deploy-utils": "^1.0.6"
   }
 }
