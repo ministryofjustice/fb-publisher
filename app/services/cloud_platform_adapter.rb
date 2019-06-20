@@ -75,6 +75,21 @@ class CloudPlatformAdapter < GenericKubernetesPlatformAdapter
     end
   end
 
+  def create_network_policy(config_dir:, environment_slug:)
+    @platform_environment = PLATFORM_ENV
+    @deployment_environment = environment_slug
+
+    template = File.open(Rails.root.join('config', 'k8s_templates', 'network_policy.yaml.erb'), 'r').read
+    erb = ERB.new(template)
+    output = erb.result(binding)
+    path = "#{config_dir}/network_policy.yaml"
+
+    File.open(path, 'w') do |f|
+      f.write(output)
+    end
+
+    kubernetes_adapter.apply_file(file: path)
+  end
 
   def create_ingress_rule(service:, config_dir:)
     url = url_for(service: service)

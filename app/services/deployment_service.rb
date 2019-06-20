@@ -138,6 +138,12 @@ class DeploymentService
                             status: 'completed').order(completed_at: :desc).first
   end
 
+  def self.create_network_policy(config_dir:, environment_slug:)
+    adapter = adapter_for(environment_slug)
+    adapter.create_network_policy(config_dir: config_dir,
+                                  environment_slug: environment_slug)
+  end
+
   private
 
   def self.empty_deployment(service:, environment_slug:)

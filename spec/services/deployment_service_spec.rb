@@ -5,7 +5,6 @@ describe DeploymentService do
   let(:deployment_dev){ double(ServiceDeployment) }
   let(:deployment_staging){ double(ServiceDeployment) }
 
-
   describe '.service_status' do
     describe 'given multiple environment_slugs' do
       let(:slugs) { [:dev, :staging] }
@@ -284,6 +283,30 @@ describe DeploymentService do
     it 'asks the adapter to expose passing on all args except environment_slug' do
       expect(mock_adapter).to receive(:expose).with(args.except(:environment_slug)).and_return(mock_adapter)
       described_class.expose(args)
+    end
+  end
+
+  describe '#create_network_policy' do
+    let(:mock_adapter) { double('adapter', create_network_policy: true) }
+    let(:args) do
+      {
+        config_dir: 'config_dir',
+        environment_slug: 'env_slug'
+      }
+    end
+
+    before do
+      allow(described_class).to receive(:adapter_for).and_return(mock_adapter)
+    end
+
+    it 'gets the adapter for the given environment_slug' do
+      expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
+      described_class.create_network_policy(args)
+    end
+
+    it 'asks the adapter to expose passing on all args except environment_slug' do
+      expect(mock_adapter).to receive(:create_network_policy).with(args).and_return(mock_adapter)
+      described_class.create_network_policy(args)
     end
   end
 

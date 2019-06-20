@@ -51,6 +51,12 @@ class DeployServiceJob < ApplicationJob
       service: @deployment.service
     )
 
+    log_for_user(:creating_network_policy)
+    DeploymentService.create_network_policy(
+      config_dir: config_dir,
+      environment_slug: @deployment.environment_slug
+    )
+
     log_for_user(:restarting)
     DeploymentService.restart_service(
       environment_slug: @deployment.environment_slug,

@@ -1,0 +1,24 @@
+# We must also allow the submitter to access any pods in the services NS
+# so that it can retrieve the mail body parts & PDFs
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-submitter-to-access-services
+  namespace: formbuilder-services-<%= @platform_environment %>-<%= @deployment_environment %>
+spec:
+  # empty podSelector means 'all pods'
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: formbuilder-platform-<%= @platform_environment %>-<%= @deployment_environment %>
+      # This is a kubernetes 1.11 feature, the live cluster is still on 1.10
+      # podSelector:
+      #   matchLabels:
+      #     app: fb-submitter-workers-test-dev
+    ports:
+    - protocol: TCP
+      port: 3000
