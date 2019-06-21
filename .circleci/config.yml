@@ -24,7 +24,7 @@ jobs:
       - run:
           name: test
           command: 'bundle exec rspec'
-  build:
+  build_and_deploy_to_test:
     working_directory: ~/circle/git/fb-publisher
     docker:
       - image: asmega/fb-builder:latest
@@ -47,47 +47,90 @@ jobs:
           command: 'npm install'
       - setup_remote_docker
       - run:
-          name: KUBE_CERTIFICATE_AUTHORITY to disk
-          command: 'echo -n "$KUBE_CERTIFICATE_AUTHORITY" | base64 -d > /root/circle/.kube_certificate_authority'
+          name: build and push docker images
+          command: './scripts/circleci_build.sh test'
       - run:
-          name: kubectl configure cluster
-          command: 'kubectl config set-cluster "$KUBE_CLUSTER" --certificate-authority="/root/circle/.kube_certificate_authority" --server="$KUBE_SERVER"'
+          name: deploy to test
+          command: './scripts/circleci_deploy.sh test $KUBE_TOKEN_TEST'
+  build_and_deploy_to_integration:
+    working_directory: ~/circle/git/fb-publisher
+    docker:
+      - image: asmega/fb-builder:latest
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "34:fd:9e:ad:18:04:69:2c:c7:5c:9f:25:82:84:6d:38"
       - run:
-          name: kubectl configure credentials
-          command: 'kubectl config set-credentials "circleci" --token="$KUBE_TOKEN"'
+          name: checkout fb-publisher-deploy
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
       - run:
-          name: kubectl configure context
-          command: 'kubectl config set-context "circleci" --cluster="$KUBE_CLUSTER" --user="circleci" --namespace="formbuilder-repos"'
+          name: persist git crypt key to disk
+          command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
       - run:
-          name: kubectl use circleci context
-          command: 'kubectl config use-context circleci'
+          name: unlock git crypt
+          command: "cd ~/circle/git/fb-publisher-deploy && git-crypt unlock /root/circle/git_crypt.key"
+      - run:
+          name: npm install
+          command: 'npm install'
+      - setup_remote_docker
       - run:
           name: build and push docker images
-          command: 'cd ~/circle/git/fb-publisher && ./scripts/build_platform_images.sh -p test'
+          command: './scripts/circleci_build.sh integration'
       - run:
-          name: kubectl configure credentials
-          command: 'kubectl config set-credentials "circleci_test" --token="$KUBE_TOKEN_TEST"'
+          name: deploy to integration
+          command: './scripts/circleci_deploy.sh integration $KUBE_TOKEN_INTEGRATION'
+  build_and_deploy_to_live:
+    working_directory: ~/circle/git/fb-publisher
+    docker:
+      - image: asmega/fb-builder:latest
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "34:fd:9e:ad:18:04:69:2c:c7:5c:9f:25:82:84:6d:38"
       - run:
-          name: kubectl configure context
-          command: 'kubectl config set-context "circleci_test" --cluster="$KUBE_CLUSTER" --user="circleci_test" --namespace="formbuilder-publisher-test"'
+          name: checkout fb-publisher-deploy
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
       - run:
-          name: kubectl use circleci context
-          command: 'kubectl config use-context circleci_test'
+          name: persist git crypt key to disk
+          command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
       - run:
-          name: apply kubernetes changes to test dev
-          command: './scripts/deploy_platform.sh -p test'
+          name: unlock git crypt
+          command: "cd ~/circle/git/fb-publisher-deploy && git-crypt unlock /root/circle/git_crypt.key"
       - run:
-          name: delete pods in test dev
-          command: './scripts/restart_platform_pods.sh -p test -c circleci_test'
+          name: npm install
+          command: 'npm install'
+      - setup_remote_docker
+      - run:
+          name: build and push docker images
+          command: './scripts/circleci_build.sh live'
+      - run:
+          name: deploy to live
+          command: './scripts/circleci_deploy.sh live $KUBE_TOKEN_LIVE'
 
 workflows:
   version: 2
   test_and_build:
     jobs:
       - test
-      - build:
+      - build_and_deploy_to_test:
           requires:
             - test
           filters:
             branches:
               only: master
+      - confirm_integration_deploy:
+          type: approval
+          requires:
+            - build_and_deploy_to_test
+      - build_and_deploy_to_integration:
+          requires:
+            - confirm_integration_deploy
+      - confirm_live_deploy:
+          type: approval
+          requires:
+            - build_and_deploy_to_integration
+      - build_and_deploy_to_live:
+          requires:
+            - confirm_live_deploy
