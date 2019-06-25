@@ -1,5 +1,3 @@
-require 'fileutils'
-
 class GitAdapter
   # TODO: this is not thread/process safe and does not scale
   def self.clone_repo(repo_url:, deploy_key:, to_dir: dir)

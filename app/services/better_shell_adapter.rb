@@ -1,5 +1,3 @@
-require 'open3'
-
 class BetterShellAdapter
   # run the given binary with the given arguments,
   # discarding the output

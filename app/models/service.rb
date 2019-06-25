@@ -1,5 +1,3 @@
-require 'uri/ssh_git'
-
 class Service < ActiveRecord::Base
   include Concerns::HasSlug
 
@@ -64,27 +62,41 @@ class Service < ActiveRecord::Base
     if git_repo_url && git_repo_url.starts_with?('git@')
       uri = URI::SshGit.parse(git_repo_url)
 
-      unless uri.user == 'git'
-        errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
-      end
-
-      unless uri.host == 'github.com'
-        errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
-      end
-
-      unless uri.path.present?
-        errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
-      end
+      check_url_user_is_git(uri)
+      check_url_host_is_github(uri)
+      check_url_path_is_present(uri)
     else
       begin
         uri = URI.parse(self.git_repo_url)
-        unless ['https', 'file', ''].include?(uri.scheme)
-          errors.add(:git_repo_url, I18n.t(:not_valid_scheme, scope: [:errors, :service, :git_repo_url]))
-        end
 
+        check_url_permitted_scheme(uri)
       rescue URI::InvalidURIError => e
         errors.add(:git_repo_url, I18n.t(:invalid_uri, scope: [:errors, :service, :git_repo_url]))
       end
+    end
+  end
+
+  def check_url_permitted_scheme(uri)
+    unless ['https', 'file', ''].include?(uri.scheme)
+      errors.add(:git_repo_url, I18n.t(:not_valid_scheme, scope: [:errors, :service, :git_repo_url]))
+    end
+  end
+
+  def check_url_user_is_git(uri)
+    unless uri.user == 'git'
+      errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
+    end
+  end
+
+  def check_url_host_is_github(uri)
+    unless uri.host == 'github.com'
+      errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
+    end
+  end
+
+  def check_url_path_is_present(uri)
+    unless uri.path.present?
+      errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
     end
   end
 end

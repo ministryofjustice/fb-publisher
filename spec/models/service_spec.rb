@@ -57,6 +57,7 @@ describe Service do
 
       context 'when empty string' do
         it 'is valid' do
+          subject.deploy_key = ''
           subject.valid?
           expect(subject.errors[:deploy_key]).to be_blank
         end
@@ -66,7 +67,7 @@ describe Service do
         it 'is not valid' do
           subject.deploy_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCuyJlE0tw+X96wmdA4R+MftWjXxpQWoogv3Nm3usnVjEASyHXdGQBMom571m0t0bt7KQhe2b4zgdg3jscLlM9U8SHPBxjwCLrlitYcvQl6obf/WnTFE9Bt/bdK8umaUnwBkfVxitqIDbCSYgR7PLYOtEEsvI8sE8DHpZcqGy5Ocf7g17OBrVpy4+rOU5O1Mk7u23wFUK9/Yu1UafZQL5EMVrKpzsYnRczttKrXx0ygo0qIK95ewd9/euyMO43j+nik9ec0i/8QUqIqrMrDy8I4Zoh/jVgJW9RNAWpB1rG0Faicsvo7lh9WnzJWcXvvw+YDaurEWKubJefql2EzqHYV phillee@MOJL0583LM"
           subject.valid?
-          expect(subject.errors[:deploy_key]).to_not be_blank
+          expect(subject.errors[:deploy_key]).to be_present
         end
       end
 
