@@ -39,6 +39,7 @@ en:
       git_repo_url:
         not_valid_scheme: "must be a valid https: or file: URL"
         invalid_uri: "is not a valid https: or file: URL"
+        not_valid_git: 'is not a valid github ssh clone url'
       slug:
         invalid: "is invalid (can only contain lower case letters or numbers, '-' or '.', and must start and end with a letter or number)"
     team:
@@ -56,6 +57,8 @@ en:
           <em>(optional)</em> This will form the first part of your forms' initial URL.<br />
           Must contain 3-64 characters, and only letters, numbers and hyphens (-)<br />
           Must be unique. If you leave this blank, we'll generate one for you
+        deploy_key_html:
+          <em>(optional)</em> If your GitHub repository is private, please add the deploy key here
       service_config_param:
         name_html:
           Must be 3-64 characters long, and contain only
@@ -74,6 +77,7 @@ en:
         git_repo_url: GitHub repository location
         name: Form name
         slug: Form "slug"
+        deploy_key: Deploy key
       service_deployment:
         commit_sha: Commit SHA, branch, or tag
         json_sub_dir: Relative path to your service's JSON

@@ -10,7 +10,7 @@ describe GitAdapter do
   describe '.clone_repo' do
     it 'execs a git clone of the given repo_url to the given dir' do
       expect(ShellAdapter).to receive(:exec).with('git', 'clone', '/repo/url', '/target/dir')
-      described_class.clone_repo(repo_url: '/repo/url', to_dir: '/target/dir')
+      described_class.clone_repo(repo_url: '/repo/url', to_dir: '/target/dir', deploy_key: nil)
     end
   end
 

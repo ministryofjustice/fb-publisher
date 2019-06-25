@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe ServicesController do
+  let(:user) { User.create!(name: 'user', email: 'user@example.com') }
+
   before do
     session[:user_id] = user.try(:id)
     controller.send(:instance_variable_set, "@current_user", user)
@@ -8,7 +10,6 @@ describe ServicesController do
 
   describe '#index' do
     context 'for a logged-in user' do
-      let(:user) { User.create!(name: 'user', email: 'user@example.com') }
       let(:user_services) do
         [
           Service.create!(name: 'service 1', git_repo_url: 'https://some/repo/1', created_by_user_id: user.id),
@@ -33,6 +34,48 @@ describe ServicesController do
       it 'redirects to root path' do
         get :index
         expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    let(:do_post!) do
+      post :create, params: { service: { git_repo_url: 'https://github.com/ministryofjustice/fb-ioj', name: 'ioj', deploy_key: '' } }
+    end
+
+    it 'persists the service' do
+      expect do
+        do_post!
+      end.to change(Service, :count).by(1)
+    end
+
+    it 'persist correct values' do
+      do_post!
+      service = Service.last
+
+      expect(service.git_repo_url).to eql('https://github.com/ministryofjustice/fb-ioj')
+      expect(service.name).to eql('ioj')
+      expect(service.deploy_key).to eql('')
+    end
+
+    context 'with optional values' do
+      let(:do_post!) do
+        post :create, params: { service: { git_repo_url: 'https://github.com/ministryofjustice/fb-ioj', name: 'ioj', deploy_key: file_fixture('keys/rsa.private.key').read } }
+      end
+
+      it 'persists the service' do
+        expect do
+          do_post!
+        end.to change(Service, :count).by(1)
+      end
+
+      it 'persist correct values' do
+        do_post!
+        service = Service.last
+
+        expect(service.git_repo_url).to eql('https://github.com/ministryofjustice/fb-ioj')
+        expect(service.name).to eql('ioj')
+        expect(service.deploy_key).to eql(file_fixture('keys/rsa.private.key').read)
       end
     end
   end

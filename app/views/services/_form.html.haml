@@ -6,4 +6,6 @@
   .form-group
     = f.text_field :git_repo_url, maxlength: 2048, required: true
   .form-group
+    = f.text_area :deploy_key, maxlength: 4096
+  .form-group
     = f.submit button_label, class: 'button button-cta'

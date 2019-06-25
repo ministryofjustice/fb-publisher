@@ -22,6 +22,7 @@ class ServicesController < ApplicationController
   def create
     @service = Service.new(service_params.merge(created_by_user: current_user))
     authorize(@service)
+
     if @service.save
       redirect_to service_path(@service), notice: t(:success, scope: [:services, :create])
     else
@@ -65,7 +66,7 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params[:service].permit([:git_repo_url, :name, :slug])
+    params[:service].permit([:git_repo_url, :name, :slug, :deploy_key])
   end
 
   def filter_params

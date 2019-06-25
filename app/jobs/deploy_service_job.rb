@@ -13,7 +13,8 @@ class DeployServiceJob < ApplicationJob
     log_for_user(:reading_commit)
     commit = VersionControlService.checkout(
       repo_url: @deployment.service.git_repo_url,
-      ref: @deployment.commit_sha
+      ref: @deployment.commit_sha,
+      deploy_key: @deployment.service.deploy_key
     )
 
     log_for_user(:writing_commit, sha: commit)

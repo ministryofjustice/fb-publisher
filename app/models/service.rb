@@ -1,6 +1,8 @@
 class Service < ActiveRecord::Base
   include Concerns::HasSlug
 
+  DEPLOY_KEY_REGEX = /\A[=+\/\n\rA-Za-z0-9 -]+\z/
+
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by_user_id
 
   has_many :service_status_checks, dependent: :destroy
@@ -11,7 +13,8 @@ class Service < ActiveRecord::Base
 
   validates :name, length: {minimum: 3, maximum: 128}, uniqueness: true
   validates :git_repo_url, presence: true, length: {minimum: 8, maximum: 1024}
-  validate  :git_repo_url_must_use_https
+  validates :deploy_key, format: { with: DEPLOY_KEY_REGEX, allow_blank: true }
+  validate  :check_git_repo_url
 
   after_create :generate_secret_config_params
 
@@ -55,15 +58,45 @@ class Service < ActiveRecord::Base
     end
   end
 
-  def git_repo_url_must_use_https
-    begin
-      uri = URI.parse(self.git_repo_url)
-      unless ['https', 'file', ''].include?(uri.scheme)
-        errors.add(:git_repo_url, I18n.t(:not_valid_scheme, scope: [:errors, :service, :git_repo_url]))
-      end
+  def check_git_repo_url
+    if git_repo_url && git_repo_url.starts_with?('git@')
+      uri = URI::SshGit.parse(git_repo_url)
 
-    rescue URI::InvalidURIError => e
-      errors.add(:git_repo_url, I18n.t(:invalid_uri, scope: [:errors, :service, :git_repo_url]))
+      check_url_user_is_git(uri)
+      check_url_host_is_github(uri)
+      check_url_path_is_present(uri)
+    else
+      begin
+        uri = URI.parse(self.git_repo_url)
+
+        check_url_permitted_scheme(uri)
+      rescue URI::InvalidURIError => e
+        errors.add(:git_repo_url, I18n.t(:invalid_uri, scope: [:errors, :service, :git_repo_url]))
+      end
+    end
+  end
+
+  def check_url_permitted_scheme(uri)
+    unless ['https', 'file', ''].include?(uri.scheme)
+      errors.add(:git_repo_url, I18n.t(:not_valid_scheme, scope: [:errors, :service, :git_repo_url]))
+    end
+  end
+
+  def check_url_user_is_git(uri)
+    unless uri.user == 'git'
+      errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
+    end
+  end
+
+  def check_url_host_is_github(uri)
+    unless uri.host == 'github.com'
+      errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
+    end
+  end
+
+  def check_url_path_is_present(uri)
+    unless uri.path.present?
+      errors.add(:git_repo_url, I18n.t(:not_valid_git, scope: [:errors, :service, :git_repo_url]))
     end
   end
 end

@@ -47,6 +47,47 @@ describe Service do
       subject.name = "Apply for a license to do something"
     end
 
+    describe '#deploy_key' do
+      context 'when nil' do
+        it 'is valid' do
+          subject.valid?
+          expect(subject.errors[:deploy_key]).to be_blank
+        end
+      end
+
+      context 'when empty string' do
+        it 'is valid' do
+          subject.deploy_key = ''
+          subject.valid?
+          expect(subject.errors[:deploy_key]).to be_blank
+        end
+      end
+
+      context 'when a public key' do
+        it 'is not valid' do
+          subject.deploy_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCuyJlE0tw+X96wmdA4R+MftWjXxpQWoogv3Nm3usnVjEASyHXdGQBMom571m0t0bt7KQhe2b4zgdg3jscLlM9U8SHPBxjwCLrlitYcvQl6obf/WnTFE9Bt/bdK8umaUnwBkfVxitqIDbCSYgR7PLYOtEEsvI8sE8DHpZcqGy5Ocf7g17OBrVpy4+rOU5O1Mk7u23wFUK9/Yu1UafZQL5EMVrKpzsYnRczttKrXx0ygo0qIK95ewd9/euyMO43j+nik9ec0i/8QUqIqrMrDy8I4Zoh/jVgJW9RNAWpB1rG0Faicsvo7lh9WnzJWcXvvw+YDaurEWKubJefql2EzqHYV phillee@MOJL0583LM"
+          subject.valid?
+          expect(subject.errors[:deploy_key]).to be_present
+        end
+      end
+
+      context 'when a rsa private key' do
+        it 'is valid' do
+          subject.deploy_key = file_fixture('keys/rsa.private.key').read
+          subject.valid?
+          expect(subject.errors[:deploy_key]).to be_blank
+        end
+      end
+
+      context 'when a openssh private key' do
+        it 'is valid' do
+          subject.deploy_key = file_fixture('keys/openssh.private.key').read
+          subject.valid?
+          expect(subject.errors[:deploy_key]).to be_blank
+        end
+      end
+    end
+
     context 'with an empty slug' do
       before do
         subject.slug = ''
@@ -229,9 +270,9 @@ describe Service do
       context 'that is a valid git: uri' do
         let(:git_repo_url) { 'git@github.com:ministryofjustice/fb-sample-json.git' }
 
-        it 'adds an error on git_repo_url' do
+        it 'does not add an error on git_repo_url' do
           subject.valid?
-          expect(subject.errors[:git_repo_url]).to_not be_empty
+          expect(subject.errors[:git_repo_url]).to be_empty
         end
       end
 

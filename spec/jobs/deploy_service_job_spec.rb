@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe DeployServiceJob do
   let(:json_sub_dir) { nil }
-  let(:service) { double('service', git_repo_url: 'https://some/repo') }
+  let(:service) { double('service', git_repo_url: 'https://some/repo', deploy_key: nil) }
   let(:deployment) do
     double('deployment',
       id: 'my-deployment-id',
@@ -113,7 +113,8 @@ describe DeployServiceJob do
     it 'checks out the code from the VersionControlService' do
       expect(VersionControlService).to receive(:checkout).with(
         repo_url: service.git_repo_url,
-        ref: deployment.commit_sha
+        ref: deployment.commit_sha,
+        deploy_key: nil
       ).and_return('some-sha')
       perform
     end
