@@ -71,12 +71,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'therubyracer'
 gem 'uglifier', '>= 1.3.0'
-
 gem 'resque'
-
 gem 'rails-data-migrations'
-
 gem 'uri-ssh_git'
+gem 'sentry-raven'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
