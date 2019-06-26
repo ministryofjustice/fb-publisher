@@ -197,6 +197,19 @@ class KubernetesAdapter
     apply_file(file: file)
   end
 
+  def create_service(config_dir:, service:)
+    template = File.open(Rails.root.join('config', 'k8s_templates', 'service.yaml.erb'), 'r').read
+    erb = ERB.new(template)
+    output = erb.result(binding)
+    path = "#{config_dir}/service.yml"
+
+    File.open(path, 'w') do |f|
+      f.write(output)
+    end
+
+    apply_file(file: path)
+  end
+
   def write_config_file(file:, content:)
     FileUtils.mkdir_p(File.dirname(file))
     File.open(file, 'w+') do |f|

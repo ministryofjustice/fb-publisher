@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: formbuilder-form-<%= service.slug %>-service-monitor-test-dev
+  namespace: formbuilder-services-<%= @platform_environment %>-<%= @deployment_environment %>
+spec:
+  selector:
+    matchLabels:
+      run: <%= service.slug %>
+  endpoints:
+  - port: http
+    interval: 15s
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: formbuilder-form-<%= service.slug %>-service-monitor-ingress-<%= @platform_environment %>-<%= @deployment_environment %>
+  namespace: formbuilder-services-<%= @platform_environment %>-<%= @deployment_environment %>
+spec:
+  podSelector:
+    matchLabels:
+      run: <%= service.slug %>
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          component: monitoring

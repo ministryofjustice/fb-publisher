@@ -58,6 +58,13 @@ class DeployServiceJob < ApplicationJob
       environment_slug: @deployment.environment_slug
     )
 
+    log_for_user(:creating_service_monitor)
+    DeploymentService.create_service_monitor(
+      service: @deployment.service,
+      config_dir: config_dir,
+      environment_slug: @deployment.environment_slug
+    )
+
     log_for_user(:restarting)
     DeploymentService.restart_service(
       environment_slug: @deployment.environment_slug,

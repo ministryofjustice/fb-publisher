@@ -2,7 +2,13 @@ require 'rails_helper'
 
 describe KubernetesAdapter do
   describe '#create_secret' do
-    subject { described_class.new(environment: ServiceEnvironment.find(:dev)) }
+    subject { described_class.new(environment: service_environment) }
+
+    let(:service_environment) do
+      se = ServiceEnvironment.find(:dev)
+      allow(se).to receive(:namespace).and_return('formbuilder-services-test-dev')
+      se
+    end
 
     before :each do
       allow(subject).to receive(:apply_file)
@@ -119,6 +125,49 @@ describe KubernetesAdapter do
           value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env').find{|k,v| k['name'] == 'FORM_URL' }['value']
           expect(value).to eql('https://contact.dev.test.form.service.justice.gov.uk')
         end
+      end
+    end
+
+    describe '#create_service' do
+      let(:config_dir) { Pathname.new('/tmp') }
+      let(:filename) { 'service.yml' }
+      let(:service) { Service.new(slug: 'service-slug') }
+
+      before :each do
+        FileUtils.rm_f(config_dir.join(filename))
+      end
+
+      it 'writes service.yaml' do
+        subject.create_service(config_dir: config_dir,
+                               service: service)
+
+        expect(File.exists?(config_dir.join(filename)))
+      end
+
+      it 'generates correct service.yaml' do
+        subject.create_service(config_dir: config_dir,
+                               service: service)
+
+        hash = YAML.load(File.open(config_dir.join(filename)).read)
+
+        expect(hash.dig('kind')).to eql('Service')
+
+        expect(hash.dig('metadata', 'labels', 'run')).to eql('service-slug')
+        expect(hash.dig('metadata', 'name')).to eql('service-slug')
+        expect(hash.dig('metadata', 'namespace')).to eql('formbuilder-services-test-dev')
+
+        expect(hash.dig('spec', 'ports', 0, 'name')).to eql('http')
+        expect(hash.dig('spec', 'ports', 0, 'port')).to eql(3000)
+        expect(hash.dig('spec', 'ports', 0, 'protocol')).to eql('TCP')
+        expect(hash.dig('spec', 'ports', 0, 'targetPort')).to eql(3000)
+        expect(hash.dig('spec', 'selector', 'run')).to eql('service-slug')
+      end
+
+      it 'calls apply file' do
+        expect(subject).to receive(:apply_file)
+
+        subject.create_service(config_dir: config_dir,
+                               service: service)
       end
     end
   end
