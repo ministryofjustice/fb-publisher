@@ -77,6 +77,11 @@ spec:
               secretKeyRef:
                 name: fb-publisher-app-secrets-{{ .Values.environmentName }}
                 key: sentry_dsn
+          - name: RUNNER_SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: runner_sentry_dsn
 ---
 # workers
 apiVersion: extensions/v1beta1
@@ -155,3 +160,8 @@ spec:
               secretKeyRef:
                 name: fb-publisher-app-secrets-{{ .Values.environmentName }}
                 key: sentry_dsn
+          - name: RUNNER_SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: runner_sentry_dsn
