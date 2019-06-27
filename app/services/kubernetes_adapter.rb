@@ -385,6 +385,8 @@ class KubernetesAdapter
                 value: #{ENV['PLATFORM_ENV']}
               - name: DEPLOYMENT_ENV
                 value: #{@environment.slug}
+              - name: SENTRY_DSN
+                value: #{ENV['RUNNER_SENTRY_DSN']}
             image: #{image}
             imagePullPolicy: Always
             ports:
