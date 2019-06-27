@@ -28,10 +28,6 @@ To use the following scripts, first run `npm install`
 
   Script to initialise/update Kubernetes deployments for a platform environment
 
-- `scripts/restart_platform_pods.sh`
-
-  Script to explicitly restart pods in a platform environment
-
 All these scripts print out their usage instructions by being run with the `-h` flag
 
 ## Configuration files
@@ -100,7 +96,7 @@ See the `Makefile` for more info.
     - `secret_key_base`
       Rails secret
 
-- Run the `scripts/deploy_platform.sh` script which 
+- Run the `scripts/deploy_platform.sh` script which
 
   - generates the necessary kubernetees configuration to deploy the application
   - applies the configuration
@@ -111,44 +107,10 @@ The generated config for each platform/deployment environment combination is wri
 
 ### 4. Running the Rails setup scripts
 
-The first time the infrastructure is created, the Rails setup scripts need to be run. This needs to be run on one of the pods that has been created 
+The first time the infrastructure is created, the Rails setup scripts need to be run. This needs to be run on one of the pods that has been created
 
 ```bash
 kubectl exec -ti $PODNAME --namespace=formbuilder-platform-$PLATFORM_ENV-$DEPLOYMENT_ENV  -- bundle exec rails db:setup db:migrate
 ```
 
 **TODO: Make rails setup run automatically without failure preventing further scripts running**
-
-### 5. Deploying an updated docker image to existing infrastructure
-
-Deleting the currently running pods will trigger the kubernetes Deployment to recreate pods until it has its specified minimum number running - as the Deployment has `imagePullPolicy: Always`, it will pull the latest docker image from Cloud Platform's ECR.
-
-`scripts/restart_platform_pods.sh` is a convenience script that deletes all pods in all deployment environments accross a platform environment.
-
-Running
-
-```bash
-scripts/restart_platform_pods.sh -p $PLATFORM_ENV
-```
-
-is equivalent to
-
-```bash
-kubectl delete pods -l appGroup=fb-publisher --namespace=formbuilder-platform-$PLATFORM_ENV-dev &\
-kubectl delete pods -l appGroup=fb-publisher --namespace=formbuilder-platform-$PLATFORM_ENV-staging &\
-kubectl delete pods -l appGroup=fb-publisher --namespace=formbuilder-platform-$PLATFORM_ENV-production &
-```
-
-To restart just the `api` pods in a specific deployment environment
-
-```bash
-kubectl delete pods -l app=fb-publisher-api-$PLATFORM_ENV-$DEPLOYMENT_ENV  --namespace=formbuilder-platform-$PLATFORM_ENV-$DEPLOYMENT_ENV &
-```
-
-To restart just the `worker` pods in a specific deployment environment
-
-```bash
-kubectl delete pods -l app=fb-publisher-workers-$PLATFORM_ENV-$DEPLOYMENT_ENV --namespace=formbuilder-platform-$PLATFORM_ENV-$DEPLOYMENT_ENV
-```
-
-

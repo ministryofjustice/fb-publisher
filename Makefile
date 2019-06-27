@@ -24,13 +24,12 @@ target:
 ifeq ($(TARGETDEFINED), "true")
 	$(eval export env_stub=${TARGET})
 	@true
-else 
+else
 	$(info Must set TARGET)
 	@false
 endif
 
 init:
-	$(eval export ECR_REPO_NAME_SUFFIXES=base web worker)
 	$(eval export ECR_REPO_URL_ROOT=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder)
 
 # install aws cli w/o sudo
@@ -39,11 +38,8 @@ install_build_dependencies: init
 	pip install --user awscli
 	$(eval export PATH=${PATH}:${HOME}/.local/bin/)
 
-
 # Needs ECR_REPO_NAME & ECR_REPO_URL env vars
 build_and_push: install_build_dependencies
-	TAG="latest-${env_stub}" REPO_SCOPE=${ECR_REPO_URL_ROOT} ./scripts/build_and_push_all.sh
-
-
+	TAG="latest-${env_stub}" CIRCLE_SHA1=${CIRCLE_SHA1} REPO_SCOPE=${ECR_REPO_URL_ROOT} ./scripts/build_and_push_all.sh
 
 .PHONY := init push build login
