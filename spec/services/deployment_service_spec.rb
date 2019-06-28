@@ -335,25 +335,26 @@ describe DeploymentService do
   end
 
   describe '.restart_service' do
-    let(:mock_adapter) { double('adapter', delete_pods: true) }
+    let(:mock_adapter) { double('KubernetesAdapter', patch_deployment: true) }
     let(:args) {
       {
         environment_slug: 'env_slug',
-        service: 'service'
+        service: double(slug: 'some-service')
       }
     }
+
     before do
       allow(described_class).to receive(:adapter_for).and_return(mock_adapter)
     end
 
     it 'gets the adapter for the given environment_slug' do
-      expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
       described_class.restart_service(args)
+      expect(described_class).to have_received(:adapter_for).with('env_slug')
     end
 
     it 'asks the adapter to delete_pods passing on all args except environment_slug' do
-      expect(mock_adapter).to receive(:delete_pods).with(args.except(:environment_slug)).and_return(mock_adapter)
       described_class.restart_service(args)
+      expect(mock_adapter).to have_received(:patch_deployment).with(name: 'some-service')
     end
   end
 

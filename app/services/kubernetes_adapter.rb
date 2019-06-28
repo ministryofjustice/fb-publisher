@@ -312,7 +312,7 @@ class KubernetesAdapter
   end
 
   def timestamp_annotation
-    "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"updated_at\":\"`date +'%s'`\"}}}}}"
+    "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"updated_at\":\"#{Time.now.to_i}\"}}}}}"
   end
 
   def secret(name:, key_ref:, value:)
@@ -401,7 +401,7 @@ class KubernetesAdapter
   end
 
   def config_map(vars: {}, name:)
-    # Mapping of vars ensures that all values are quoted to ensure that 
+    # Mapping of vars ensures that all values are quoted to ensure that
     # characters such as { do not cause the resulting YAML to be invalid
     # NB. if this method is used to generate config maps that contain numbers
     # this will need updating accordingly
