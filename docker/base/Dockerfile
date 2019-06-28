@@ -1,5 +1,8 @@
 FROM ministryofjustice/ruby:2.5.1
 
+# https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+
 RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
 
 ENV RAILS_ROOT /var/www/fb-publisher
