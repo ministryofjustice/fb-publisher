@@ -94,6 +94,7 @@ en:
     deploying_service: 'Deploying service'
     exposing: 'Allowing inbound traffic'
     creating_network_policy: 'Creating network policy'
+    creating_service_monitor: 'Creating service monitor'
     failed: 'JOB FAILED!'
     reading_commit: 'Reading commit SHA'
     restarting: 'Restarting service'
