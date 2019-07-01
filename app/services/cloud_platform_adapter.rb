@@ -101,6 +101,10 @@ class CloudPlatformAdapter < GenericKubernetesPlatformAdapter
     )
   end
 
+  def patch_deployment(name:)
+    kubernetes_adapter.patch_deployment(name: name)
+  end
+
   ##############################################################
   # Everything below here is the same for the minikube adapter
   # TODO: refactor for DRY-ness!

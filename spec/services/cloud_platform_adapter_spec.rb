@@ -21,6 +21,12 @@ describe CloudPlatformAdapter do
       expect(File.exist?('/tmp/network_policy.yaml')).to be_truthy
     end
 
+    it 'forces a rolling deployment by patching the existing deployment' do
+      subject.patch_deployment(name: 'some-deployment-name')
+
+      expect(mock_adapter).to have_received(:patch_deployment).with(name: 'some-deployment-name')
+    end
+
     it 'generates network_policy.yaml with correct contents' do
       subject.create_network_policy(config_dir: '/tmp',
                                     environment_slug: 'dev')

@@ -112,12 +112,7 @@ class DeploymentService
 
   def self.restart_service(service:, environment_slug:)
     adapter = adapter_for(environment_slug)
-    # The deployment will detect that the pods have been
-    # deleted, and instantly begin creating new ones
-    # that will pick up any new config maps or json
-    adapter.delete_pods(
-      service: service
-    )
+    adapter.patch_deployment(name: service.slug)
   end
 
   def self.url_for(environment_slug:, service:)
