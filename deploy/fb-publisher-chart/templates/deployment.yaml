@@ -21,6 +21,14 @@ spec:
         imagePullPolicy: Always
         ports:
           - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+
         # non-secret env vars
         # defined in config_map.yaml
         envFrom:
