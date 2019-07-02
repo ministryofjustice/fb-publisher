@@ -404,6 +404,13 @@ class KubernetesAdapter
             imagePullPolicy: Always
             ports:
             - containerPort: #{container_port}
+            readinessProbe:
+              httpGet:
+                path: /ping.json
+                port: #{container_port}
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              successThreshold: 1
             volumeMounts:
             - name: json-repo
               mountPath: /usr/app
