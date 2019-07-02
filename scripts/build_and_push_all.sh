@@ -27,8 +27,8 @@ do
   echo "Building ${REPO_NAME}"
   docker build -f docker/${TYPE}/Dockerfile -t ${REPO_NAME}:${TAG} -t ${REPO_NAME}:${CIRCLE_SHA1} --build-arg BASE_IMAGE=${REPO_SCOPE}/fb-publisher-base:${TAG} .
 
-  login_to_ecr_with_creds_for ${TYPE}
+  #login_to_ecr_with_creds_for ${TYPE}
   echo "Pushing ${REPO_NAME}"
-  docker push ${REPO_NAME}:${TAG}
-  docker push ${REPO_NAME}:${CIRCLE_SHA1}
+  #docker push ${REPO_NAME}:${TAG}
+  #docker push ${REPO_NAME}:${CIRCLE_SHA1}
 done

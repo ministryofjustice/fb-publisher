@@ -1,20 +1,13 @@
-ARG BASE_IMAGE=aldavidson/fb-publisher-base
-FROM $BASE_IMAGE
+FROM ruby:2.6.3-alpine3.9
 
-# install kubectl as described at
-# https://kubernetes.io/docs/tasks/tools/install-kubectl/
-RUN apt-get update && apt-get install -y apt-transport-https
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-RUN touch /etc/apt/sources.list.d/kubernetes.list
-RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-RUN apt-get update
-RUN apt-get install -y kubectl
+ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 
-RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
-RUN chown -R deploy:deploy .
-RUN usermod -aG sudo deploy
+RUN chmod +x /usr/local/bin/kubectl
 
-USER 1001
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN chown -R appuser:appgroup .
+RUN chown -R appuser:appgroup /usr/local/bin/kubectl
+USER appuser
 
 ARG RAILS_ENV=production
 CMD bundle exec rake resque:work

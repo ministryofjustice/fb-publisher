@@ -1,16 +1,12 @@
-FROM ministryofjustice/ruby:2.5.1
+FROM ruby:2.6.3-alpine3.9
 
-# https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | sh -
 
-RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
+RUN apk add --update --no-cache --virtual .build-deps build-base libgcrypt-dev libxml2-dev libxslt-dev nodejs postgresql-contrib postgresql-dev curl ca-certificates
 
-ENV RAILS_ROOT /var/www/fb-publisher
-RUN mkdir -p $RAILS_ROOT
-WORKDIR $RAILS_ROOT
+WORKDIR /usr/src/app
 
 COPY Gemfile.lock Gemfile ./
 RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
 COPY . .
-ADD . $RAILS_ROOT
