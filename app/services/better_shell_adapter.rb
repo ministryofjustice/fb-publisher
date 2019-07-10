@@ -3,7 +3,6 @@ class BetterShellAdapter
   # discarding the output
   def self.exec(binary, variables, *args)
     cmd_line = build_cmd(executable: binary, args: args, variables: variables)
-    Rails.logger.info "executing cmd #{cmd_line}"
     # TODO: maybe use Open3.popen2e instead, so that we
     # can get streaming output as well as exit code?
     result = Kernel.system(cmd_line)
