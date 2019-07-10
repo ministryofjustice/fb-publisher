@@ -15,8 +15,6 @@ class KubernetesAdapter
       )
     end
     filedata = File.read(config_file_path)
-    Rails.logger.info('FILEDATA')
-    Rails.logger.info(filedata)
     create_or_update_config_map(
       file: config_file_path,
       name: config_map_name(service: service)
@@ -425,8 +423,6 @@ class KubernetesAdapter
     # characters such as { do not cause the resulting YAML to be invalid
     # NB. if this method is used to generate config maps that contain numbers
     # this will need updating accordingly
-    Rails.logger.info('config_map VARS')
-    Rails.logger.info(vars.inspect)
     <<~ENDHEREDOC
     apiVersion: v1
     kind: ConfigMap

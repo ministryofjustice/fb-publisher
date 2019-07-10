@@ -13,12 +13,6 @@ class GenericKubernetesPlatformAdapter
       .where(environment_slug: environment.slug)
       .order(:name)
     )
-    Rails.logger.info('environment.slug')
-    Rails.logger.info(environment.slug)
-    Rails.logger.info('env_vars')
-    Rails.logger.info(env_vars.inspect)
-    Rails.logger.info('system_config')
-    Rails.logger.info(system_config.inspect)
     begin
       kubernetes_adapter.set_environment_vars(
         vars: env_vars.merge(system_config),
