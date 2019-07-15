@@ -159,6 +159,48 @@ describe KubernetesAdapter do
                               "requests" => { "cpu" => "20m", "memory" => "256Mi" }})
       end
 
+      it 'sets default replicas' do
+        subject.create_deployment(config_dir: config_dir,
+                                  name: nil,
+                                  container_port: nil,
+                                  image: nil,
+                                  json_repo: nil,
+                                  commit_ref: nil,
+                                  config_map_name: nil,
+                                  service: Service.new
+                                 )
+
+        hash = YAML.load(File.open(config_dir.join(filename)).read)
+        replicas = hash.dig('spec', 'replicas')
+
+        expect(replicas).to eql(2)
+      end
+
+      it 'have custom number of replicas' do
+        service = create(:service)
+
+        service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                          name: 'DEPLOYMENT_REPLICAS',
+                                                          value: '4',
+                                                          environment_slug: 'dev',
+                                                          last_updated_by_user: service.created_by_user)
+
+        subject.create_deployment(config_dir: config_dir,
+                                  name: nil,
+                                  container_port: nil,
+                                  image: nil,
+                                  json_repo: nil,
+                                  commit_ref: nil,
+                                  config_map_name: nil,
+                                  service: service
+                                 )
+
+        hash = YAML.load(File.open(config_dir.join(filename)).read)
+        replicas = hash.dig('spec', 'replicas')
+
+        expect(replicas).to eql(4)
+      end
+
       context do
         let(:service_env) do
           ServiceEnvironment.new(slug: :dev,

@@ -68,7 +68,16 @@ class Service < ActiveRecord::Base
     param.value || default_resources.dig(:requests, :memory)
   end
 
+  def deployment_replicas
+    param = service_config_params.find_by(name: 'DEPLOYMENT_REPLICAS') || ServiceConfigParam.new
+    param.value || default_deployment_replicas
+  end
+
   private
+
+  def default_deployment_replicas
+    2
+  end
 
   def default_resources
     {

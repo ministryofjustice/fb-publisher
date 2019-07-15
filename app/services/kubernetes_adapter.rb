@@ -356,7 +356,7 @@ class KubernetesAdapter
       labels:
         run: #{name}
     spec:
-      replicas: 2
+      replicas: #{service.deployment_replicas}
       selector:
         matchLabels:
           run: #{name}
