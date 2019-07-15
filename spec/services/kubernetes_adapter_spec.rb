@@ -21,15 +21,16 @@ describe KubernetesAdapter do
       expect(hash['data']).to eql({'bar' => 'YmF6'})
     end
 
-    describe '#deployment' do
+    describe '#create_deployment' do
       before :each do
         FileUtils.rm_f(config_dir.join(filename))
       end
 
       let(:config_dir) { Pathname.new('/tmp') }
       let(:filename) { 'deployment.yml' }
+      let(:service) { Service.new }
 
-      it 'sets env variable USER_DATASTORE_URL' do
+      let(:create_deployment) do
         subject.create_deployment(config_dir: config_dir,
                                   name: nil,
                                   container_port: nil,
@@ -37,8 +38,11 @@ describe KubernetesAdapter do
                                   json_repo: nil,
                                   commit_ref: nil,
                                   config_map_name: nil,
-                                  service: Service.new
-                                 )
+                                  service: service)
+      end
+
+      it 'sets env variable USER_DATASTORE_URL' do
+        create_deployment
 
         hash = YAML.load(File.open(config_dir.join(filename)).read)
         value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env').find{|k,v| k['name'] == 'USER_DATASTORE_URL' }['value']
@@ -49,15 +53,7 @@ describe KubernetesAdapter do
         allow(ENV).to receive(:[]).and_call_original
         allow(ENV).to receive(:[]).with('PLATFORM_ENV').and_return('test')
 
-        subject.create_deployment(config_dir: config_dir,
-                                  name: nil,
-                                  container_port: nil,
-                                  image: nil,
-                                  json_repo: nil,
-                                  commit_ref: nil,
-                                  config_map_name: nil,
-                                  service: Service.new
-                                 )
+        create_deployment
 
         hash = YAML.load(File.open(config_dir.join(filename)).read)
         value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env').find{|k,v| k['name'] == 'PLATFORM_ENV' }['value']
@@ -65,15 +61,7 @@ describe KubernetesAdapter do
       end
 
       it 'sets env variable DEPLOYMENT_ENV' do
-        subject.create_deployment(config_dir: config_dir,
-                                  name: nil,
-                                  container_port: nil,
-                                  image: nil,
-                                  json_repo: nil,
-                                  commit_ref: nil,
-                                  config_map_name: nil,
-                                  service: Service.new
-                                 )
+        create_deployment
 
         hash = YAML.load(File.open(config_dir.join(filename)).read)
         value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env').find{|k,v| k['name'] == 'DEPLOYMENT_ENV' }['value']
@@ -85,15 +73,7 @@ describe KubernetesAdapter do
         allow(ENV).to receive(:[]).with('RUNNER_SENTRY_DSN')
                                   .and_return('runner-sentry-dsn-here')
 
-        subject.create_deployment(config_dir: config_dir,
-                                  name: nil,
-                                  container_port: nil,
-                                  image: nil,
-                                  json_repo: nil,
-                                  commit_ref: nil,
-                                  config_map_name: nil,
-                                  service: Service.new
-                                 )
+        create_deployment
 
         hash = YAML.load(File.open(config_dir.join(filename)).read)
         value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env')
@@ -102,15 +82,7 @@ describe KubernetesAdapter do
       end
 
       it 'sets default resources' do
-        subject.create_deployment(config_dir: config_dir,
-                                  name: nil,
-                                  container_port: nil,
-                                  image: nil,
-                                  json_repo: nil,
-                                  commit_ref: nil,
-                                  config_map_name: nil,
-                                  service: Service.new
-                                 )
+        create_deployment
 
         hash = YAML.load(File.open(config_dir.join(filename)).read)
         hash = hash.dig('spec', 'template', 'spec', 'containers', 0, 'resources')
@@ -119,56 +91,44 @@ describe KubernetesAdapter do
                               "requests" => { "cpu" => "10m", "memory" => "128Mi" }})
       end
 
-      it 'can have custom resourcing' do
-        service = create(:service)
+      context do
+        let(:service) { create(:service) }
 
-        service.service_config_params << ServiceConfigParam.create!(service: service,
-                                                          name: 'RESOURCES_LIMITS_CPU', value: '300m',
-                                                          environment_slug: 'dev',
-                                                          last_updated_by_user: service.created_by_user)
+        before :each do
+          service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                            name: 'RESOURCES_LIMITS_CPU', value: '300m',
+                                                            environment_slug: 'dev',
+                                                            last_updated_by_user: service.created_by_user)
 
-        service.service_config_params << ServiceConfigParam.create!(service: service,
-                                                          name: 'RESOURCES_LIMITS_MEMORY', value: '600Mi',
-                                                          environment_slug: 'dev',
-                                                          last_updated_by_user: service.created_by_user)
+          service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                            name: 'RESOURCES_LIMITS_MEMORY', value: '600Mi',
+                                                            environment_slug: 'dev',
+                                                            last_updated_by_user: service.created_by_user)
 
-        service.service_config_params << ServiceConfigParam.create!(service: service,
-                                                          name: 'RESOURCES_REQUESTS_CPU', value: '20m',
-                                                          environment_slug: 'dev',
-                                                          last_updated_by_user: service.created_by_user)
+          service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                            name: 'RESOURCES_REQUESTS_CPU', value: '20m',
+                                                            environment_slug: 'dev',
+                                                            last_updated_by_user: service.created_by_user)
 
-        service.service_config_params << ServiceConfigParam.create!(service: service,
-                                                          name: 'RESOURCES_REQUESTS_MEMORY', value: '256Mi',
-                                                          environment_slug: 'dev',
-                                                          last_updated_by_user: service.created_by_user)
+          service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                            name: 'RESOURCES_REQUESTS_MEMORY', value: '256Mi',
+                                                            environment_slug: 'dev',
+                                                            last_updated_by_user: service.created_by_user)
+        end
 
-        subject.create_deployment(config_dir: config_dir,
-                                  name: nil,
-                                  container_port: nil,
-                                  image: nil,
-                                  json_repo: nil,
-                                  commit_ref: nil,
-                                  config_map_name: nil,
-                                  service: service
-                                 )
+        it 'can have custom resourcing' do
+          create_deployment
 
-        hash = YAML.load(File.open(config_dir.join(filename)).read)
-        hash = hash.dig('spec', 'template', 'spec', 'containers', 0, 'resources')
+          hash = YAML.load(File.open(config_dir.join(filename)).read)
+          hash = hash.dig('spec', 'template', 'spec', 'containers', 0, 'resources')
 
-        expect(hash).to eql({ "limits" => { "cpu" => "300m", "memory" => "600Mi" },
-                              "requests" => { "cpu" => "20m", "memory" => "256Mi" }})
+          expect(hash).to eql({ "limits" => { "cpu" => "300m", "memory" => "600Mi" },
+                                "requests" => { "cpu" => "20m", "memory" => "256Mi" }})
+        end
       end
 
       it 'sets default replicas' do
-        subject.create_deployment(config_dir: config_dir,
-                                  name: nil,
-                                  container_port: nil,
-                                  image: nil,
-                                  json_repo: nil,
-                                  commit_ref: nil,
-                                  config_map_name: nil,
-                                  service: Service.new
-                                 )
+        create_deployment
 
         hash = YAML.load(File.open(config_dir.join(filename)).read)
         replicas = hash.dig('spec', 'replicas')
@@ -176,29 +136,25 @@ describe KubernetesAdapter do
         expect(replicas).to eql(2)
       end
 
-      it 'have custom number of replicas' do
-        service = create(:service)
+      context do
+        let(:service) { create(:service) }
 
-        service.service_config_params << ServiceConfigParam.create!(service: service,
-                                                          name: 'DEPLOYMENT_REPLICAS',
-                                                          value: '4',
-                                                          environment_slug: 'dev',
-                                                          last_updated_by_user: service.created_by_user)
+        before :each do
+          service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                            name: 'DEPLOYMENT_REPLICAS',
+                                                            value: '4',
+                                                            environment_slug: 'dev',
+                                                            last_updated_by_user: service.created_by_user)
+        end
 
-        subject.create_deployment(config_dir: config_dir,
-                                  name: nil,
-                                  container_port: nil,
-                                  image: nil,
-                                  json_repo: nil,
-                                  commit_ref: nil,
-                                  config_map_name: nil,
-                                  service: service
-                                 )
+        it 'have custom number of replicas' do
+          create_deployment
 
-        hash = YAML.load(File.open(config_dir.join(filename)).read)
-        replicas = hash.dig('spec', 'replicas')
+          hash = YAML.load(File.open(config_dir.join(filename)).read)
+          replicas = hash.dig('spec', 'replicas')
 
-        expect(replicas).to eql(4)
+          expect(replicas).to eql(4)
+        end
       end
 
       context do
@@ -208,18 +164,12 @@ describe KubernetesAdapter do
                                  protocol: 'https://')
         end
 
+        let(:service) { Service.new(slug: 'contact') }
+
         subject { described_class.new(environment: service_env) }
 
         it 'sets env var FROM_URL' do
-          subject.create_deployment(config_dir: config_dir,
-                                    name: nil,
-                                    container_port: nil,
-                                    image: nil,
-                                    json_repo: nil,
-                                    commit_ref: nil,
-                                    config_map_name: nil,
-                                    service: Service.new(slug: 'contact')
-                                   )
+          create_deployment
 
           hash = YAML.load(File.open(config_dir.join(filename)).read)
           value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env').find{|k,v| k['name'] == 'FORM_URL' }['value']
