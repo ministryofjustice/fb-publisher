@@ -48,7 +48,40 @@ class Service < ActiveRecord::Base
                        .where(team_members: {user_id: user_id})
   end
 
+  def resources_limits_cpu
+    param = service_config_params.find_by(name: 'RESOURCES_LIMITS_CPU') || ServiceConfigParam.new
+    param.value || default_resources.dig(:limits, :cpu)
+  end
+
+  def resources_limits_memory
+    param = service_config_params.find_by(name: 'RESOURCES_LIMITS_MEMORY') || ServiceConfigParam.new
+    param.value || default_resources.dig(:limits, :memory)
+  end
+
+  def resources_requests_cpu
+    param = service_config_params.find_by(name: 'RESOURCES_REQUESTS_CPU') || ServiceConfigParam.new
+    param.value || default_resources.dig(:requests, :cpu)
+  end
+
+  def resources_requests_memory
+    param = service_config_params.find_by(name: 'RESOURCES_REQUESTS_MEMORY') || ServiceConfigParam.new
+    param.value || default_resources.dig(:requests, :memory)
+  end
+
   private
+
+  def default_resources
+    {
+      limits: {
+        cpu: '150m',
+        memory: '300Mi',
+      },
+      requests: {
+        cpu: '10m',
+        memory: '128Mi'
+      }
+    }
+  end
 
   def generate_secret_config_params
     ServiceEnvironment.all_slugs.each do |slug|

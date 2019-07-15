@@ -101,6 +101,64 @@ describe KubernetesAdapter do
         expect(value).to eql('runner-sentry-dsn-here')
       end
 
+      it 'sets default resources' do
+        subject.create_deployment(config_dir: config_dir,
+                                  name: nil,
+                                  container_port: nil,
+                                  image: nil,
+                                  json_repo: nil,
+                                  commit_ref: nil,
+                                  config_map_name: nil,
+                                  service: Service.new
+                                 )
+
+        hash = YAML.load(File.open(config_dir.join(filename)).read)
+        hash = hash.dig('spec', 'template', 'spec', 'containers', 0, 'resources')
+
+        expect(hash).to eql({ "limits" => { "cpu" => "150m", "memory" => "300Mi" },
+                              "requests" => { "cpu" => "10m", "memory" => "128Mi" }})
+      end
+
+      it 'can have custom resourcing' do
+        service = create(:service)
+
+        service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                          name: 'RESOURCES_LIMITS_CPU', value: '300m',
+                                                          environment_slug: 'dev',
+                                                          last_updated_by_user: service.created_by_user)
+
+        service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                          name: 'RESOURCES_LIMITS_MEMORY', value: '600Mi',
+                                                          environment_slug: 'dev',
+                                                          last_updated_by_user: service.created_by_user)
+
+        service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                          name: 'RESOURCES_REQUESTS_CPU', value: '20m',
+                                                          environment_slug: 'dev',
+                                                          last_updated_by_user: service.created_by_user)
+
+        service.service_config_params << ServiceConfigParam.create!(service: service,
+                                                          name: 'RESOURCES_REQUESTS_MEMORY', value: '256Mi',
+                                                          environment_slug: 'dev',
+                                                          last_updated_by_user: service.created_by_user)
+
+        subject.create_deployment(config_dir: config_dir,
+                                  name: nil,
+                                  container_port: nil,
+                                  image: nil,
+                                  json_repo: nil,
+                                  commit_ref: nil,
+                                  config_map_name: nil,
+                                  service: service
+                                 )
+
+        hash = YAML.load(File.open(config_dir.join(filename)).read)
+        hash = hash.dig('spec', 'template', 'spec', 'containers', 0, 'resources')
+
+        expect(hash).to eql({ "limits" => { "cpu" => "300m", "memory" => "600Mi" },
+                              "requests" => { "cpu" => "20m", "memory" => "256Mi" }})
+      end
+
       context do
         let(:service_env) do
           ServiceEnvironment.new(slug: :dev,

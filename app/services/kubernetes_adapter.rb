@@ -402,6 +402,13 @@ class KubernetesAdapter
             imagePullPolicy: Always
             ports:
             - containerPort: #{container_port}
+            resources:
+               limits:
+                cpu: #{service.resources_limits_cpu}
+                memory: #{service.resources_limits_memory}
+               requests:
+                cpu: #{service.resources_requests_cpu}
+                memory: #{service.resources_requests_memory}
             readinessProbe:
               httpGet:
                 path: /ping.json
