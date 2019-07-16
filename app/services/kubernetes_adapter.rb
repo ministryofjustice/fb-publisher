@@ -347,6 +347,9 @@ class KubernetesAdapter
       cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     end
 
+    resourcing_service = ResourcingService.new(service: service,
+                                               environment_slug: @environment.slug)
+
     <<~ENDHEREDOC
     apiVersion: apps/v1beta2
     kind: Deployment
@@ -356,7 +359,7 @@ class KubernetesAdapter
       labels:
         run: #{name}
     spec:
-      replicas: #{service.deployment_replicas}
+      replicas: #{resourcing_service.deployment_replicas}
       selector:
         matchLabels:
           run: #{name}
@@ -404,11 +407,11 @@ class KubernetesAdapter
             - containerPort: #{container_port}
             resources:
                limits:
-                cpu: #{service.resources_limits_cpu}
-                memory: #{service.resources_limits_memory}
+                cpu: #{resourcing_service.limits_cpu}
+                memory: #{resourcing_service.limits_memory}
                requests:
-                cpu: #{service.resources_requests_cpu}
-                memory: #{service.resources_requests_memory}
+                cpu: #{resourcing_service.requests_cpu}
+                memory: #{resourcing_service.requests_memory}
             readinessProbe:
               httpGet:
                 path: /ping.json
