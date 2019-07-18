@@ -25,7 +25,7 @@ describe 'signing out' do
       end
 
       it 'shows a button to login' do
-        expect(page).to have_button(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
+        expect(page).to have_link(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
       end
     end
   end

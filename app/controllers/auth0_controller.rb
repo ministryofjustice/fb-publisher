@@ -1,4 +1,6 @@
 class Auth0Controller < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :developer_callback
+
   # TODO: method too long, refactor this functionality out
   def callback
     # This stores all the user information that came from Auth0
@@ -23,6 +25,12 @@ class Auth0Controller < ApplicationController
     end
   end
 
+  def developer_callback
+    fail unless Rails.env.development?
+
+    callback
+  end
+
   def failure
     # show a failure page or redirect to an error page
     @error_type = request.params['error_type']
@@ -30,9 +38,4 @@ class Auth0Controller < ApplicationController
     flash[:error] = @error_msg
     redirect_to signup_error_path(error_type: @error_type)
   end
-
-  private
-
-
-
 end

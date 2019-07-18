@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   get "/auth/oauth2/callback" => "auth0#callback", as: 'auth0_callback'
   get "/auth/failure" => "auth0#failure"
 
+  if Rails.env.development?
+    post '/auth/developer/callback' => 'auth0#developer_callback'
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   get '/health' => 'health#show'
