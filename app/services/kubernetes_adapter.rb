@@ -377,7 +377,7 @@ class KubernetesAdapter
             volumeMounts:
             - mountPath: /usr/app
               name: json-repo
-            - mountPath: /test-volume
+            - mountPath: /home/deploy/test-volume
               name: test-volume
           containers:
           - name: #{name}
@@ -425,7 +425,7 @@ class KubernetesAdapter
             - name: json-repo
               mountPath: /usr/app
             - name: test-volume
-              mountPath: /test-volume
+              mountPath: /home/deploy/test-volume
           volumes:
           - emptyDir: {}
             name: json-repo
