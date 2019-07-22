@@ -377,6 +377,8 @@ class KubernetesAdapter
             volumeMounts:
             - mountPath: /usr/app
               name: json-repo
+            - mountPath: /test-volume
+              name: test-volume
           containers:
           - name: #{name}
             securityContext:
@@ -422,9 +424,13 @@ class KubernetesAdapter
             volumeMounts:
             - name: json-repo
               mountPath: /usr/app
+            - name: test-volume
+              mountPath: /test-volume
           volumes:
           - emptyDir: {}
             name: json-repo
+          - emptyDir: {}
+            name: test-volume
 
     ENDHEREDOC
   end
