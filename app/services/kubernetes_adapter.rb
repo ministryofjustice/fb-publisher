@@ -422,6 +422,7 @@ class KubernetesAdapter
             volumeMounts:
             - name: json-repo
               mountPath: /usr/app
+            volumeMounts:
             - name: test-volume
               mountPath: /tmp/uploads
           volumes:
