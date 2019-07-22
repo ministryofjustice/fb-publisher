@@ -454,7 +454,7 @@ class KubernetesAdapter
       annotations:
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
-        nginx.ingress.kubernetes.io/custom-http-errors: "400, 401, 403, 404, 500, 503"
+        nginx.ingress.kubernetes.io/custom-http-errors: "502, 504"
     spec:
       tls:
         - hosts:
