@@ -422,9 +422,14 @@ class KubernetesAdapter
             volumeMounts:
             - name: json-repo
               mountPath: /usr/app
+            - name: test-volume
+              mountPath: /tmp/uploads
           volumes:
           - emptyDir: {}
             name: json-repo
+          - emptyDir: {}
+            name: test-volume
+
     ENDHEREDOC
   end
 
