@@ -1,0 +1,23 @@
+version: 1
+
+update_configs:
+  - package_manager: "ruby:bundler"
+    directory: "/"
+    update_schedule: "live"
+    default_reviewers:
+    - asmega
+  - package_manager: "docker"
+    directory: "/docker/base"
+    update_schedule: "daily"
+    default_reviewers:
+    - asmega
+  - package_manager: "docker"
+    directory: "/docker/web"
+    update_schedule: "daily"
+    default_reviewers:
+    - asmega
+  - package_manager: "docker"
+    directory: "/docker/worker"
+    update_schedule: "daily"
+    default_reviewers:
+    - asmega
