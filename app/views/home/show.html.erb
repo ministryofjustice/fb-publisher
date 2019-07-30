@@ -1,0 +1,27 @@
+<div class="column-two-thirds">
+  <h1 class="heading-xlarge">
+    <%= t('.heading') %>
+  </h1>
+
+  <p class="lede">
+    <%= t('.lede_html', link_url: ENV['FB_DOCUMENTATION_ROOT_URL']) %>
+  </p>
+
+  <p class="font-small">
+    <%= t('.info_html', help_url: '#') %>
+  </p>
+
+  <div class="panel.panel-border-wide">
+    <p class="font-small">
+      <%= t('.warning_html') %>
+    </p>
+  </div>
+
+  <div>
+    <% if Rails.env.development? %>
+      <%= link_to t('.sign_in'), '/auth/developer', class: 'button button-start' %>
+    <% else %>
+      <%= link_to t('.sign_in'), '/auth/auth0', class: 'button button-start' %>
+    <% end %>
+  </div>
+</div>
