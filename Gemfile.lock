@@ -384,7 +384,7 @@ DEPENDENCIES
   haml
   haml-rails
   i18n-debug
-  jbuilder (~> 2.5)
+  jbuilder (~> 2.9)
   jquery-rails
   listen (>= 3.0.5, < 3.2)
   omniauth
