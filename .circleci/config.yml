@@ -16,11 +16,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Configure Bundler
-          command: |
-            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
-            source $BASH_ENV
-            gem install bundler
+          name: Install correct Bundler version
+          command: 'gem install bundler -v $(cat Gemfile.lock | tail -1 | tr -d " ")'
       - run:
           name: bundle install
           command: 'bundle install --deployment --jobs=2 --retry 3 --without development'
