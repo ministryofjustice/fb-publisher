@@ -10,6 +10,7 @@ RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
+ENV BUNDLER_VERSION 2.0.2
 RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
 COPY . .
