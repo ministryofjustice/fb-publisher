@@ -102,7 +102,7 @@ group :test do
   gem 'database_cleaner'
   gem 'poltergeist'
   gem 'phantomjs'
-  gem 'rspec', '~>3.6.0'
+  gem 'rspec', '~>3.8.0'
   gem 'rspec-rails'
   gem 'selenium-webdriver'
   gem 'simplecov'
