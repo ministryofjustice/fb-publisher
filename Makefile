@@ -29,6 +29,13 @@ else
 	@false
 endif
 
+serve:
+	sudo docker-compose down -v
+	sudo docker-compose build
+	sudo docker-compose up -d db
+	./scripts/wait_for_db.sh db postgres
+	sudo docker-compose up -d app
+
 init:
 	$(eval export ECR_REPO_URL_ROOT=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder)
 
