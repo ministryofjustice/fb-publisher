@@ -36,7 +36,7 @@ describe KubernetesAdapter do
                                   container_port: nil,
                                   image: nil,
                                   json_repo: nil,
-                                  commit_ref: nil,
+                                  commit_ref: 'service_sha_goes_here',
                                   config_map_name: nil,
                                   service: service)
       end
@@ -79,6 +79,14 @@ describe KubernetesAdapter do
         value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env')
                     .find{|k,v| k['name'] == 'SENTRY_DSN' }['value']
         expect(value).to eql('runner-sentry-dsn-here')
+      end
+
+      it 'sets SERVICE_SHA' do
+        create_deployment
+
+        hash = YAML.load(File.open(config_dir.join(filename)).read)
+        value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env').find{|k,v| k['name'] == 'SERVICE_SHA' }['value']
+        expect(value).to eql('service_sha_goes_here')
       end
 
       it 'sets default resources' do
