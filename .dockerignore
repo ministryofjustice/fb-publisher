@@ -1,6 +1,7 @@
 deploy/
 scripts/
 tmp/
+!tmp/.keep
 node_modules/
 package.json
 package_lock.json
