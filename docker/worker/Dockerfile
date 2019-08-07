@@ -4,11 +4,6 @@ FROM ministryofjustice/ruby:2.5.1
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
 RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
-
-RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
-RUN chown -R deploy:deploy .
-USER 1001
-
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
@@ -19,7 +14,6 @@ RUN gem install bundler
 RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
 COPY . .
-ADD . $RAILS_ROOT
 
 # install kubectl as described at
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/
@@ -32,8 +26,6 @@ RUN apt-get install -y kubectl
 
 RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
 RUN chown -R deploy:deploy .
-RUN usermod -aG sudo deploy
-
 USER 1001
 
 ARG RAILS_ENV=production

@@ -5,10 +5,6 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
 RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
 
-RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
-RUN chown -R deploy:deploy .
-USER 1001
-
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
@@ -16,10 +12,14 @@ WORKDIR $RAILS_ROOT
 COPY Gemfile.lock Gemfile ./
 ENV BUNDLER_VERSION 2.0.2
 RUN gem install bundler
-RUN bundle install --jobs 4 --retry 5 --deployment --without test development
+ARG BUNDLE_FLAGS
+RUN bundle install --no-cache ${BUNDLE_FLAGS}
 
 COPY . .
-ADD . $RAILS_ROOT
+
+RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
+RUN chown -R deploy:deploy .
+USER 1001
 
 # allow access to port 3000
 ENV APP_PORT 3000

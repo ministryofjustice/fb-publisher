@@ -1,40 +1,45 @@
 version: '3'
-volumes:
-  assets:
-    external: false
+# volumes:
+#   assets:
+#     external: false
 services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: submitter_local
   app:
     build:
       context: .
       dockerfile: ./docker/web/Dockerfile
-    # depends_on:
-      # - db
+    links:
+      - db
     environment:
-    - AUTH0_CLIENT_ID
-    - AUTH0_CLIENT_SECRET
-    - AUTH0_DOMAIN
-    - DATABASE_URL
-    - FB_DOCUMENTATION_ROOT_URL
-    - KUBECTL_BEARER_TOKEN
-    - RAILS_ENV
-    - RAILS_SERVE_STATIC_ASSETS
-    - REDIS_URL
-    - RUNNER_IMAGE_REPO
+      DATABASE_URL: "postgres://postgres:password@db/submitter_local"
+      SECRET_KEY_BASE: "xxxyyy"
+    # - AUTH0_CLIENT_ID
+    # - AUTH0_CLIENT_SECRET
+    # - AUTH0_DOMAIN
+    # - DATABASE_URL
+    # - FB_DOCUMENTATION_ROOT_URL
+    # - KUBECTL_BEARER_TOKEN
+    # - RAILS_ENV
+    # - RAILS_SERVE_STATIC_ASSETS
+    # - REDIS_URL
+    # - RUNNER_IMAGE_REPO
     ports:
       - 3000:3000
-    volumes:
-      - assets:/var/www/fb-publisher/public/assets
-  # db:
-    # image: postgres
     # volumes:
-      # - postgres_data:/var/lib/postgresql/data
-  work:
+    #   - assets:/var/www/fb-publisher/public/assets
+  worker:
     build:
       context: .
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: ./docker/worker/Dockerfile
     depends_on:
       - app
     ports:
       - 8000:80
-    volumes:
-      - assets:/var/www/fb-publisher/public/assets
+    # volumes:
+    #   - assets:/var/www/fb-publisher/public/assets

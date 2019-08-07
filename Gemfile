@@ -19,9 +19,6 @@ ruby '2.5.1'
 
 gem 'bootsnap', '>= 1.1.0', require: false
 
-
-gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]
-
 # Git integration
 gem 'git'
 
