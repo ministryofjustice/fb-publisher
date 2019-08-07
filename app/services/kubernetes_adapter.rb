@@ -403,6 +403,8 @@ class KubernetesAdapter
                 value: #{@environment.slug}
               - name: SENTRY_DSN
                 value: #{ENV['RUNNER_SENTRY_DSN']}
+              - name: SERVICE_SHA
+                value: #{commit_ref}
             image: #{image}
             imagePullPolicy: Always
             ports:
