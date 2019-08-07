@@ -21,7 +21,7 @@ login_to_ecr_with_creds_for() {
   eval $(aws ecr get-login --no-include-email --region eu-west-2)
 }
 
-for TYPE in base web worker
+for TYPE in web worker
 do
   REPO_NAME=${REPO_SCOPE}/fb-publisher-${TYPE}
   echo "Building ${REPO_NAME}"

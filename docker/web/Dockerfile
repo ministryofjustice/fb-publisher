@@ -11,7 +11,7 @@ WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
 ENV BUNDLER_VERSION 2.0.2
-RUN gem install bundler --no-rdoc
+RUN gem install bundler
 ARG BUNDLE_FLAGS
 RUN bundle install --no-cache ${BUNDLE_FLAGS}
 
