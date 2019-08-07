@@ -17,18 +17,6 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Install correct Bundler version
-          command: |
-            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
-            source $BASH_ENV
-            gem install bundler
-      - run:
-          name: bundle install
-          command: 'bundle install --deployment --jobs=2 --retry 3 --without development'
-      - run:
-          name: setup database
-          command: 'RAILS_ENV=test bundle exec rake db:create db:schema:load'
-      - run:
           name: test
           command: 'make spec'
   build_and_deploy_to_test:
