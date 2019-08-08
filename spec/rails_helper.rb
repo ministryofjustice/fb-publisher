@@ -58,11 +58,11 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.before(:suite) do
+    DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.clean_with(:truncation)
-  end
-  config.before(:each) do
     DatabaseCleaner.strategy = :transaction
   end
+
   config.before(:each, js: true) do
     DatabaseCleaner.strategy = :truncation
   end
@@ -72,13 +72,12 @@ RSpec.configure do |config|
   # open a transaction before being set to use truncation, which means
   # Capybara won’t be able to “see” the test database records."
   # see https://www.devmynd.com/blog/setting-up-rspec-and-capybara-in-rails-5-for-testing/
-  config.before(:each) do
+  config.before do
     DatabaseCleaner.start
   end
-  config.after(:each) do
+  config.after do
     DatabaseCleaner.clean
   end
-
 
   config.before(:each, type: :feature) do
     WebMock.allow_net_connect!
@@ -86,5 +85,4 @@ RSpec.configure do |config|
   config.after(:each, type: :feature) do
     WebMock.disable_net_connect!
   end
-
 end

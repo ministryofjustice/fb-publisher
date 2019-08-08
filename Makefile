@@ -29,6 +29,22 @@ else
 	@false
 endif
 
+stop:
+	docker-compose down -v
+
+build: stop
+	docker-compose build --build-arg BUNDLE_FLAGS=''
+
+serve: build
+	docker-compose up -d db
+	./scripts/wait_for_db.sh db postgres
+	docker-compose up -d app
+
+spec: build
+	docker-compose up -d db
+	./scripts/wait_for_db.sh db postgres
+	docker-compose run --rm app bundle exec rspec
+
 init:
 	$(eval export ECR_REPO_URL_ROOT=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder)
 
@@ -42,4 +58,4 @@ install_build_dependencies: init
 build_and_push: install_build_dependencies
 	TAG="latest-${env_stub}" CIRCLE_SHA1=${CIRCLE_SHA1} REPO_SCOPE=${ECR_REPO_URL_ROOT} ./scripts/build_and_push_all.sh
 
-.PHONY := init push build login
+.PHONY := init push build login serve spec
