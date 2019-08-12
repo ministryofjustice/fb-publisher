@@ -2,21 +2,13 @@ FROM ruby:2.6.3-alpine3.10
 
 RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs ca-certificates
 
-ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
-
-RUN set -x && \
-    apk add --no-cache curl ca-certificates && \
-    chmod +x /usr/local/bin/kubectl && \
-    \
-    # Create non-root user (with a randomly chosen UID/GUI).
-    adduser kubectl -Du 2342 -h /config && \
-    \
-    # Basic check it works.
-    kubectl version --client
-
-
 RUN addgroup -g 1001 -S appgroup && \
   adduser -u 1001 -S appuser -G appgroup
+
+ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+
+RUN chmod +x /usr/local/bin/kubectl
+RUN chown 1001:appgroup /usr/local/bin/kubectl
 
 WORKDIR /app
 COPY Gemfile.lock Gemfile ./
