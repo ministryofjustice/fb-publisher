@@ -89,6 +89,14 @@ describe KubernetesAdapter do
         expect(value).to eql('service_sha_goes_here')
       end
 
+      it 'quotes SERVICE_SHA so it always treated as string' do
+        create_deployment
+
+        string = File.read(config_dir.join(filename))
+
+        expect(string).to match(/name: SERVICE_SHA\n\s*value: \"service_sha_goes_here\"/)
+      end
+
       it 'sets default resources' do
         create_deployment
 
