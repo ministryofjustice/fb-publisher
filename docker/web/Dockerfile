@@ -1,6 +1,7 @@
 FROM ruby:2.6.3-alpine3.10
 
 RUN apk add build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium
+RUN apk --no-cache add ca-certificates
 
 RUN addgroup -g 1001 -S appgroup && \
   adduser -u 1001 -S appuser -G appgroup
