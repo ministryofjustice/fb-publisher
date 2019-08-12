@@ -8,10 +8,6 @@ require 'support/sessions'
 require 'capybara/poltergeist'
 
 Capybara.default_driver = :rack_test
-#
-# Capybara.register_driver :chrome do |app|
-#   Capybara::Selenium::Driver.new(app, browser: :chrome)
-# end
 
 Capybara.register_driver :headless_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(

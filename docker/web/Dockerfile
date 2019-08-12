@@ -1,18 +1,13 @@
 FROM ruby:2.6.3-alpine3.10
 
-RUN apk add build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium
-RUN apk --no-cache add ca-certificates
+RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium ca-certificates
 
 RUN addgroup -g 1001 -S appgroup && \
   adduser -u 1001 -S appuser -G appgroup
 
-ENV RAILS_ROOT /app
-RUN mkdir -p $RAILS_ROOT
-WORKDIR $RAILS_ROOT
+WORKDIR /app
 
 COPY Gemfile.lock Gemfile ./
-ENV BUNDLER_VERSION 2.0.2
-RUN gem install bundler
 ARG BUNDLE_FLAGS
 RUN bundle install --no-cache ${BUNDLE_FLAGS}
 

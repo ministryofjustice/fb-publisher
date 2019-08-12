@@ -1,7 +1,6 @@
 FROM ruby:2.6.3-alpine3.10
 
-RUN apk add build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs
-RUN apk --no-cache add ca-certificates
+RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs ca-certificates
 
 ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 
@@ -19,13 +18,8 @@ RUN set -x && \
 RUN addgroup -g 1001 -S appgroup && \
   adduser -u 1001 -S appuser -G appgroup
 
-ENV RAILS_ROOT /app
-RUN mkdir -p $RAILS_ROOT
-WORKDIR $RAILS_ROOT
-
+WORKDIR /app
 COPY Gemfile.lock Gemfile ./
-ENV BUNDLER_VERSION 2.0.2
-RUN gem install bundler
 RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
 COPY . .
