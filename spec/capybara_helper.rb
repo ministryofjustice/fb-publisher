@@ -1,21 +1,26 @@
 require 'rails_helper'
 require 'capybara/rspec'
 require 'capybara/rails'
+require "selenium/webdriver"
 
 require 'support/sessions'
 
-require 'phantomjs'
 require 'capybara/poltergeist'
 
 Capybara.default_driver = :rack_test
+#
+# Capybara.register_driver :chrome do |app|
+#   Capybara::Selenium::Driver.new(app, browser: :chrome)
+# end
 
-options = {
-  js_errors: false,
-  phantomjs: Phantomjs.path
-}
+Capybara.register_driver :headless_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: { args: %w(headless disable-gpu ) }
+  )
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, options)
+  Capybara::Selenium::Driver.new app,
+    browser: :chrome,
+    desired_capabilities: capabilities
 end
 
-Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :headless_chrome
