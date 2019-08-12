@@ -1,6 +1,7 @@
 FROM ruby:2.6.3-alpine3.10
 
-RUN apk add build-base postgresql-contrib postgresql-dev bash libcurl git tzdata icu-libs
+RUN apk add build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs
+RUN apk --no-cache add ca-certificates
 
 ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 
