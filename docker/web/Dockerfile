@@ -1,9 +1,10 @@
-FROM ministryofjustice/ruby:2.5.1
+FROM ruby:2.6.3-alpine3.9
 
-# https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apk add build-base postgresql-contrib postgresql-dev bash libcurl git
+RUN apk add icu-libs
 
-RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
+RUN addgroup -g 1001 -S appgroup && \
+  adduser -u 1001 -S appuser -G appgroup
 
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
@@ -14,11 +15,12 @@ ENV BUNDLER_VERSION 2.0.2
 RUN gem install bundler
 ARG BUNDLE_FLAGS
 RUN bundle install --no-cache ${BUNDLE_FLAGS}
+RUN gem install libv8-alpine
 
 COPY . .
 
-RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
-RUN chown -R deploy:deploy .
+RUN chown -R 1001:appgroup .
+
 USER 1001
 
 # allow access to port 3000
