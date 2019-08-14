@@ -1,20 +1,24 @@
-FROM ruby:2.6.3-alpine3.10
+FROM ministryofjustice/ruby:2.5.1
 
-RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium ca-certificates
+# https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
-RUN addgroup -g 1001 -S appgroup && \
-  adduser -u 1001 -S appuser -G appgroup
+RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
 
-WORKDIR /app
+ENV RAILS_ROOT /var/www/fb-publisher
+RUN mkdir -p $RAILS_ROOT
+WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
+ENV BUNDLER_VERSION 2.0.2
+RUN gem install bundler
 ARG BUNDLE_FLAGS
 RUN bundle install --no-cache ${BUNDLE_FLAGS}
 
 COPY . .
 
-RUN chown -R 1001:appgroup .
-
+RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
+RUN chown -R deploy:deploy .
 USER 1001
 
 # allow access to port 3000
