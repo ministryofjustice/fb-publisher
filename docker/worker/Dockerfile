@@ -1,9 +1,15 @@
-FROM ministryofjustice/ruby:2.5.1
+FROM ruby:2.6.3-alpine3.10
 
-# https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs ca-certificates
 
-RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
+RUN addgroup -g 1001 -S appgroup && \
+  adduser -u 1001 -S appuser -G appgroup
+
+ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+
+RUN chmod +x /usr/local/bin/kubectl
+RUN chown 1001:appgroup /usr/local/bin/kubectl
+
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
@@ -16,17 +22,8 @@ RUN bundle install --jobs 4 --retry 5 ${BUNDLE_FLAGS}
 
 COPY . .
 
-# install kubectl as described at
-# https://kubernetes.io/docs/tasks/tools/install-kubectl/
-RUN apt-get update && apt-get install -y apt-transport-https
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-RUN touch /etc/apt/sources.list.d/kubernetes.list
-RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-RUN apt-get update
-RUN apt-get install -y kubectl
+RUN chown -R 1001:appgroup .
 
-RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
-RUN chown -R deploy:deploy .
 USER 1001
 
 ARG RAILS_ENV=production
