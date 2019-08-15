@@ -5,7 +5,9 @@ RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl 
 RUN addgroup -g 1001 -S appgroup && \
   adduser -u 1001 -S appuser -G appgroup
 
-WORKDIR /app
+ENV RAILS_ROOT /var/www/fb-publisher
+RUN mkdir -p $RAILS_ROOT
+WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
 ARG BUNDLE_FLAGS

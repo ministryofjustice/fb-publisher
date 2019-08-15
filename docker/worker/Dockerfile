@@ -10,7 +10,10 @@ ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/a
 RUN chmod +x /usr/local/bin/kubectl
 RUN chown 1001:appgroup /usr/local/bin/kubectl
 
-WORKDIR /app
+ENV RAILS_ROOT /var/www/fb-publisher
+RUN mkdir -p $RAILS_ROOT
+WORKDIR $RAILS_ROOT
+
 COPY Gemfile.lock Gemfile ./
 RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
