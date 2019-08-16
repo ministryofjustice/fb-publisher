@@ -15,7 +15,7 @@ RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
-RUN bundle install --jobs 4 --retry 5 --deployment --without test development
+RUN bundle install --jobs 4 --retry 5 ${BUNDLE_FLAGS}
 
 COPY . .
 

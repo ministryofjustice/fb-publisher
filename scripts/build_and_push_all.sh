@@ -25,7 +25,7 @@ for TYPE in web worker
 do
   REPO_NAME=${REPO_SCOPE}/fb-publisher-${TYPE}
   echo "Building ${REPO_NAME}"
-  docker build -f docker/${TYPE}/Dockerfile -t ${REPO_NAME}:${TAG} -t ${REPO_NAME}:${CIRCLE_SHA1} --build-arg BASE_IMAGE=${REPO_SCOPE}/fb-publisher-base:${TAG} --build-arg BUNDLE_FLAGS="--without test development" .
+  docker build -f docker/${TYPE}/Dockerfile -t ${REPO_NAME}:${TAG} -t ${REPO_NAME}:${CIRCLE_SHA1} --build-arg BASE_IMAGE=${REPO_SCOPE}/fb-publisher-base:${TAG} --build-arg BUNDLE_FLAGS="--deployment --without test development" .
 
   login_to_ecr_with_creds_for ${TYPE}
   echo "Pushing ${REPO_NAME}"
