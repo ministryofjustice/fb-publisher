@@ -1,6 +1,6 @@
 FROM ruby:2.6.3-alpine3.10
 
-RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium ca-certificates
+RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium ca-certificates openssl
 
 RUN update-ca-certificates
 
