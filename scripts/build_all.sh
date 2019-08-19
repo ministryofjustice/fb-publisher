@@ -5,7 +5,7 @@ set -e
 REPO_SCOPE=${REPO_SCOPE:-aldavidson}
 TAG=${TAG:- latest}
 
-for TYPE in web worker
+for TYPE in base web worker
 do
   REPO_NAME=${REPO_SCOPE}/fb-publisher-${TYPE}
   echo "Building ${REPO_NAME}"
