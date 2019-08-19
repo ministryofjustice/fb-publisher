@@ -4,6 +4,7 @@ FROM ministryofjustice/ruby:2.5.1
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
 RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
+
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
