@@ -15,10 +15,6 @@ RUN bundle install --no-cache ${BUNDLE_FLAGS}
 
 COPY . .
 
-RUN chown -R 1001:appgroup .
-
-USER 1001
-
 # allow access to port 3000
 ENV APP_PORT 3000
 EXPOSE $APP_PORT
