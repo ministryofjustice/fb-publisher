@@ -16,6 +16,7 @@ RUN bundle install --no-cache ${BUNDLE_FLAGS}
 COPY . .
 
 RUN chown -R 1001:appgroup .
+RUN chown -R 1001:appgroup /usr/share/ca-certificates
 RUN chown -R 1001:appgroup /etc/ssl
 
 USER 1001
