@@ -27,3 +27,16 @@ services:
       - app
     ports:
       - 8000:80
+    links:
+      - publisher-redis
+    environment:
+      REDISCLOUD_URL: "publisher-redis"
+      QUEUE: "*"
+
+  publisher-redis:
+    image: 'bitnami/redis:5.0'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'

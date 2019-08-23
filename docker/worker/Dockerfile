@@ -11,7 +11,8 @@ WORKDIR $RAILS_ROOT
 COPY Gemfile.lock Gemfile ./
 ENV BUNDLER_VERSION 2.0.2
 RUN gem install bundler
-RUN bundle install --jobs 4 --retry 5 --deployment --without test development
+ARG BUNDLE_FLAGS
+RUN bundle install --jobs 4 --retry 5 ${BUNDLE_FLAGS}
 
 COPY . .
 
