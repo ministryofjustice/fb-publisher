@@ -1,6 +1,6 @@
 FROM ruby:2.6.3-alpine3.10
 
-RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium ca-certificates
+RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium
 
 RUN addgroup -g 1001 -S appgroup && \
   adduser -u 1001 -S appuser -G appgroup
@@ -16,9 +16,9 @@ RUN bundle install --no-cache ${BUNDLE_FLAGS}
 COPY . .
 
 RUN chown -R 1001:appgroup .
-RUN chown -R 1001:appgroup /usr/share/ca-certificates
-
 USER 1001
+
+RUN apk -U add ca-certificates
 
 # allow access to port 3000
 ENV APP_PORT 3000
