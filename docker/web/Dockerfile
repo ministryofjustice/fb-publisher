@@ -16,7 +16,7 @@ RUN bundle install --no-cache ${BUNDLE_FLAGS}
 COPY . .
 
 RUN chown -R 1001:appgroup .
-RUN chown -R 1001:appgroup /usr/share/ca-certificates/mozilla/
+RUN chown -R 1001:appgroup /usr/share/ca-certificates
 
 USER 1001
 
