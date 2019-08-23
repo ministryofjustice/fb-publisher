@@ -2,9 +2,6 @@ FROM ruby:2.6.3-alpine3.10
 
 RUN apk add --upgrade build-base postgresql-contrib postgresql-dev bash libcurl git nodejs tzdata icu-libs chromium-chromedriver chromium ca-certificates
 
-RUN addgroup -g 1001 -S appgroup && \
-  adduser -u 1001 -S appuser -G appgroup
-
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
@@ -14,12 +11,6 @@ ARG BUNDLE_FLAGS
 RUN bundle install --no-cache ${BUNDLE_FLAGS}
 
 COPY . .
-
-RUN chown -R 1001:appgroup .
-RUN chown -R 1001:appgroup /usr/share/ca-certificates
-RUN chown -R 1001:appgroup /etc/ssl
-
-USER 1001
 
 # allow access to port 3000
 ENV APP_PORT 3000
