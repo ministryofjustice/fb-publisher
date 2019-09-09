@@ -28,10 +28,10 @@ jobs:
       - setup_remote_docker
       - add_ssh_keys:
           fingerprints:
-            - "34:fd:9e:ad:18:04:69:2c:c7:5c:9f:25:82:84:6d:38"
+            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
       - run:
           name: checkout fb-publisher-deploy
-          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_050e96bc58f960ccb634cbf505912c11 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
       - run:
           name: persist git crypt key to disk
           command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
@@ -56,10 +56,10 @@ jobs:
       - setup_remote_docker
       - add_ssh_keys:
           fingerprints:
-            - "34:fd:9e:ad:18:04:69:2c:c7:5c:9f:25:82:84:6d:38"
+            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
       - run:
           name: checkout fb-publisher-deploy
-          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_050e96bc58f960ccb634cbf505912c11 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
       - run:
           name: persist git crypt key to disk
           command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
@@ -84,10 +84,10 @@ jobs:
       - setup_remote_docker
       - add_ssh_keys:
           fingerprints:
-            - "34:fd:9e:ad:18:04:69:2c:c7:5c:9f:25:82:84:6d:38"
+            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
       - run:
           name: checkout fb-publisher-deploy
-          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_34fd9ead1804692cc75c9f2582846d38 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_050e96bc58f960ccb634cbf505912c11 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
       - run:
           name: persist git crypt key to disk
           command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
