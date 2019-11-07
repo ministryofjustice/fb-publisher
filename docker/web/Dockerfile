@@ -9,16 +9,23 @@ ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
-COPY Gemfile.lock Gemfile ./
+RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
+RUN chown deploy:deploy /var/www/fb-publisher
+
+COPY --chown=deploy:deploy Gemfile Gemfile.lock .ruby-version ./
 ENV BUNDLER_VERSION 2.0.2
 RUN gem install bundler
 ARG BUNDLE_FLAGS
 RUN bundle install --no-cache ${BUNDLE_FLAGS}
 
-COPY . .
+ADD --chown=deploy:deploy https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem ./rds-ca-2019-root.pem
+ADD --chown=deploy:deploy https://s3.amazonaws.com/rds-downloads/rds-ca-2015-root.pem ./rds-ca-2015-root.pem
+RUN cat ./rds-ca-2019-root.pem > ./rds-ca-bundle-root.crt
+RUN cat ./rds-ca-2015-root.pem >> ./rds-ca-bundle-root.crt
+RUN chown deploy:deploy ./rds-ca-bundle-root.crt
 
-RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
-RUN chown -R deploy:deploy .
+COPY --chown=deploy:deploy . .
+
 USER 1001
 
 # allow access to port 3000
