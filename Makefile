@@ -33,7 +33,7 @@ stop:
 	docker-compose down -v
 
 build: stop
-	docker-compose build --build-arg BUNDLE_FLAGS=''
+	docker-compose build --build-arg BUNDLE_FLAGS='' --parallel
 
 serve: build
 	docker-compose up -d db
