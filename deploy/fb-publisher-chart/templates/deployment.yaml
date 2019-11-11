@@ -35,8 +35,11 @@ spec:
           - configMapRef:
               name: fb-publisher-env-{{ .Values.environmentName }}
         env:
-          # external secrets
-          # defined in secrets.yml
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: rds-instance-formbuilder-publisher-{{ .Values.environmentName }}
+                key: url
           - name: AUTH0_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -122,8 +125,11 @@ spec:
           - configMapRef:
               name: fb-publisher-env-{{ .Values.environmentName }}
         env:
-          # external secrets
-          # defined in secrets.yml
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: rds-instance-formbuilder-publisher-{{ .Values.environmentName }}
+                key: url
           - name: AUTH0_CLIENT_ID
             valueFrom:
               secretKeyRef:
