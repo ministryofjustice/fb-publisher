@@ -55,7 +55,7 @@ gem 'pundit'
 gem 'rack-cors', require: 'rack/cors'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.3'
+gem 'rails', '~> 6.0.1'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0'
@@ -100,7 +100,7 @@ group :test do
   gem 'poltergeist'
   gem 'phantomjs'
   gem 'rspec', '~>3.9.0'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '4.0.0.beta3'
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'webmock'
