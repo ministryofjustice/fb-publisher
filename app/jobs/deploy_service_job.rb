@@ -18,7 +18,7 @@ class DeployServiceJob < ApplicationJob
     )
 
     log_for_user(:writing_commit, sha: commit)
-    @deployment.update_attributes(
+    @deployment.update(
       commit_sha: commit
     )
 

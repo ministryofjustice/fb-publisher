@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ServiceDeployment do
   describe '#update_status' do
     it 'updates attributes with the status value for the given key' do
-      expect(subject).to receive(:update_attributes).with(status: 'completed')
+      expect(subject).to receive(:update).with(status: 'completed')
       subject.update_status(:completed)
     end
   end
@@ -17,7 +17,7 @@ describe ServiceDeployment do
       allow(Time).to receive(:now).and_call_original
     end
     it 'updates attributes with status completed and completed_at now' do
-      expect(subject).to receive(:update_attributes).with(
+      expect(subject).to receive(:update).with(
         status: 'completed',
         completed_at: now
       )
@@ -35,7 +35,7 @@ describe ServiceDeployment do
     end
 
     it 'updates attributes with completed_at now' do
-      expect(subject).to receive(:update_attributes).with(
+      expect(subject).to receive(:update).with(
         hash_including(completed_at: now)
       )
       subject.fail!
@@ -43,7 +43,7 @@ describe ServiceDeployment do
 
     context 'given retryable true' do
       it 'updates attributes with status failed_retryable' do
-        expect(subject).to receive(:update_attributes).with(
+        expect(subject).to receive(:update).with(
           hash_including(status: 'failed_retryable')
         )
         subject.fail!(retryable: true)
@@ -52,7 +52,7 @@ describe ServiceDeployment do
 
     context 'given retryable false' do
       it 'updates attributes with status failed_non_retryable' do
-        expect(subject).to receive(:update_attributes).with(
+        expect(subject).to receive(:update).with(
           hash_including(status: 'failed_non_retryable')
         )
         subject.fail!(retryable: false)
@@ -75,7 +75,7 @@ describe ServiceDeployment do
       end
 
       before do
-        subject.update_attributes(service: service, commit_sha: 'a123e56')
+        subject.update(service: service, commit_sha: 'a123e56')
       end
 
       context 'when the git_repo_url exists' do

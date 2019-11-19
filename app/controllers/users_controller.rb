@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @current_user.update_attributes(user_params)
+    if @current_user.update(user_params)
       @current_user.save!
       flash[:success] = I18n.t('users.update.success')
     else
