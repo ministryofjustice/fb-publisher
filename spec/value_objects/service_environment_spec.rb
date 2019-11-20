@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ServiceEnvironment do
   describe '.all_slugs' do
     it 'has all slugs from Rails.configuration.x.service_environments' do
-      expect(described_class.all_slugs).to eq([:dev, :staging, :production])
+      expect(described_class.all_slugs).to eq([:dev, :production])
     end
   end
 
@@ -13,14 +13,15 @@ describe ServiceEnvironment do
       let(:values){ described_class.where(args) }
 
       it 'returns all values where all attributes match' do
-        expect(values.map(&:protocol)).to eq(['https://', 'https://', 'https://'])
+        expect(values.map(&:protocol)).to eq(['https://', 'https://'])
       end
     end
   end
 
   describe '.find' do
     context 'given a slug' do
-      let(:slug) { :staging }
+      let(:slug) { :dev }
+
       it 'returns the environment with matching slug' do
         expect(described_class.find(slug).slug).to eq(slug)
       end

@@ -22,7 +22,7 @@ describe ServiceDeploymentStatus do
       let(:service_deployment_status) { ServiceDeploymentStatus.all(service) }
 
       it 'returns all the environment for the service' do
-        expect(service_deployment_status.collect(&:status_environment_slug)).to eq(['dev', 'staging', 'production'])
+        expect(service_deployment_status.collect(&:status_environment_slug)).to eq(['dev', 'production'])
       end
 
       it 'returns the service id for each environment' do
@@ -36,15 +36,15 @@ describe ServiceDeploymentStatus do
       end
 
       it 'returns the service status for each environment' do
-        expect(service_deployment_status.collect(&:service_status).count).to eq(3)
+        expect(service_deployment_status.collect(&:service_status).count).to eq(2)
       end
 
       it 'returns the status url for each environment' do
-        expect(service_deployment_status.collect(&:status_url).count).to eq(3)
+        expect(service_deployment_status.collect(&:status_url).count).to eq(2)
       end
 
       it 'returns the timestamp for each environment' do
-        expect(service_deployment_status.collect(&:status_timestamp).count).to eq(3)
+        expect(service_deployment_status.collect(&:status_timestamp).count).to eq(2)
       end
 
       context 'where no deployments exist' do

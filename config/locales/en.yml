@@ -75,7 +75,7 @@ en:
     name: name your form
     json: enter where the form’s JSON files are stored in Github
     publisher_tool:
-      This enables the publisher tool to create development, staging and live environments that you can deploy your form to.
+      This enables the publisher tool to create development and live environments that you can deploy your form to.
     also: 'You can also choose to:'
     configure:
       configure environments by adding Google Analytics, tracking IDs, passwords and IDs
@@ -87,8 +87,8 @@ en:
         This tool enables you to publish (deploy) forms to online environments. You should use
         the publisher tool after building <a href="%{link_url}" target="_blank">Form Specification files</a>.
       info_html:
-        When you provide details about each form, the publisher tool will create development,
-        staging and live environments. You can then configure each environment and assign permissions
+        When you provide details about each form, the publisher tool will create development
+        and live environments. You can then configure each environment and assign permissions
         before deploying each form.<br>
         <a href="%{help_url}">Find out more about the publisher tool</a>.
       warning_html:
