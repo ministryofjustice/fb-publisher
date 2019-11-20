@@ -15,6 +15,7 @@ services:
     links:
       - db
     environment:
+      RAILS_ENV: development
       DATABASE_URL: "postgres://postgres:password@db/submitter_local"
       SECRET_KEY_BASE: "xxxyyy"
     ports:
@@ -30,6 +31,7 @@ services:
     links:
       - publisher-redis
     environment:
+      RAILS_ENV: development
       REDISCLOUD_URL: "publisher-redis"
       QUEUE: "*"
 
