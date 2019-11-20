@@ -17,8 +17,6 @@ ruby '2.5.1'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'bootsnap', '>= 1.1.0', require: false
-
 gem 'git'
 
 # Gov.uk styling (TODO: upgrade to use new Design System)
