@@ -31,16 +31,16 @@ class ServiceDeployment < ActiveRecord::Base
   end
 
   def update_status(new_status)
-    update_attributes(status: STATUS[new_status])
+    update(status: STATUS[new_status])
   end
 
   def complete!
-    update_attributes(status: STATUS[:completed], completed_at: Time.now)
+    update(status: STATUS[:completed], completed_at: Time.now)
   end
 
   def fail!(retryable: false)
     status = retryable ? STATUS[:failed_retryable] : STATUS[:failed_non_retryable]
-    update_attributes(status: status, completed_at: Time.now)
+    update(status: status, completed_at: Time.now)
   end
 
   def pending?

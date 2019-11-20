@@ -81,6 +81,4 @@ test:
 #
 production:
   <<: *default
-  database: fb-publisher_production
-  username: fb-publisher
-  password: <%= ENV['FB-PUBLISHER_DATABASE_PASSWORD'] %>
+  url: <%= "#{ENV['DATABASE_URL']}?sslmode=verify-full&sslrootcert=#{Rails.root.join("rds-ca-bundle-root.crt")}" %>

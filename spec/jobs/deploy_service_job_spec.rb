@@ -17,7 +17,7 @@ describe DeployServiceJob do
     allow(JobLogService).to receive(:log)
     allow(ServiceDeployment).to receive(:find).with('my-deployment-id').and_return(deployment)
     allow(deployment).to receive(:update_status)
-    allow(deployment).to receive(:update_attributes)
+    allow(deployment).to receive(:update)
     allow(deployment).to receive(:complete!)
     allow(VersionControlService).to receive(:checkout).and_return('some-sha')
     allow(DeploymentService).to receive(:setup_service).and_return('setup_service-result')
@@ -126,7 +126,7 @@ describe DeployServiceJob do
     end
 
     it 'updates the deployment with the returned commit sha' do
-      expect(deployment).to receive(:update_attributes).with(commit_sha: 'some-sha')
+      expect(deployment).to receive(:update).with(commit_sha: 'some-sha')
       perform
     end
 
