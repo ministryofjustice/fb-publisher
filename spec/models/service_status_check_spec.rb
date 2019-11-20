@@ -33,7 +33,6 @@ describe ServiceStatusCheck do
     before do
       WebMock.stub_request(:get, "url1").to_return(dev_response)
       WebMock.stub_request(:get, "url2").to_return(staging_response)
-      # WebMock.stub_request(:get, "https://my-service.apps.non-production.k8s.integration.dsd.io/").to_return(staging_response)
       allow_any_instance_of(ServiceStatusCheck).to receive(:save!)
     end
 

@@ -6,7 +6,6 @@ The Submitter application is deployed via [Kubectl](https://kubernetes.io/docs/r
 
 - `PLATFORM_ENV` is one of:
   - test
-  - integration
   - live
 
 The publisher application can deploy services within any existing `formbuilder-services-$PLATFORM_ENV-$DEPLOYMENT_ENV` namespace where:

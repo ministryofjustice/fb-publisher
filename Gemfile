@@ -19,7 +19,6 @@ ruby '2.5.1'
 
 gem 'bootsnap', '>= 1.1.0', require: false
 
-# Git integration
 gem 'git'
 
 # Gov.uk styling (TODO: upgrade to use new Design System)
