@@ -17,9 +17,6 @@ describe GenericKubernetesPlatformAdapter do
     let!(:dev_param) do
       ServiceConfigParam.create!(service: service, environment_slug: :dev, name: 'PARAM_1', value: 'dev "{value}\' 1', last_updated_by_user: user)
     end
-    let!(:staging_param) do
-      ServiceConfigParam.create!(service: service, environment_slug: :staging, name: 'PARAM_1', value: 'staging value 1', last_updated_by_user: user)
-    end
 
     before do
       allow(subject.kubernetes_adapter).to receive(:set_environment_vars)

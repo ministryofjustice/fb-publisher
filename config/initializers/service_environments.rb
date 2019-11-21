@@ -6,7 +6,7 @@ url_root = if ENV['PLATFORM_ENV'] == 'live'
              "#{ENV['PLATFORM_ENV']}.form.service.justice.gov.uk"
            end
 
-# TODO: de-duplicate set up of dev, staging and production
+# TODO: de-duplicate set up of dev and production
 ALL_ENVS = {
   dev: {
     deployment_adapter: 'cloud_platform',
@@ -18,17 +18,6 @@ ALL_ENVS = {
     user_datastore_url: "http://fb-user-datastore-api-svc-#{ENV['PLATFORM_ENV']}-dev.formbuilder-platform-#{ENV['PLATFORM_ENV']}-dev/",
     user_filestore_url: "http://fb-user-filestore-api-svc-#{ENV['PLATFORM_ENV']}-dev.formbuilder-platform-#{ENV['PLATFORM_ENV']}-dev/",
     submitter_url: "http://fb-submitter-api-svc-#{ENV['PLATFORM_ENV']}-dev.formbuilder-platform-#{ENV['PLATFORM_ENV']}-dev/"
-  },
-  staging: {
-    deployment_adapter: 'cloud_platform',
-    kubectl_context: ENV['KUBECTL_CONTEXT'],
-    name: 'Staging',
-    namespace: "formbuilder-services-#{ENV['PLATFORM_ENV']}-staging",
-    protocol: 'https://',
-    url_root: url_root,
-    user_datastore_url: "http://fb-user-datastore-api-svc-#{ENV['PLATFORM_ENV']}-staging.formbuilder-platform-#{ENV['PLATFORM_ENV']}-staging/",
-    user_filestore_url: "http://fb-user-filestore-api-svc-#{ENV['PLATFORM_ENV']}-staging.formbuilder-platform-#{ENV['PLATFORM_ENV']}-staging/",
-    submitter_url: "http://fb-submitter-api-svc-#{ENV['PLATFORM_ENV']}-staging.formbuilder-platform-#{ENV['PLATFORM_ENV']}-staging/"
   },
   production: {
     deployment_adapter: 'cloud_platform',

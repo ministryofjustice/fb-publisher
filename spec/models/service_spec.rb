@@ -372,12 +372,12 @@ describe Service do
 
       it 'populates privileged service_secret config params for each environment' do
         subject.save
-        expect(subject.service_config_params.where(name: 'SERVICE_SECRET', privileged: true).count).to eql(3)
+        expect(subject.service_config_params.where(name: 'SERVICE_SECRET', privileged: true).count).to eql(2)
       end
 
       it 'populates privileged service_secret config params for each environment' do
         subject.save
-        expect(subject.service_config_params.where(name: 'SERVICE_TOKEN', privileged: true).count).to eql(3)
+        expect(subject.service_config_params.where(name: 'SERVICE_TOKEN', privileged: true).count).to eql(2)
       end
     end
   end

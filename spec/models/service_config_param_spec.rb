@@ -15,11 +15,11 @@ describe ServiceConfigParam do
 
     describe 'an environment_slug' do
       context 'in the list of ServiceEnvironment.all_slugs' do
-        let(:environment_slug){ 'staging' }
         it 'is valid' do
           expect(subject.valid?).to eq(true)
         end
       end
+
       context 'not in the list of ServiceEnvironment.all_slugs' do
         let(:environment_slug){ 'made_up_slug' }
         it 'is invalid' do

@@ -17,9 +17,6 @@ ruby '2.5.1'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'bootsnap', '>= 1.1.0', require: false
-
-# Git integration
 gem 'git'
 
 # Gov.uk styling (TODO: upgrade to use new Design System)
@@ -92,8 +89,6 @@ end
 group :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15', '< 4.0'
-  # Easy installation and use of chromedriver to run system tests with Chrome
-  gem 'chromedriver-helper'
   gem 'database_cleaner'
   gem 'poltergeist'
   gem 'phantomjs'

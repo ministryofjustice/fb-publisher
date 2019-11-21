@@ -4,7 +4,6 @@ set -e -u -o pipefail
 
 # example usage
 # ./scripts/circleci_deploy.sh test KUBE_TOKEN_TEST
-# ./scripts/circleci_deploy.sh integration KUBE_TOKEN_INTEGRATION
 
 environment_name=$1
 kube_token=$2

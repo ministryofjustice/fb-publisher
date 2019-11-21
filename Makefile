@@ -12,10 +12,6 @@ test:
 	$(eval export env_stub=test)
 	@true
 
-integration:
-	$(eval export env_stub=integration)
-	@true
-
 live:
 	$(eval export env_stub=live)
 	@true
@@ -43,7 +39,7 @@ serve: build
 spec: build
 	docker-compose up -d db
 	./scripts/wait_for_db.sh db postgres
-	docker-compose run --rm app bundle exec rspec
+	docker-compose run -e RAILS_ENV=test --rm app bundle exec rspec
 
 init:
 	$(eval export ECR_REPO_URL_ROOT=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder)

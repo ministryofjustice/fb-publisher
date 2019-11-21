@@ -3,7 +3,7 @@ require 'rails_helper'
 describe StatusService do
   let(:service){ double(Service, id: 'abcd', slug: 'my-service') }
   let(:check_dev){ double(ServiceStatusCheck) }
-  let(:check_staging){ double(ServiceStatusCheck) }
+  let(:check_production){ double(ServiceStatusCheck) }
 
   before do
     allow(DeploymentService).to receive(:url_for).and_return('url.test')
@@ -11,22 +11,22 @@ describe StatusService do
 
   describe '.service_status' do
     describe 'given multiple environment_slugs' do
-      let(:slugs) { [:dev, :staging] }
+      let(:slugs) { [:dev, :production] }
 
       it 'calls last_status for each environment, passing the service & environment_slug' do
         expect(described_class).to receive(:last_status).at_least(:once).with(service: service, environment_slug: :dev).and_return(check_dev)
-        expect(described_class).to receive(:last_status).at_least(:once).with(service: service, environment_slug: :staging).and_return(check_staging)
+        expect(described_class).to receive(:last_status).at_least(:once).with(service: service, environment_slug: :production).and_return(check_production)
         described_class.service_status(service, environment_slugs: slugs)
       end
 
       context 'when last_status returns a value' do
         before do
           allow(described_class).to receive(:last_status).with(service: service, environment_slug: :dev).and_return(check_dev)
-          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :staging).and_return(check_staging)
+          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :production).and_return(check_production)
         end
 
         it 'returns that value in the array' do
-          expect(described_class.service_status(service, environment_slugs: slugs)).to eq([check_dev, check_staging])
+          expect(described_class.service_status(service, environment_slugs: slugs)).to eq([check_dev, check_production])
         end
       end
 
@@ -34,12 +34,12 @@ describe StatusService do
         let(:empty_check){ double(ServiceStatusCheck) }
         before do
           allow(described_class).to receive(:last_status).with(service: service, environment_slug: :dev).and_return(nil)
-          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :staging).and_return(check_staging)
+          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :production).and_return(check_production)
           allow(described_class).to receive(:empty_check).with(service: service, environment_slug: :dev).and_return(empty_check)
         end
 
         it 'returns an empty_check in the array' do
-          expect(described_class.service_status(service, environment_slugs: slugs)).to eq([empty_check, check_staging])
+          expect(described_class.service_status(service, environment_slugs: slugs)).to eq([empty_check, check_production])
         end
       end
     end
@@ -69,13 +69,13 @@ describe StatusService do
 
   describe '.check_in_parallel' do
     it 'calls execute_many! on the ServiceStatusCheck with the given args' do
-      expect(ServiceStatusCheck).to receive(:execute_many!).with(environment_slugs: [:dev, :staging], service: service, timeout: 2).and_return 'execute_many result'
-      described_class.check_in_parallel(environment_slugs: [:dev, :staging], service: service, timeout: 2)
+      expect(ServiceStatusCheck).to receive(:execute_many!).with(environment_slugs: [:dev, :production], service: service, timeout: 2).and_return 'execute_many result'
+      described_class.check_in_parallel(environment_slugs: [:dev, :production], service: service, timeout: 2)
     end
 
     it 'returns the result of .check' do
-      allow(ServiceStatusCheck).to receive(:execute_many!).with(environment_slugs: [:dev, :staging], service: service, timeout: 2).and_return 'execute_many result'
-      expect(described_class.check_in_parallel(environment_slugs: [:dev, :staging], service: service, timeout: 2)).to eq('execute_many result')
+      allow(ServiceStatusCheck).to receive(:execute_many!).with(environment_slugs: [:dev, :production], service: service, timeout: 2).and_return 'execute_many result'
+      expect(described_class.check_in_parallel(environment_slugs: [:dev, :production], service: service, timeout: 2)).to eq('execute_many result')
     end
   end
 
