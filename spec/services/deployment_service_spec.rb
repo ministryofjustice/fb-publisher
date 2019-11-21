@@ -5,42 +5,6 @@ describe DeploymentService do
   let(:deployment_dev){ double(ServiceDeployment) }
   let(:deployment_production){ double(ServiceDeployment) }
 
-  describe '.service_status' do
-    describe 'given multiple environment_slugs' do
-      let(:slugs) { [:dev, :production] }
-
-      it 'calls last_status for each environment, passing the service & environment_slug' do
-        expect(described_class).to receive(:last_status).at_least(:once).with(service: service, environment_slug: :dev).and_return(deployment_dev)
-        expect(described_class).to receive(:last_status).at_least(:once).with(service: service, environment_slug: :production).and_return(deployment_production)
-        described_class.service_status(service, environment_slugs: slugs)
-      end
-
-      context 'when last_status returns a value' do
-        before do
-          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :dev).and_return(deployment_dev)
-          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :production).and_return(deployment_production)
-        end
-
-        it 'returns that value in the array' do
-          expect(described_class.service_status(service, environment_slugs: slugs)).to eq([deployment_dev, deployment_production])
-        end
-      end
-
-      context 'when last_status returns nil' do
-        let(:empty_deployment){ double(ServiceDeployment) }
-        before do
-          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :dev).and_return(nil)
-          allow(described_class).to receive(:last_status).with(service: service, environment_slug: :production).and_return(deployment_production)
-          allow(described_class).to receive(:empty_deployment).with(service: service, environment_slug: :dev).and_return(empty_deployment)
-        end
-
-        it 'returns an empty_deployment in the array' do
-          expect(described_class.service_status(service, environment_slugs: slugs)).to eq([empty_deployment, deployment_production])
-        end
-      end
-    end
-  end
-
   describe '.last_status' do
     let(:mock_deployment) { double(ServiceDeployment, id: "1234") }
     before do

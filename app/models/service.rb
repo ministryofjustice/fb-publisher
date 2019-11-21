@@ -5,7 +5,6 @@ class Service < ActiveRecord::Base
 
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by_user_id
 
-  has_many :service_status_checks, dependent: :destroy
   has_many :service_config_params, dependent: :destroy
   has_many :permissions, dependent: :destroy
   has_many :teams, through: :permissions

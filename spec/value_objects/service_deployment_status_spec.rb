@@ -15,13 +15,9 @@ describe ServiceDeploymentStatus do
                         created_by_user: user)
       end
 
-      let(:status_service) do
-        StatusService.service_status(service, environment_slugs: ServiceEnvironment.all_slugs)
-      end
-
       let(:service_deployment_status) { ServiceDeploymentStatus.all(service) }
 
-      it 'returns all the environment for the service' do
+      it 'returns all the environments for the service' do
         expect(service_deployment_status.collect(&:status_environment_slug)).to eq(['dev', 'production'])
       end
 
@@ -35,16 +31,8 @@ describe ServiceDeploymentStatus do
         expect(slug).to eq(service.slug)
       end
 
-      it 'returns the service status for each environment' do
-        expect(service_deployment_status.collect(&:service_status).count).to eq(2)
-      end
-
       it 'returns the status url for each environment' do
         expect(service_deployment_status.collect(&:status_url).count).to eq(2)
-      end
-
-      it 'returns the timestamp for each environment' do
-        expect(service_deployment_status.collect(&:status_timestamp).count).to eq(2)
       end
 
       context 'where no deployments exist' do
