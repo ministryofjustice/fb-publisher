@@ -117,12 +117,10 @@ class DeploymentService
 
   def self.url_for(environment_slug:, service:)
     adapter = adapter_for(environment_slug)
+
     begin
-      adapter.url_for(
-        service: service
-      )
-    rescue CmdFailedError => e
-      # might not have been deployed yet
+      adapter.url_for(service: service)
+    rescue
       nil
     end
   end
