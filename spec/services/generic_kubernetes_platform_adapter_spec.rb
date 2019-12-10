@@ -14,6 +14,8 @@ describe GenericKubernetesPlatformAdapter do
     let!(:service) { Service.create!(name: 'my service', created_by_user: user, git_repo_url: 'https://git/repo') }
     let(:service_token) { service.service_config_params.find_by(name: 'SERVICE_TOKEN', environment_slug: :dev).value }
     let(:service_secret) { service.service_config_params.find_by(name: 'SERVICE_SECRET', environment_slug: :dev).value }
+    let(:encoded_public_key) { service.service_config_params.find_by(name: 'ENCODED_PUBLIC_KEY', environment_slug: :dev).value }
+    let(:encoded_private_key) { service.service_config_params.find_by(name: 'ENCODED_PRIVATE_KEY', environment_slug: :dev).value }
     let!(:dev_param) do
       ServiceConfigParam.create!(service: service, environment_slug: :dev, name: 'PARAM_1', value: 'dev "{value}\' 1', last_updated_by_user: user)
     end
@@ -29,6 +31,8 @@ describe GenericKubernetesPlatformAdapter do
         vars: {'PARAM_1' => 'dev "{value}\' 1',
                'SERVICE_TOKEN' => service_token,
                'SERVICE_SECRET' => service_secret,
+               'ENCODED_PUBLIC_KEY' => encoded_public_key,
+               'ENCODED_PRIVATE_KEY' => encoded_private_key,
                'system_var_1' => 'system value 1'}
       ).and_return({'key' => 'value'})
       subject.configure_env_vars(service: service, config_dir: config_dir, system_config: system_config)
