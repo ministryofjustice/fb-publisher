@@ -1,16 +1,36 @@
 require 'capybara_helper'
 
 describe "visiting a service's config params page" do
+  def create_service(service)
+    visit '/services/new'
+    fill_in :service_name, with: service.name
+    fill_in :service_slug, with: service.slug
+    fill_in :service_git_repo_url, with: service.git_repo_url
+    click_button 'Create form'
+  end
+
+  def add_environment_variable(service:, name:, value:, environment:)
+    visit "/services/#{service.slug}/config_params"
+    fill_in('Name', with: name)
+    fill_in('Value', with: value)
+    click_button 'Add'
+  end
+
+  def edit_environment_variable(service:, name:, value:, environment:)
+    visit "/services/#{service.slug}/config_params"
+  end
+
   context 'as a logged in user' do
-    let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
+    let(:email) { 'test@example.justice.gov.uk' }
     let(:service) do
-      Service.create(name: 'Test Service',
-                     git_repo_url: 'https://github.com/some_org/some_repo.git',
-                     created_by_user: user)
+      OpenStruct.new(name: 'Test Service',
+                     slug: 'test-service',
+                     git_repo_url: 'https://github.com/some_org/some_repo.git')
     end
 
     before do
-      login_as!(user)
+      login_as!(email)
+      create_service(service)
     end
 
     let(:name) { 'TEST_1' }
@@ -19,28 +39,27 @@ describe "visiting a service's config params page" do
 
     context 'when adding new environment variables' do
       before do
-        visit "/services/#{service.slug}/config_params"
-        fill_in('Name', with: name)
-        fill_in('Value', with: value)
-        click_button(I18n.t('.services.config_params.form.add'))
+        add_environment_variable(service: service,
+                                 name: name,
+                                 value: value,
+                                 environment: environment)
       end
 
       it 'displays a message advising the user to deploy for changes to take effect' do
         expect(page).to have_selector('div.flash.flash-notice',
-                                      text: I18n.t('services.config_params.create.success',
-                                                   name: name, environment: environment))
+                                      text: "Config Param '#{name}' (#{environment}) created successfully. For the changes to take effect this needs to be deployed")
       end
 
       context 'and environment variable already exists' do
         before do
-          visit "/services/#{service.slug}/config_params"
-          fill_in('Name', with: name)
-          fill_in('Value', with: value)
-          click_button(I18n.t('.services.config_params.form.add'))
+          add_environment_variable(service: service,
+                                   name: name,
+                                   value: value,
+                                   environment: environment)
         end
 
         it 'redirects back to index page with correct service env' do
-          expect(page.current_url).to eql('http://www.example.com/services/test-service/config_params?env=dev')
+          expect(page.current_url).to match(/\/services\/test-service\/config_params\?env=dev/)
         end
 
         it 'displays error message' do
@@ -50,20 +69,12 @@ describe "visiting a service's config params page" do
     end
 
     context 'when changing existing environment variables' do
-      let(:env_slug) { 'dev' }
-      let(:config) do
-        ServiceConfigParam.create!(environment_slug: env_slug,
-                                   name: name,
-                                   value: value,
-                                   service: service,
-                                   last_updated_by_user: user)
-      end
-
       let(:changed_name) { 'TEST_2' }
       let(:changed_value) { 'xyz987' }
 
       before do
-        visit "/services/#{service.slug}/config_params/#{config.id}/edit"
+        visit "/services/#{service.slug}/config_params"
+        click_on 'Edit'
         fill_in('Name', with: changed_name)
         fill_in('Value', with: changed_value)
         click_button('Save')
@@ -71,46 +82,52 @@ describe "visiting a service's config params page" do
 
       it 'displays a message advising the user to deploy for changes to take effect' do
         expect(page).to have_selector('div.flash.flash-notice',
-                                      text: I18n.t('services.config_params.update.success',
-                                                   name: changed_name, environment: environment))
+                                      text: "Config Param 'TEST_2' (Development) updated successfully. For the changes to take effect this needs to be deployed")
       end
     end
 
-    describe 'when a user is part of a team' do
-      let(:another_user) { User.create!(name: 'another user', email: 'another_user@example.justice.gov.uk') }
-      let(:team) { Team.create!(name: 'MOJ Team', created_by_user_id: another_user.id) }
-
-      before do
-        TeamMember.create!(user_id: user.id, team_id: team.id, created_by_user: another_user)
-        TeamMember.create!(user_id: another_user.id, team_id: team.id, created_by_user: another_user)
+    describe 'when a user is part of the same team' do
+      def create_team(name:)
+        visit '/teams/new'
+        fill_in :team_name, with: name
+        click_on 'Create Team'
       end
 
-      context 'they can see the config params on a form edited by another user' do
-        let(:another_service) do
-          Service.create!(name: 'Another Service',
-                          created_by_user: another_user,
-                          git_repo_url: 'https://github.com/some_org/some_repo.git')
-        end
-        let(:config_name) { 'HELLO' }
-        let(:config_value) { 'World' }
+      def add_member_to_team(team_slug:, email:)
+        visit "/teams/#{team_slug}/members"
+        select email, from: :team_member_user_id
+        click_on 'Add member'
+      end
 
+      def grant_permission_to_team(team_slug:, service_name:)
+        visit "/teams/#{team_slug}/permissions"
+        select service_name, from: :permission_service_id
+        click_on 'Grant permission'
+      end
+
+      let(:another_email) { 'another_user@example.justice.gov.uk' }
+
+      before do
+        logout!
+        login_as!(another_email)
+        logout!
+        login_as!(email)
+        create_team(name: 'MOJ Team')
+        add_member_to_team(team_slug: 'moj-team', email: another_email)
+        grant_permission_to_team(team_slug: 'moj-team', service_name: 'Test Service')
+        logout!
+      end
+
+      context 'they can see the config params' do
         before do
-          Permission.create!(service_id: another_service.id, team_id: team.id, created_by_user_id: another_user.id)
-          ServiceConfigParam.create!(environment_slug: 'dev',
-                                     name: config_name,
-                                     value: config_value,
-                                     last_updated_by_user_id: another_user.id,
-                                     service_id: another_service.id)
+          login_as!(another_email)
 
-          visit "/services/#{another_service.slug}/config_params"
+          visit "/services/#{service.slug}/config_params"
         end
 
-        it "shows the config name set for 'Another Service'" do
-          expect(page).to have_content(config_name)
-        end
-
-        it "shows the config value set for 'Another Service'" do
-          expect(page).to have_content(config_value)
+        it "shows the config name and value" do
+          expect(page).to have_content('TEST_2')
+          expect(page).to have_content('xyz987')
         end
       end
     end

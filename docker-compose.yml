@@ -34,6 +34,12 @@ services:
       RAILS_ENV: development
       REDISCLOUD_URL: "publisher-redis"
       QUEUE: "*"
+  integration:
+    build:
+      context: .
+      dockerfile: ./docker/integration/Dockerfile
+    depends_on:
+      - app
 
   publisher-redis:
     image: 'bitnami/redis:5.0'

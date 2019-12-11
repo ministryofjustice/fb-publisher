@@ -64,4 +64,7 @@ Rails.application.configure do
     min_threads: 1,
     max_threads: 2 * Concurrent.processor_count,
     idletime: 600.seconds
+
+  config.hosts.clear
+  config.force_ssl = false
 end

@@ -1,6 +1,6 @@
 FROM ruby:2.6.3-alpine
 
-RUN apk add build-base bash tzdata chromium-chromedriver chromium zlib-dev xorg-server postgresql-dev
+RUN apk add build-base bash tzdata chromium-chromedriver chromium zlib-dev xorg-server postgresql-dev git curl
 
 WORKDIR /usr/src/app
 
