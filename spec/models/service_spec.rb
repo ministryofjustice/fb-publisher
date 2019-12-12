@@ -379,6 +379,16 @@ describe Service do
         subject.save
         expect(subject.service_config_params.where(name: 'SERVICE_TOKEN', privileged: true).count).to eql(2)
       end
+
+      it 'populates privileged ENCODED_PUBLIC_KEY config params for each environment' do
+        subject.save
+        expect(subject.service_config_params.where(name: 'ENCODED_PUBLIC_KEY', privileged: true).count).to eql(2)
+      end
+
+      it 'populates privileged ENCODED_PRIVATE_KEY config params for each environment' do
+        subject.save
+        expect(subject.service_config_params.where(name: 'ENCODED_PRIVATE_KEY', privileged: true).count).to eql(2)
+      end
     end
   end
 end

@@ -20,6 +20,8 @@ services:
       SECRET_KEY_BASE: "xxxyyy"
     ports:
       - 3000:3000
+    # volumes:
+    #   - ./:/var/www/fb-publisher
   worker:
     build:
       context: .
@@ -34,7 +36,6 @@ services:
       RAILS_ENV: development
       REDISCLOUD_URL: "publisher-redis"
       QUEUE: "*"
-
   publisher-redis:
     image: 'bitnami/redis:5.0'
     environment:
