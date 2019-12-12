@@ -1,25 +1,6 @@
 require 'capybara_helper'
 
 describe "visiting a service's config params page" do
-  def create_service(service)
-    visit '/services/new'
-    fill_in :service_name, with: service.name
-    fill_in :service_slug, with: service.slug
-    fill_in :service_git_repo_url, with: service.git_repo_url
-    click_button 'Create form'
-  end
-
-  def add_environment_variable(service:, name:, value:, environment:)
-    visit "/services/#{service.slug}/config_params"
-    fill_in('Name', with: name)
-    fill_in('Value', with: value)
-    click_button 'Add'
-  end
-
-  def edit_environment_variable(service:, name:, value:, environment:)
-    visit "/services/#{service.slug}/config_params"
-  end
-
   context 'as a logged in user' do
     let(:email) { 'test@example.justice.gov.uk' }
     let(:service) do
@@ -87,24 +68,6 @@ describe "visiting a service's config params page" do
     end
 
     describe 'when a user is part of the same team' do
-      def create_team(name:)
-        visit '/teams/new'
-        fill_in :team_name, with: name
-        click_on 'Create Team'
-      end
-
-      def add_member_to_team(team_slug:, email:)
-        visit "/teams/#{team_slug}/members"
-        select email, from: :team_member_user_id
-        click_on 'Add member'
-      end
-
-      def grant_permission_to_team(team_slug:, service_name:)
-        visit "/teams/#{team_slug}/permissions"
-        select service_name, from: :permission_service_id
-        click_on 'Grant permission'
-      end
-
       let(:another_email) { 'another_user@example.justice.gov.uk' }
 
       before do

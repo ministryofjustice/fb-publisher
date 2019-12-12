@@ -40,7 +40,7 @@ spec: build
 	docker-compose up -d db
 	./scripts/wait_for_db.sh db postgres
 	# docker-compose run -e RAILS_ENV=test --rm app bundle exec rspec --exclude-pattern spec/features
-	docker-compose run -e RAILS_ENV=test --rm integration bundle exec rspec spec/features/authentication_spec.rb spec/features/config_params_spec.rb
+	docker-compose run -e RAILS_ENV=test --rm integration bundle exec rspec spec/features/authentication_spec.rb spec/features/config_params_spec.rb spec/features/deployment_spec.rb spec/features/help_spec.rb
 
 init:
 	$(eval export ECR_REPO_URL_ROOT=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder)

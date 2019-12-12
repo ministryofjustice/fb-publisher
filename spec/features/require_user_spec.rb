@@ -1,15 +1,12 @@
-
 require 'capybara_helper'
 
 describe 'visiting the home page' do
   before do
+    logout!
     visit '/'
   end
-  context 'when not logged in' do
-    before do
-      clear_session!
-    end
 
+  context 'when not logged in' do
     it 'shows a button to login' do
       expect(page).to have_link(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
     end
@@ -46,7 +43,6 @@ describe 'visiting the home page' do
     end
   end
 end
-
 
 describe 'visiting a page that requires a current user' do
   before do
