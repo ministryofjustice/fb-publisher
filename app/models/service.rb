@@ -53,7 +53,13 @@ class Service < ActiveRecord::Base
     ServiceEnvironment.all_slugs.each do |slug|
       ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_TOKEN', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user, privileged: true)
       ServiceConfigParam.create(environment_slug: slug, name: 'SERVICE_SECRET', value: SecureRandom.hex(16), service: self, last_updated_by_user: self.created_by_user, privileged: true)
+    end
 
+    generate_public_private_keys
+  end
+
+  def generate_public_private_keys
+    ServiceEnvironment.all_slugs.each do |slug|
       key_pair = PublicPrivateKey.new
 
       ServiceConfigParam.create(environment_slug: slug, name: 'ENCODED_PUBLIC_KEY', value: Base64.strict_encode64(key_pair.public_key), service: self, last_updated_by_user: self.created_by_user, privileged: true)
