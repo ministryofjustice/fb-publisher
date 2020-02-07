@@ -6,18 +6,26 @@ update_configs:
     update_schedule: "live"
     default_reviewers:
     - asmega
+    - tomas-stefano
+    - brenetic
   - package_manager: "docker"
     directory: "/docker/base"
     update_schedule: "daily"
     default_reviewers:
     - asmega
+    - tomas-stefano
+    - brenetic
   - package_manager: "docker"
     directory: "/docker/web"
     update_schedule: "daily"
     default_reviewers:
     - asmega
+    - tomas-stefano
+    - brenetic
   - package_manager: "docker"
     directory: "/docker/worker"
     update_schedule: "daily"
     default_reviewers:
     - asmega
+    - tomas-stefano
+    - brenetic
