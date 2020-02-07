@@ -1,3 +1,5 @@
+require 'base64'
+
 class KubernetesAdapter
   attr_accessor :environment
 
@@ -342,7 +344,7 @@ class KubernetesAdapter
     deploy_key = service.deploy_key
 
     if deploy_key.present?
-      cmd = "mkdir ~/.ssh && echo '#{deploy_key}' > ~/.ssh/deploy_key && cat ~/transform_deploy_key.rb && ~/transform_deploy_key.rb ~/.ssh/deploy_key ~/.ssh/deploy_key && echo 'HERE' && cat ~/.ssh/deploy_key && chmod 0600 ~/.ssh/deploy_key && ssh-keyscan -H github.com > ~/.ssh/known_hosts && GIT_SSH_COMMAND='ssh -i ~/.ssh/deploy_key' git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
+      cmd = "mkdir ~/.ssh; echo '#{Base64.strict_encode64(deploy_key)}' | base64 -d > ~/.ssh/deploy_key && chmod 0600 ~/.ssh/deploy_key && ssh-keyscan -H github.com > ~/.ssh/known_hosts && GIT_SSH_COMMAND='ssh -i ~/.ssh/deploy_key' git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     else
       cmd = "git clone #{json_repo} /usr/app/ && cd /usr/app && git checkout #{commit_ref}"
     end
@@ -370,7 +372,7 @@ class KubernetesAdapter
         spec:
           initContainers:
           - name: init-clone-repo
-            image: asmega/deploy:latest
+            image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-builder:latest
             securityContext:
               runAsUser: 1001
             command: ["/bin/sh", "-c", "#{cmd}"]
