@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: formbuilder-form-<%= service.slug %>-service-monitor-test-dev
+  name: formbuilder-form-<%= service.slug %>-service-monitor-<%= @platform_environment %>-<%= @deployment_environment %>
   namespace: formbuilder-services-<%= @platform_environment %>-<%= @deployment_environment %>
 spec:
   selector:
