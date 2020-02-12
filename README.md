@@ -7,4 +7,4 @@ You will need a running Docker daemon and docker-compose
 ```bash
 make serve
 ```
-Visit (http://localhost:3000)[http://localhost:3000]
+Visit [http://localhost:3000](http://localhost:3000)
