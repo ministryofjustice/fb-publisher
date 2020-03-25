@@ -93,7 +93,7 @@ group :test do
   gem 'poltergeist'
   gem 'phantomjs'
   gem 'rspec', '~>3.9.0'
-  gem 'rspec-rails', '4.0.0.rc1'
+  gem 'rspec-rails', '4.0.0'
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'webmock'
