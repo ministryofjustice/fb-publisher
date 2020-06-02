@@ -59,7 +59,7 @@ gem 'sass-rails', '~> 6.0'
 
 # must explicitly mention sprockets with this version to get round
 # https://blog.heroku.com/rails-asset-pipeline-vulnerability
-gem 'sprockets', '~>3.7.2'
+gem 'sprockets', '~>4.0.0'
 
 # parallel HTTP requests
 gem 'typhoeus'
