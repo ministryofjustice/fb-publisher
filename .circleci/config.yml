@@ -82,7 +82,7 @@ jobs:
           name: build and push docker images
           command: './scripts/circleci_build.sh pentest'
       - run:
-          name: deploy to test
+          name: deploy to pentest
           command: './scripts/circleci_deploy.sh pentest $KUBE_TOKEN_PENTEST'
   build_and_deploy_to_live:
     working_directory: ~/circle/git/fb-publisher
