@@ -53,6 +53,37 @@ jobs:
       - run:
           name: deploy to test
           command: './scripts/circleci_deploy.sh test $KUBE_TOKEN_TEST'
+  build_and_deploy_to_pentest:
+    working_directory: ~/circle/git/fb-publisher
+    docker: &ecr_base_image
+      - image: $AWS_ECR_ACCOUNT_URL
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    steps:
+      - checkout
+      - setup_remote_docker
+      - add_ssh_keys:
+          fingerprints:
+            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
+      - run:
+          name: checkout fb-publisher-deploy
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_050e96bc58f960ccb634cbf505912c11 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-publisher-deploy.git ~/circle/git/fb-publisher-deploy"
+      - run:
+          name: persist git crypt key to disk
+          command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
+      - run:
+          name: unlock git crypt
+          command: "cd ~/circle/git/fb-publisher-deploy && git-crypt unlock /root/circle/git_crypt.key"
+      - run:
+          name: npm install
+          command: 'npm install'
+      - run:
+          name: build and push docker images
+          command: './scripts/circleci_build.sh pentest'
+      - run:
+          name: deploy to pentest
+          command: './scripts/circleci_deploy.sh pentest $KUBE_TOKEN_PENTEST'
   build_and_deploy_to_live:
     working_directory: ~/circle/git/fb-publisher
     docker: *ecr_base_image
@@ -87,6 +118,12 @@ workflows:
     jobs:
       - test
       - build_and_deploy_to_test:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+      - build_and_deploy_to_pentest:
           requires:
             - test
           filters:
