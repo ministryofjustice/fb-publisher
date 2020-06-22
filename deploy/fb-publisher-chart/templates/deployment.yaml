@@ -1,11 +1,14 @@
 ---
 # web front-end
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "fb-publisher-web-{{ .Values.environmentName }}"
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      app: "fb-publisher-web-{{ .Values.environmentName }}"
   template:
     metadata:
       labels:
@@ -95,12 +98,15 @@ spec:
                 key: runner_sentry_dsn
 ---
 # workers
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "fb-publisher-workers-{{ .Values.environmentName }}"
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      app: "fb-publisher-workers-{{ .Values.environmentName }}"
   template:
     metadata:
       labels:
