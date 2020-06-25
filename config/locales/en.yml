@@ -69,17 +69,6 @@ en:
     restarting: 'Restarting service'
     starting: 'Starting job %{job_id} for ServiceDeployment %{service_deployment_id}'
     writing_commit: 'Writing commit SHA %{sha}'
-  help:
-    heading: Help getting started
-    lede: "Having signed in to the tool using your justice.gov.uk email, you'll need to:"
-    name: name your form
-    json: enter where the form’s JSON files are stored in Github
-    publisher_tool:
-      This enables the publisher tool to create development and live environments that you can deploy your form to.
-    also: 'You can also choose to:'
-    configure:
-      configure environments by adding Google Analytics, tracking IDs, passwords and IDs
-    assign: assign permissions for individual team members
   home:
     show:
       heading: 'Form Builder Publisher'
@@ -101,7 +90,6 @@ en:
       sign_out: Sign out
       teams: Teams
     unsigned_user_nav:
-      help: Help
       sign_in: Sign in
   phase_banner:
     content_html:

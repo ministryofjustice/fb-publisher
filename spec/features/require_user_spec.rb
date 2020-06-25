@@ -14,10 +14,6 @@ describe 'visiting the home page' do
       expect(page).to have_link(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
     end
 
-    it 'shows a link for help' do
-      expect(page).to have_link(I18n.t(:help, scope: [:layouts, :unsigned_user_nav]))
-    end
-
     it 'shows a link to sign in' do
       expect(page).to have_link(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
     end
@@ -35,10 +31,6 @@ describe 'visiting the home page' do
 
     it 'does not show a link to sign in' do
       expect(page).to_not have_link(I18n.t(:sign_in, scope: [:layouts, :unsigned_user_nav]))
-    end
-
-    it 'shows a link for help' do
-      expect(page).to have_link(I18n.t(:help, scope: [:layouts, :unsigned_user_nav]))
     end
 
     it "shows a link to 'create form'" do
