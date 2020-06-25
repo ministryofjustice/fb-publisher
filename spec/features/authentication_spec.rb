@@ -33,9 +33,9 @@ describe 'logging in as a particular user' do
         expect(page.current_url).to eq(welcome_url)
       end
 
-      it 'shows me a welcome message with my name' do
+      it 'shows the services page with a button to add new forms' do
         login_as!(user)
-        expect(page).to have_content("Thanks for joining us, new user!")
+        expect(page).to have_content("Add a new form")
       end
     end
 
@@ -53,9 +53,9 @@ describe 'logging in as a particular user' do
           expect(page.current_url).to eq(services_url)
         end
 
-        it 'shows me a welcome back message with my name' do
+        it 'shows me successfully signed in message' do
           login_as!(user)
-          expect(page).to have_content("Welcome back, #{user.name}!")
+          expect(page).to have_content("Signed in successfully")
         end
       end
 
@@ -65,9 +65,9 @@ describe 'logging in as a particular user' do
           expect(page.current_url).to eq(services_url)
         end
 
-        it 'shows me a welcome back message with my name' do
+        it 'shows me a successfully signed in message' do
           login_as!(user)
-          expect(page).to have_content("Welcome back, #{user.name}!")
+          expect(page).to have_content("Signed in successfully")
         end
       end
     end

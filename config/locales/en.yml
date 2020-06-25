@@ -54,7 +54,7 @@ en:
         new_team: 'or create a new team called:'
   auth:
     existing_user:
-      welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
+      welcome_html: 'Signed in successfully'
   deploy_service_job:
     all_done: 'ALL DONE'
     complete: 'Finished - writing status back to Deployment'
@@ -165,10 +165,10 @@ en:
       submit: Filter
     index:
       actions: Actions
-      heading: Your forms
+      heading: Forms
       name: Form name
-      no_services_yet: You don't have any services yet.
-      new_service: Create form
+      no_services_yet: You don't have any forms yet.
+      new_service: Add a new form
     links:
       config_params: Config Params
       deployments: Deployments
@@ -322,11 +322,7 @@ en:
         To use this service, you must use an email address that ends in
   welcome:
     show:
-      heading: You're all signed up
-      lede_html:
-        Thanks for joining us, <strong>%{user_name}</strong>!
-      what_now: What happens next
+      heading: Forms
+      lede_html: ''
       what_to_do_next_html:
-        <p>Feel free to click around and explore the interface.</p>
-        <p>If you're ready to get started, you can
-        <br /><a class="button button-cta" href="%{link_url}">Publish a new service</a></p>
+        <br /><a class="button button-cta" href="%{link_url}">Add a new form</a></p>

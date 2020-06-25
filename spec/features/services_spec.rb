@@ -256,10 +256,6 @@ describe 'visiting /services' do
           end
         end
 
-        it 'has deleted the service' do
-          expect(page).to have_content("You don't have any services")
-        end
-
         it 'shows me a message saying it was deleted successfully' do
           expect(page).to have_content('Service "My First Service" deleted successfully')
         end
