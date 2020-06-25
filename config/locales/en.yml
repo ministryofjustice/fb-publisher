@@ -80,13 +80,13 @@ en:
   layouts:
     application:
       logo_link_title: Form Publisher home
-      title: "Form Builder: Publisher"
+      title: "Form Builder Publisher"
     dev_tools:
       fake_login: Fake Login
     user_nav:
       profile: Profile
-      create_form: Create form
-      services: Your forms
+      create_form: Add a new form
+      services: Forms
       sign_out: Sign out
       teams: Teams
     unsigned_user_nav:
