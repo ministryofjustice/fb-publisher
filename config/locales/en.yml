@@ -82,17 +82,12 @@ en:
     assign: assign permissions for individual team members
   home:
     show:
-      heading: 'Welcome to Form Builder: Publisher'
+      heading: 'Form Builder Publisher'
       lede_html:
-        This tool enables you to publish (deploy) forms to online environments. You should use
-        the publisher tool after building <a href="%{link_url}" target="_blank">Form Specification files</a>.
-      info_html:
-        When you provide details about each form, the publisher tool will create development
-        and live environments. You can then configure each environment and assign permissions
-        before deploying each form.<br>
-        <a href="%{help_url}">Find out more about the publisher tool</a>.
+        The Publisher allows you to publish the forms you've created.
+      info_html: ''
       warning_html:
-        To use this tool, you must have an email address ending in justice.gov.uk
+        You’ll need a <span class="domain">digital.justice.gov.uk</span> email to sign in.
   layouts:
     application:
       logo_link_title: Form Publisher home
