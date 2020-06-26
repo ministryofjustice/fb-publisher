@@ -274,7 +274,7 @@ describe 'visiting /services' do
         describe 'changing the name' do
           before do
             fill_in(I18n.t(:name, scope: [:helpers, :label, :service]), with: new_name)
-            click_button 'Update Service'
+            click_button 'Save'
           end
           context 'to something valid' do
             let(:new_name) { 'My First Service v2' }
@@ -306,7 +306,7 @@ describe 'visiting /services' do
             let(:slug_name) { 'test-slug' }
             before do
               fill_in(I18n.t(:slug, scope: [:helpers, :label, :service]), with: slug_name)
-              click_button('Update Service')
+              click_button('Save')
             end
 
             it 'alerts user that renamed slug will clear related user data store records' do

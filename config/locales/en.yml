@@ -17,17 +17,10 @@ en:
     hint:
       service:
         git_repo_url_html:
-          Use full URL where the JSON files of your form are saved - for example, <br />
-          https://github.com/ministryofjustice/fb-sample-json.git
-        name_html:
-          Name must be 3-128 characters, no full stops, unique to publisher tool,  <br />
-          only used in the tool, not visible to users
-        slug_html:
-          <em>(optional)</em> This will form the first part of your forms' initial URL.<br />
-          Must contain 3-64 characters, and only letters, numbers and hyphens (-)<br />
-          Must be unique. If you leave this blank, we'll generate one for you
-        deploy_key_html:
-          <em>(optional)</em> If your GitHub repository is private, please add the deploy key here
+          For example, https://github.com/username/form-name
+        name_html: ''
+        slug_html: ''
+        deploy_key_html: ''
       service_config_param:
         name_html:
           Must be 3-64 characters long, and contain only
@@ -43,10 +36,10 @@ en:
           of the repository shown above, please enter the relative path to it here.
     label:
       service:
-        git_repo_url: GitHub repository location
+        git_repo_url: GitHub repository URL
         name: Form name
-        slug: Form "slug"
-        deploy_key: Deploy key
+        slug: Form URL (optional)
+        deploy_key: Deploy key (optional)
       service_deployment:
         commit_sha: Commit SHA, branch, or tag
         json_sub_dir: Relative path to your service's JSON
@@ -155,7 +148,7 @@ en:
     edit:
       heading: Editing '%{name}'
       form:
-        submit: Update Service
+        submit: Save
     environment:
       checking: 'checking...'
       check_now: 'Check now'
@@ -175,14 +168,13 @@ en:
       permissions: Permissions
       urls: Status
     new:
-      heading: Create form
-      lede_html:
-        Form details
+      heading: Add a new form
+      lede_html: ''
       notice:
         Nothing will be put live until you <em>deploy</em> your service -
         which you can do after creating it
       form:
-        submit: Create form
+        submit: Add form
     permissions:
       create:
         success: Permissions have been added successfully!
