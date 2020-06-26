@@ -1,7 +1,7 @@
-
 class Services::ConfigParamsController < ApplicationController
   before_action :require_user!
 
+  include ApplicationHelper
   include Concerns::NestedResourceController
   nest_under :service, attr_name: :slug, param_name: :service_slug
 
@@ -37,7 +37,7 @@ class Services::ConfigParamsController < ApplicationController
           :success,
           scope: [:services, :config_params, :create],
           name: @config_param.name,
-          environment: ServiceEnvironment.find(@config_param.environment_slug).friendly_name
+          environment: environment_name(@config_param.environment_slug)
       )
       redirect_to action: :index, service_id: @service, env: @config_param.environment_slug
     else
@@ -62,7 +62,7 @@ class Services::ConfigParamsController < ApplicationController
         :success,
         scope: [:services, :config_params, :update],
         name: @config_param.name,
-        environment: ServiceEnvironment.find(@config_param.environment_slug).friendly_name
+        environment: environment_name(@config_param.environment_slug)
       )
       redirect_to action: :index,
                   env: @config_param.environment_slug
