@@ -33,7 +33,7 @@ class Services::ConfigParamsController < ApplicationController
     authorize(@config_param)
 
     if @config_param.save
-      flash[:notice] = t(
+      flash[:success] = t(
           :success,
           scope: [:services, :config_params, :create],
           name: @config_param.name,
@@ -58,7 +58,7 @@ class Services::ConfigParamsController < ApplicationController
     if @config_param.update(
       config_params_params.merge(last_updated_by_user: current_user)
     )
-      flash[:notice] = t(
+      flash[:success] = t(
         :success,
         scope: [:services, :config_params, :update],
         name: @config_param.name,

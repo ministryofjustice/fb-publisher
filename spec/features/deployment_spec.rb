@@ -97,16 +97,16 @@ describe 'visiting services/deployment' do
           create_deployment('production', 'completed')
         end
 
-        it 'has a link to a un-deploy button' do
+        it 'has a link to a unpublish button' do
           visit "/services/#{service.slug}/deployments/status"
-          expect(page).to have_link('Un-deploy', count: 2)
+          expect(page).to have_link('Unpublish', count: 2)
         end
       end
 
       context 'when there are no deployments' do
-        it 'does not show any un-deploy buttons' do
+        it 'does not show any unpublish buttons' do
           visit "/services/#{service.slug}/deployments/status"
-          expect(page).to_not have_link('Un-deploy')
+          expect(page).to_not have_link('Unpublish')
         end
       end
 
@@ -115,13 +115,13 @@ describe 'visiting services/deployment' do
           create_deployment('dev', 'failed_non_retryable')
         end
 
-        it 'does not show any un-deploy buttons' do
+        it 'does not show any unpublish buttons' do
           visit "/services/#{service.slug}/deployments/status"
-          expect(page).to_not have_link('Un-deploy')
+          expect(page).to_not have_link('Unpublish')
         end
       end
 
-      context 'when user clicks on `Un-deploy button`', js: true do
+      context 'when user clicks on `Unpublish button`', js: true do
         before do
           create_deployment('dev', 'completed')
         end
@@ -129,20 +129,20 @@ describe 'visiting services/deployment' do
         it 'removes the deployment if user confirms the alert' do
           visit "/services/#{service.slug}/deployments/status"
           accept_alert do
-            click_link('Un-deploy')
+            click_link('Unpublish')
           end
 
-          expect(page).to_not have_link('Un-deploy')
+          expect(page).to_not have_link('Unpublish')
         end
 
         it 'does not remove the deployment if user dismisses the alert' do
           visit "/services/#{service.slug}/deployments/status"
 
           dismiss_confirm do
-            click_link 'Un-deploy'
+            click_link 'Unpublish'
           end
 
-          expect(page).to have_link('Un-deploy', count: 1)
+          expect(page).to have_link('Unpublish', count: 1)
         end
       end
     end

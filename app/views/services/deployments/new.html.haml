@@ -1,5 +1,5 @@
 %h1.heading-xlarge
-  = t('.heading', service: @service.name, environment: @environment.name)
+  = t('.heading', service: @service.name, environment: @environment.friendly_name)
 
 %p.lede
   = t('.lede_html', git_repo_url: @service.git_repo_url)
@@ -7,7 +7,7 @@
 = form_with model: @deployment, url: update_or_create(@deployment), local: true do |f|
   = f.hidden_field :environment_slug
 
-  = f.text_field :json_sub_dir, required: false, maxlength: 64, size: 32 
+  = f.text_field :json_sub_dir, required: false, maxlength: 64, size: 32
   = f.text_field :commit_sha, required: false, maxlength: 64, size: 32
 
   = f.submit t('.submit'), class: 'button button-cta'

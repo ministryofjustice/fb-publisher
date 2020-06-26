@@ -26,11 +26,9 @@ en:
         value_html: ''
       service_deployment:
         commit_sha_html:
-          <em>(optional)</em> Enter a commit SHA or branch/tag name to deploy<br />
-          Or leave it blank, and we'll deploy HEAD (the latest commit)
+          If you want to publish a previous version
         json_sub_dir_html:
-          <em>(optional)</em> If the JSON you want to deploy is in a sub-directory
-          of the repository shown above, please enter the relative path to it here.
+          If you want to publish a subdirectory
     label:
       service:
         git_repo_url: GitHub repository URL
@@ -38,8 +36,8 @@ en:
         slug: Form URL (optional)
         deploy_key: Deploy key (optional)
       service_deployment:
-        commit_sha: Commit SHA, branch, or tag
-        json_sub_dir: Relative path to your service's JSON
+        commit_sha: Commit SHA, branch or tag (optional)
+        json_sub_dir: Relative path to your form's JSON (optional)
       permission:
         new_team: 'or create a new team called:'
   auth:
@@ -111,6 +109,8 @@ en:
         success: Configuration for '%{name}' (%{environment}) updated successfully. For the changes to take effect this needs to be deployed
     deployments:
       environment:
+        publish: Publish
+        unpublish: Unpublish
         delete_confirm: Are you sure you want to delete the deployment of %{name} in the %{environment} environment?
         deleting: Deleting...
       environments_nav:
@@ -126,13 +126,17 @@ en:
         lede_html: "Deployment log"
         no_log_entries: '(no log entries)'
       new:
-        heading: Deploy '%{service}' to %{environment}
+        heading: Publish '%{service}' to %{environment}
         lede_html:
           Your JSON repository is at <strong><a href='%{git_repo_url}'>%{git_repo_url}</a></strong>
-        submit: Deploy now
+        submit: Publish
       status:
-        lede_html:
-          Latest deployments for each environment
+        lede_html: ''
+        environment: Environment
+        commit: Last commit
+        completed_at: Last published
+        status: Status
+        actions: Actions
     create:
       success: Your form has been added.
     destroy:
