@@ -43,14 +43,14 @@ describe ApplicationHelper do
       let(:slug) { 'dev' }
 
       it 'returns the name of the given environment' do
-        expect(mock_controller.environment_name(slug)).to eq('Development')
+        expect(mock_controller.environment_name(slug)).to eq('Test')
       end
 
       context 'as a symbol' do
         let(:slug) { :dev }
 
         it 'returns the name of the given environment' do
-          expect(mock_controller.environment_name(slug)).to eq('Development')
+          expect(mock_controller.environment_name(slug)).to eq('Test')
         end
       end
     end

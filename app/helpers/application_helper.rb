@@ -11,7 +11,7 @@ module ApplicationHelper
   end
 
   def environment_name(slug)
-    ServiceEnvironment.name_of(slug)
+    ServiceEnvironment.find(slug).try(:friendly_name)
   end
 
   # workaround for a Rails routing issue that's "not possible to fix with
