@@ -15,7 +15,7 @@ describe "visiting a service's config params page" do
 
     let(:name) { 'TEST_1' }
     let(:value) { 'abc456' }
-    let(:environment) { 'Development' }
+    let(:environment) { 'Test' }
 
     context 'when adding new environment variables' do
       before do
@@ -26,7 +26,7 @@ describe "visiting a service's config params page" do
       end
 
       it 'displays a message advising the user to deploy for changes to take effect' do
-        expect(page).to have_selector('div.flash.flash-notice',
+        expect(page).to have_selector('div.flash.flash-success',
                                       text: I18n.t('services.config_params.create.success',
                                                    name: name, environment: environment))
       end
@@ -70,7 +70,7 @@ describe "visiting a service's config params page" do
       end
 
       it 'displays a message advising the user to deploy for changes to take effect' do
-        expect(page).to have_selector('div.flash.flash-notice',
+        expect(page).to have_selector('div.flash.flash-success',
                                       text: I18n.t('services.config_params.update.success',
                                                    name: changed_name, environment: environment))
       end

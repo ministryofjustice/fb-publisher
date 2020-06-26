@@ -22,11 +22,8 @@ en:
         slug_html: ''
         deploy_key_html: ''
       service_config_param:
-        name_html:
-          Must be 3-64 characters long, and contain only
-          UPPERCASE letters, numbers, and underscores ( _ )
-        value_html:
-          May be 0-10485760 characters long, and contain any characters
+        name_html: ''
+        value_html: ''
       service_deployment:
         commit_sha_html:
           <em>(optional)</em> Enter a commit SHA or branch/tag name to deploy<br />
@@ -98,7 +95,7 @@ en:
         edit: Edit
         empty_value: (empty)
       create:
-        success: Config Param '%{name}' (%{environment}) created successfully. For the changes to take effect this needs to be deployed
+        success: Configuration for '%{name}' (%{environment}) added
       edit:
         heading: Editing '%{name}' (%{environment})
       form:
@@ -106,13 +103,12 @@ en:
         submit: Save
       index:
         actions: Actions
-        environments: Add configuration parameters
-        lede_html:
-          These will be passed to your service as environment variables
+        environments: Add configuration
+        lede_html: ''
         name: Name
         value: Value
       update:
-        success: Config Param '%{name}' (%{environment}) updated successfully. For the changes to take effect this needs to be deployed
+        success: Configuration for '%{name}' (%{environment}) updated successfully. For the changes to take effect this needs to be deployed
     deployments:
       environment:
         delete_confirm: Are you sure you want to delete the deployment of %{name} in the %{environment} environment?

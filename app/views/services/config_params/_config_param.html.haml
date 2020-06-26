@@ -15,5 +15,5 @@
                   service_config_param_path(config_param.service, config_param),
                   method: :delete,
                   class: 'styled-as-link',
-                  data: { confirm: t('.delete_confirm', name: config_param.name, environment: ServiceEnvironment.find(config_param.environment_slug).name),
+                  data: { confirm: t('.delete_confirm', name: config_param.name, environment: ServiceEnvironment.find(config_param.environment_slug).friendly_name),
                           disable_with: t('.deleting') }
