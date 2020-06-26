@@ -217,8 +217,9 @@ describe 'visiting /services' do
                   end
                 end
 
-                it 'shows me the status of my new service' do
-                  expect(page).to have_content('Status of your service in the available environments')
+                it 'shows the deployment environment names' do
+                  expect(page).to have_content('Test')
+                  expect(page).to have_content('Live')
                 end
 
                 it 'shows me a notice saying it was created successfully' do
@@ -281,10 +282,6 @@ describe 'visiting /services' do
 
             it 'shows me a message saying it was updated successfully' do
               expect(page).to have_content(I18n.t(:success, scope: [:services, :update], service: new_name))
-            end
-
-            it 'shows me the status of my new service' do
-              expect(page).to have_content('Status of your service in the available environments')
             end
           end
 

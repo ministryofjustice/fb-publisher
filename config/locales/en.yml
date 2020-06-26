@@ -201,11 +201,13 @@ en:
       edit: Edit
       success: The service "%{service}" was successfully deleted
     show:
-      delete: Delete form
-      lede_html:
-        Status of your service in the available environments
+      delete: Remove form
+      lede_html: ''
       timestamp: Checked at
-      warning_html: Clicking delete removes the form from the publisher - you can still <a href='%{git_repo_url}'>access the form’s data</a>
+      warning_html:
+        This will only remove the form in the Publisher.
+        <br/>
+        You can still access the form's data at <a href='%{git_repo_url}'>%{git_repo_url}</a>
       url: URL
     update:
       success: Service "%{service}" updated successfully. You'll need to deploy your service for these changes to take effect on the web.

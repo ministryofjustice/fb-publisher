@@ -1,6 +1,6 @@
 %tr{ id: environment.status_environment_slug }
   %th
-    = ServiceEnvironment.find(environment.status_environment_slug).name
+    = ServiceEnvironment.find(environment.status_environment_slug).friendly_name
   %td
     - if environment.status_url.present?
       = link_to(environment.status_url, environment.status_url)

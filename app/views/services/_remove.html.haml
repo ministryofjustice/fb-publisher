@@ -1,16 +1,11 @@
 %div.pad-top
   %div.notice
-    %i.icon.icon-important
-      %span.visually-hidden
-        = 'Warning'
-    %strong.bold-small
+    %p.pad-top-small
       = t(:warning_html, scope: [:services, :show], git_repo_url: service.git_repo_url)
-  %div
-    %br
-      %p.pad-top-small
-        = link_to t('services.show.delete'),
-              service_path(service),
-              class: 'button warning',
-              method: :delete,
-              data: { confirm: t('services.service.delete_confirm', service: service.name),
-                      disable_with: t('services.service.deleting') }
+    %p.pad-top-small
+      = link_to t('services.show.delete'),
+            service_path(service),
+            class: 'button warning',
+            method: :delete,
+            data: { confirm: t('services.service.delete_confirm', service: service.name),
+                    disable_with: t('services.service.deleting') }
