@@ -138,7 +138,7 @@ en:
         lede_html:
           Latest deployments for each environment
     create:
-      success: Your new service has been created. You'll need to deploy your service to an environment to see it on the web.
+      success: Your form has been added.
     destroy:
       success: Service "%{service}" deleted successfully
     edit_confirm:
@@ -163,10 +163,10 @@ en:
       no_services_yet: You don't have any forms yet.
       new_service: Add a new form
     links:
-      config_params: Config Params
+      config_params: Configuration
       deployments: Deployments
       permissions: Permissions
-      urls: Status
+      urls: Form URLs
     new:
       heading: Add a new form
       lede_html: ''
