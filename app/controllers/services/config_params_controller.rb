@@ -37,7 +37,7 @@ class Services::ConfigParamsController < ApplicationController
           :success,
           scope: [:services, :config_params, :create],
           name: @config_param.name,
-          environment: environment_name(@config_param.environment_slug)
+          environment: form_environment(@config_param.environment_slug)
       )
       redirect_to action: :index, service_id: @service, env: @config_param.environment_slug
     else
@@ -62,7 +62,7 @@ class Services::ConfigParamsController < ApplicationController
         :success,
         scope: [:services, :config_params, :update],
         name: @config_param.name,
-        environment: environment_name(@config_param.environment_slug)
+        environment: form_environment(@config_param.environment_slug)
       )
       redirect_to action: :index,
                   env: @config_param.environment_slug

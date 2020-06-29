@@ -1,5 +1,5 @@
 %h1.heading-xlarge
-  = t('.heading', service: @service.name, environment: @environment.friendly_name)
+  = t('.heading', service: @service.name, environment: @environment.form_environment)
 
 %p.lede
   = t('.lede_html', git_repo_url: @service.git_repo_url)

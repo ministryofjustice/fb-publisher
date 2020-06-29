@@ -12,9 +12,9 @@
             %li
               - if params[:env] == env.slug.to_s
                 %span
-                  = env.friendly_name
+                  = env.form_environment
               - else
-                = link_to env.friendly_name, {env: env.slug}
+                = link_to env.form_environment, {env: env.slug}
       %th
       = render partial: 'form', locals: {config_param: @config_param, button_name: t('services.config_params.form.add')}
     %th

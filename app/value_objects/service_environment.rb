@@ -1,5 +1,5 @@
 class ServiceEnvironment
-  attr_accessor :deployment_adapter, :kubectl_context, :name, :friendly_name, :slug,
+  attr_accessor :deployment_adapter, :kubectl_context, :name, :form_environment, :slug,
                 :namespace, :protocol, :url_root,
                 :user_datastore_url, :user_filestore_url, :submitter_url
 

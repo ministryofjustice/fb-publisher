@@ -38,19 +38,19 @@ describe ApplicationHelper do
     end
   end
 
-  describe 'environment_name' do
+  describe 'form_environment' do
     context 'given a valid environment slug' do
       let(:slug) { 'dev' }
 
       it 'returns the name of the given environment' do
-        expect(mock_controller.environment_name(slug)).to eq('Test')
+        expect(mock_controller.form_environment(slug)).to eq('Test')
       end
 
       context 'as a symbol' do
         let(:slug) { :dev }
 
         it 'returns the name of the given environment' do
-          expect(mock_controller.environment_name(slug)).to eq('Test')
+          expect(mock_controller.form_environment(slug)).to eq('Test')
         end
       end
     end
@@ -58,7 +58,7 @@ describe ApplicationHelper do
     context 'given an invalid environment slug' do
       let(:slug) { 'something non-existent' }
       it 'returns nil' do
-        expect(mock_controller.environment_name(slug)).to be_nil
+        expect(mock_controller.form_environment(slug)).to be_nil
       end
     end
   end

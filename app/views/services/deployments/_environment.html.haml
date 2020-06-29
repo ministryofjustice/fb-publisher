@@ -1,6 +1,6 @@
 %tr{ id: environment.environment_slug }
   %th
-    = environment_name(environment.environment_slug)
+    = form_environment(environment.environment_slug)
   %td
     - if environment.commit_sha.present?
       = link_to(environment.commit_sha, environment.generate_github_link)
