@@ -25,7 +25,7 @@ Rails.application.routes.draw do
 
   resources :services, param: :slug do
     scope :module => 'services' do
-      resources :config_params
+      resources :config_params, path: 'configuration'
       resources :permissions, controller_name: :service_permissions
       resources :deployments, controller_name: :service_deployments do
         get 'status', on: :collection, to: 'deployments#status'
