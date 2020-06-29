@@ -269,7 +269,7 @@ describe 'visiting /services' do
         end
 
         it 'shows me the Edit Service form' do
-          expect(page).to have_content("Editing '#{service_name}'")
+          expect(page).to have_content("Edit '#{service_name}'")
         end
 
         describe 'changing the name' do
@@ -293,7 +293,7 @@ describe 'visiting /services' do
             end
 
             it 'keeps me editing my service' do
-              expect(page).to have_content("Editing '#{new_name}'")
+              expect(page).to have_content("Edit '#{new_name}'")
             end
           end
         end
@@ -325,7 +325,7 @@ describe 'visiting /services' do
               end
 
               it 'returns user back to edit service screen' do
-                expect(page).to have_content("Editing '#{service_name}'")
+                expect(page).to have_content("Edit '#{service_name}'")
               end
             end
           end
@@ -337,7 +337,7 @@ describe 'visiting /services' do
             end
 
             it 'does not update the service slug' do
-              expect(page).to have_content("Editing '#{service_name}'")
+              expect(page).to have_content("Edit '#{service_name}'")
             end
           end
         end
