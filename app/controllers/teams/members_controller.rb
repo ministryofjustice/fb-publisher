@@ -47,7 +47,7 @@ class Teams::MembersController < ApplicationController
     if @member.update(
       members_params.merge(created_by_user: current_user)
     )
-      flash[:notice] = t(
+      flash[:success] = t(
         :success,
         scope: [:teams, :members, :update],
         name: @member.name

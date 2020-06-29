@@ -21,7 +21,7 @@ class TeamsController < ApplicationController
     @team = Team.new(team_params.merge(created_by_user: current_user))
     authorize(@team)
     if @team.save
-      redirect_to team_path(@team), notice: t(:success, scope: [:teams, :create])
+      redirect_to team_path(@team), flash: { success: t(:success, scope: [:teams, :create]) }
     else
       render :new
     end
@@ -31,12 +31,12 @@ class TeamsController < ApplicationController
 
   def destroy
     @team.destroy!
-    redirect_to teams_path, notice: t(:success, scope: [:teams, :destroy], team: @team.name)
+    redirect_to teams_path, flash: { success: t(:success, scope: [:teams, :destroy], team: @team.name) }
   end
 
   def update
     if @team.update(team_params)
-      redirect_to team_path(@team), notice: t(:success, scope: [:teams, :update], team: @team.name)
+      redirect_to team_path(@team), flash: { success: t(:success, scope: [:teams, :update], team: @team.name) }
     else
       render :edit
     end

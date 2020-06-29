@@ -54,7 +54,7 @@ class Services::PermissionsController < ApplicationController
     if @permission.update(
       permissions_params.merge(created_by_user: current_user)
     )
-      flash[:notice] = t(
+      flash[:success] = t(
         :success,
         scope: [:services, :permissions, :update],
         name: @permission.name

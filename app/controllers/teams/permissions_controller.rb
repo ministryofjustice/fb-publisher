@@ -47,7 +47,7 @@ class Teams::PermissionsController < ApplicationController
     if @permission.update(
       permissions_params.merge(created_by_user: current_user)
     )
-      flash[:notice] = t(
+      flash[:success] = t(
         :success,
         scope: [:teams, :permissions, :update],
         name: @permission.name
