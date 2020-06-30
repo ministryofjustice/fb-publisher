@@ -34,12 +34,6 @@
 
 = content_for :content do
   %main{ class: "content inner cf", id: "content", role: "main" }
-    .phase-banner
-      %p
-        %strong.phase-tag
-          = t(:phase, scope: [:phase_banner])
-        %span
-          = t(:content_html, scope: [:phase_banner], link_url: '#')
 
     = render partial: 'layouts/flashes'
 
