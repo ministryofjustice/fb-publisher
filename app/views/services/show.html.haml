@@ -1,15 +1,8 @@
 = render partial: 'services/header', locals: {service: @service}
 
-%p.lede
-  = t('.lede_html')
-
 %table
   %thead
     %tr
-      %th
-        = t('.environment')
-      %th
-        = t('.url')
 
   %tbody
     = render partial: 'environment', collection: @status_by_environment

@@ -1,5 +1,5 @@
 %h1.heading-xlarge
-  = t('.heading', name: @config_param.name, environment: environment_name(@config_param.environment_slug))
+  = t('.heading', name: @config_param.name, environment: form_environment(@config_param.environment_slug))
 
 = GovukElementsErrorsHelper.error_summary @config_param,
     t('.error_message', default: nil),

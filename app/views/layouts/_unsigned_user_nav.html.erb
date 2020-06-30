@@ -1,9 +1,5 @@
 <ul id="proposition-links">
   <li>
-    <%= link_to t('.help'), help_path %>
-  </li>
-
-  <li>
     <% if Rails.env.development? %>
       <%= link_to t('.sign_in'), '/auth/developer' %>
     <% else %>

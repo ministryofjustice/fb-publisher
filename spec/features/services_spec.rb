@@ -217,8 +217,9 @@ describe 'visiting /services' do
                   end
                 end
 
-                it 'shows me the status of my new service' do
-                  expect(page).to have_content('Status of your service in the available environments')
+                it 'shows the deployment environment names' do
+                  expect(page).to have_content('Test')
+                  expect(page).to have_content('Live')
                 end
 
                 it 'shows me a notice saying it was created successfully' do
@@ -256,10 +257,6 @@ describe 'visiting /services' do
           end
         end
 
-        it 'has deleted the service' do
-          expect(page).to have_content("You don't have any services")
-        end
-
         it 'shows me a message saying it was deleted successfully' do
           expect(page).to have_content('Service "My First Service" deleted successfully')
         end
@@ -272,23 +269,19 @@ describe 'visiting /services' do
         end
 
         it 'shows me the Edit Service form' do
-          expect(page).to have_content("Editing '#{service_name}'")
+          expect(page).to have_content("Edit '#{service_name}'")
         end
 
         describe 'changing the name' do
           before do
             fill_in(I18n.t(:name, scope: [:helpers, :label, :service]), with: new_name)
-            click_button 'Update Service'
+            click_button 'Save'
           end
           context 'to something valid' do
             let(:new_name) { 'My First Service v2' }
 
             it 'shows me a message saying it was updated successfully' do
               expect(page).to have_content(I18n.t(:success, scope: [:services, :update], service: new_name))
-            end
-
-            it 'shows me the status of my new service' do
-              expect(page).to have_content('Status of your service in the available environments')
             end
           end
 
@@ -300,7 +293,7 @@ describe 'visiting /services' do
             end
 
             it 'keeps me editing my service' do
-              expect(page).to have_content("Editing '#{new_name}'")
+              expect(page).to have_content("Edit '#{new_name}'")
             end
           end
         end
@@ -310,7 +303,7 @@ describe 'visiting /services' do
             let(:slug_name) { 'test-slug' }
             before do
               fill_in(I18n.t(:slug, scope: [:helpers, :label, :service]), with: slug_name)
-              click_button('Update Service')
+              click_button('Save')
             end
 
             it 'alerts user that renamed slug will clear related user data store records' do
@@ -332,7 +325,7 @@ describe 'visiting /services' do
               end
 
               it 'returns user back to edit service screen' do
-                expect(page).to have_content("Editing '#{service_name}'")
+                expect(page).to have_content("Edit '#{service_name}'")
               end
             end
           end
@@ -344,7 +337,7 @@ describe 'visiting /services' do
             end
 
             it 'does not update the service slug' do
-              expect(page).to have_content("Editing '#{service_name}'")
+              expect(page).to have_content("Edit '#{service_name}'")
             end
           end
         end

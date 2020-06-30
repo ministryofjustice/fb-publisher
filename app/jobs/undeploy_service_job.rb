@@ -11,7 +11,7 @@ class UndeployServiceJob < ApplicationJob
   end
 
   def on_retryable_exception(error)
-    logger.warn "RETRYABLE EXCEPTION! un-deployment failure #{@slug}, #{@env}"
+    logger.warn "RETRYABLE EXCEPTION! unpublish failure #{@slug}, #{@env}"
     super
   end
 

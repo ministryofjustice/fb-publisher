@@ -15,9 +15,9 @@ class Auth0Controller < ApplicationController
       else
         # Redirect to the URL you want after successful auth
         redirect_to services_path,
-                    notice: I18n.t(:welcome_html,
-                                    scope: [:auth, :existing_user],
-                                    user_name: User.find(result.user_id).name)
+                    flash: {
+                      success: I18n.t(:welcome_html, scope: [:auth, :existing_user])
+                    }
       end
     rescue SignupNotAllowedError
       # no new user or existing user, so they weren't allowed to sign up

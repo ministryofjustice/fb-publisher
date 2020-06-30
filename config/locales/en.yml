@@ -17,44 +17,32 @@ en:
     hint:
       service:
         git_repo_url_html:
-          Use full URL where the JSON files of your form are saved - for example, <br />
-          https://github.com/ministryofjustice/fb-sample-json.git
-        name_html:
-          Name must be 3-128 characters, no full stops, unique to publisher tool,  <br />
-          only used in the tool, not visible to users
-        slug_html:
-          <em>(optional)</em> This will form the first part of your forms' initial URL.<br />
-          Must contain 3-64 characters, and only letters, numbers and hyphens (-)<br />
-          Must be unique. If you leave this blank, we'll generate one for you
-        deploy_key_html:
-          <em>(optional)</em> If your GitHub repository is private, please add the deploy key here
+          For example, https://github.com/username/form-name
+        name_html: ''
+        slug_html: ''
+        deploy_key_html: ''
       service_config_param:
-        name_html:
-          Must be 3-64 characters long, and contain only
-          UPPERCASE letters, numbers, and underscores ( _ )
-        value_html:
-          May be 0-10485760 characters long, and contain any characters
+        name_html: ''
+        value_html: ''
       service_deployment:
         commit_sha_html:
-          <em>(optional)</em> Enter a commit SHA or branch/tag name to deploy<br />
-          Or leave it blank, and we'll deploy HEAD (the latest commit)
+          If you want to publish a previous version
         json_sub_dir_html:
-          <em>(optional)</em> If the JSON you want to deploy is in a sub-directory
-          of the repository shown above, please enter the relative path to it here.
+          If you want to publish a subdirectory
     label:
       service:
-        git_repo_url: GitHub repository location
+        git_repo_url: GitHub repository URL
         name: Form name
-        slug: Form "slug"
-        deploy_key: Deploy key
+        slug: Form URL (optional)
+        deploy_key: Deploy key (optional)
       service_deployment:
-        commit_sha: Commit SHA, branch, or tag
-        json_sub_dir: Relative path to your service's JSON
+        commit_sha: Commit SHA, branch or tag (optional)
+        json_sub_dir: Relative path to your form's JSON (optional)
       permission:
         new_team: 'or create a new team called:'
   auth:
     existing_user:
-      welcome_html: "Welcome back, <strong>%{user_name}</strong>!"
+      welcome_html: 'Signed in successfully'
   deploy_service_job:
     all_done: 'ALL DONE'
     complete: 'Finished - writing status back to Deployment'
@@ -69,44 +57,27 @@ en:
     restarting: 'Restarting service'
     starting: 'Starting job %{job_id} for ServiceDeployment %{service_deployment_id}'
     writing_commit: 'Writing commit SHA %{sha}'
-  help:
-    heading: Help getting started
-    lede: "Having signed in to the tool using your justice.gov.uk email, you'll need to:"
-    name: name your form
-    json: enter where the form’s JSON files are stored in Github
-    publisher_tool:
-      This enables the publisher tool to create development and live environments that you can deploy your form to.
-    also: 'You can also choose to:'
-    configure:
-      configure environments by adding Google Analytics, tracking IDs, passwords and IDs
-    assign: assign permissions for individual team members
   home:
     show:
-      heading: 'Welcome to Form Builder: Publisher'
+      heading: 'Form Builder Publisher'
       lede_html:
-        This tool enables you to publish (deploy) forms to online environments. You should use
-        the publisher tool after building <a href="%{link_url}" target="_blank">Form Specification files</a>.
-      info_html:
-        When you provide details about each form, the publisher tool will create development
-        and live environments. You can then configure each environment and assign permissions
-        before deploying each form.<br>
-        <a href="%{help_url}">Find out more about the publisher tool</a>.
+        The Publisher allows you to publish the forms you've created.
+      info_html: ''
       warning_html:
-        To use this tool, you must have an email address ending in justice.gov.uk
+        You’ll need a <span class="domain">digital.justice.gov.uk</span> email to sign in.
   layouts:
     application:
       logo_link_title: Form Publisher home
-      title: "Form Builder: Publisher"
+      title: "Form Builder Publisher"
     dev_tools:
       fake_login: Fake Login
     user_nav:
       profile: Profile
-      create_form: Create form
-      services: Your forms
+      create_form: Add a new form
+      services: Forms
       sign_out: Sign out
       teams: Teams
     unsigned_user_nav:
-      help: Help
       sign_in: Sign in
   phase_banner:
     content_html:
@@ -122,23 +93,24 @@ en:
         edit: Edit
         empty_value: (empty)
       create:
-        success: Config Param '%{name}' (%{environment}) created successfully. For the changes to take effect this needs to be deployed
+        success: Configuration for '%{name}' (%{environment}) added
       edit:
-        heading: Editing '%{name}' (%{environment})
+        heading: Edit '%{name}' (%{environment})
       form:
         add: Add
         submit: Save
       index:
         actions: Actions
-        environments: Add configuration parameters
-        lede_html:
-          These will be passed to your service as environment variables
+        environments: Add configuration
+        lede_html: ''
         name: Name
         value: Value
       update:
-        success: Config Param '%{name}' (%{environment}) updated successfully. For the changes to take effect this needs to be deployed
+        success: Configuration for '%{name}' (%{environment}) updated successfully. For the changes to take effect this needs to be deployed
     deployments:
       environment:
+        publish: Publish
+        unpublish: Unpublish
         delete_confirm: Are you sure you want to delete the deployment of %{name} in the %{environment} environment?
         deleting: Deleting...
       environments_nav:
@@ -154,15 +126,19 @@ en:
         lede_html: "Deployment log"
         no_log_entries: '(no log entries)'
       new:
-        heading: Deploy '%{service}' to %{environment}
+        heading: Publish '%{service}' to %{environment}
         lede_html:
           Your JSON repository is at <strong><a href='%{git_repo_url}'>%{git_repo_url}</a></strong>
-        submit: Deploy now
+        submit: Publish
       status:
-        lede_html:
-          Latest deployments for each environment
+        lede_html: ''
+        environment: Environment
+        commit: Last commit
+        completed_at: Last published
+        status: Status
+        actions: Actions
     create:
-      success: Your new service has been created. You'll need to deploy your service to an environment to see it on the web.
+      success: Your form has been added.
     destroy:
       success: Service "%{service}" deleted successfully
     edit_confirm:
@@ -170,9 +146,9 @@ en:
       confirm: 'Yes'
       dismiss: 'No'
     edit:
-      heading: Editing '%{name}'
+      heading: Edit '%{name}'
       form:
-        submit: Update Service
+        submit: Save
     environment:
       checking: 'checking...'
       check_now: 'Check now'
@@ -182,24 +158,23 @@ en:
       submit: Filter
     index:
       actions: Actions
-      heading: Your forms
+      heading: Forms
       name: Form name
-      no_services_yet: You don't have any services yet.
-      new_service: Create form
+      no_services_yet: You don't have any forms yet.
+      new_service: Add a new form
     links:
-      config_params: Config Params
+      config_params: Configuration
       deployments: Deployments
       permissions: Permissions
-      urls: Status
+      urls: Form URLs
     new:
-      heading: Create form
-      lede_html:
-        Form details
+      heading: Add a new form
+      lede_html: ''
       notice:
         Nothing will be put live until you <em>deploy</em> your service -
         which you can do after creating it
       form:
-        submit: Create form
+        submit: Add form
     permissions:
       create:
         success: Permissions have been added successfully!
@@ -226,11 +201,13 @@ en:
       edit: Edit
       success: The service "%{service}" was successfully deleted
     show:
-      delete: Delete form
-      lede_html:
-        Status of your service in the available environments
+      delete: Remove form
+      lede_html: ''
       timestamp: Checked at
-      warning_html: Clicking delete removes the form from the publisher - you can still <a href='%{git_repo_url}'>access the form’s data</a>
+      warning_html:
+        This will only remove the form in the Publisher.
+        <br/>
+        You can still access the form's data at <a href='%{git_repo_url}'>%{git_repo_url}</a>
       url: URL
     update:
       success: Service "%{service}" updated successfully. You'll need to deploy your service for these changes to take effect on the web.
@@ -241,7 +218,7 @@ en:
     destroy:
       success: Team "%{team}" deleted successfully
     edit:
-      heading: Editing '%{name}'
+      heading: Edit '%{name}'
     environment:
       checking: 'checking...'
       check_now: 'Check now'
@@ -339,11 +316,7 @@ en:
         To use this service, you must use an email address that ends in
   welcome:
     show:
-      heading: You're all signed up
-      lede_html:
-        Thanks for joining us, <strong>%{user_name}</strong>!
-      what_now: What happens next
+      heading: Forms
+      lede_html: ''
       what_to_do_next_html:
-        <p>Feel free to click around and explore the interface.</p>
-        <p>If you're ready to get started, you can
-        <br /><a class="button button-cta" href="%{link_url}">Publish a new service</a></p>
+        <br /><a class="button button-cta" href="%{link_url}">Add a new form</a></p>

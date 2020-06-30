@@ -15,32 +15,32 @@ describe "visiting a service's config params page" do
 
     let(:name) { 'TEST_1' }
     let(:value) { 'abc456' }
-    let(:environment) { 'Development' }
+    let(:environment) { 'Test' }
 
     context 'when adding new environment variables' do
       before do
-        visit "/services/#{service.slug}/config_params"
+        visit "/services/#{service.slug}/configuration"
         fill_in('Name', with: name)
         fill_in('Value', with: value)
         click_button(I18n.t('.services.config_params.form.add'))
       end
 
       it 'displays a message advising the user to deploy for changes to take effect' do
-        expect(page).to have_selector('div.flash.flash-notice',
+        expect(page).to have_selector('div.flash.flash-success',
                                       text: I18n.t('services.config_params.create.success',
                                                    name: name, environment: environment))
       end
 
       context 'and environment variable already exists' do
         before do
-          visit "/services/#{service.slug}/config_params"
+          visit "/services/#{service.slug}/configuration"
           fill_in('Name', with: name)
           fill_in('Value', with: value)
           click_button(I18n.t('.services.config_params.form.add'))
         end
 
         it 'redirects back to index page with correct service env' do
-          expect(page.current_url).to eql('http://www.example.com/services/test-service/config_params?env=dev')
+          expect(page.current_url).to eql('http://www.example.com/services/test-service/configuration?env=dev')
         end
 
         it 'displays error message' do
@@ -63,14 +63,14 @@ describe "visiting a service's config params page" do
       let(:changed_value) { 'xyz987' }
 
       before do
-        visit "/services/#{service.slug}/config_params/#{config.id}/edit"
+        visit "/services/#{service.slug}/configuration/#{config.id}/edit"
         fill_in('Name', with: changed_name)
         fill_in('Value', with: changed_value)
         click_button('Save')
       end
 
       it 'displays a message advising the user to deploy for changes to take effect' do
-        expect(page).to have_selector('div.flash.flash-notice',
+        expect(page).to have_selector('div.flash.flash-success',
                                       text: I18n.t('services.config_params.update.success',
                                                    name: changed_name, environment: environment))
       end
@@ -102,7 +102,7 @@ describe "visiting a service's config params page" do
                                      last_updated_by_user_id: another_user.id,
                                      service_id: another_service.id)
 
-          visit "/services/#{another_service.slug}/config_params"
+          visit "/services/#{another_service.slug}/configuration"
         end
 
         it "shows the config name set for 'Another Service'" do

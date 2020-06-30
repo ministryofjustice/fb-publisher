@@ -1,7 +1,7 @@
-
 class Services::ConfigParamsController < ApplicationController
   before_action :require_user!
 
+  include ApplicationHelper
   include Concerns::NestedResourceController
   nest_under :service, attr_name: :slug, param_name: :service_slug
 
@@ -33,11 +33,11 @@ class Services::ConfigParamsController < ApplicationController
     authorize(@config_param)
 
     if @config_param.save
-      flash[:notice] = t(
+      flash[:success] = t(
           :success,
           scope: [:services, :config_params, :create],
           name: @config_param.name,
-          environment: ServiceEnvironment.name_of(@config_param.environment_slug)
+          environment: form_environment(@config_param.environment_slug)
       )
       redirect_to action: :index, service_id: @service, env: @config_param.environment_slug
     else
@@ -58,11 +58,11 @@ class Services::ConfigParamsController < ApplicationController
     if @config_param.update(
       config_params_params.merge(last_updated_by_user: current_user)
     )
-      flash[:notice] = t(
+      flash[:success] = t(
         :success,
         scope: [:services, :config_params, :update],
         name: @config_param.name,
-        environment: ServiceEnvironment.name_of(@config_param.environment_slug)
+        environment: form_environment(@config_param.environment_slug)
       )
       redirect_to action: :index,
                   env: @config_param.environment_slug

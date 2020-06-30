@@ -24,7 +24,7 @@ class ServicesController < ApplicationController
     authorize(@service)
 
     if @service.save
-      redirect_to service_path(@service), notice: t(:success, scope: [:services, :create])
+      redirect_to service_path(@service), flash: { success: t(:success, scope: [:services, :create]) }
     else
       render :new
     end
@@ -43,7 +43,7 @@ class ServicesController < ApplicationController
     end
 
     @service.destroy!
-    redirect_to services_path, notice: t(:success, scope: [:services, :destroy], service: @service.name)
+    redirect_to services_path, flash: { success: t(:success, scope: [:services, :destroy], service: @service.name) }
   end
 
   def update
@@ -75,7 +75,7 @@ class ServicesController < ApplicationController
 
   def redirect(service, params)
     if @service.update(params)
-      redirect_to service_path(service), notice: t(:success, scope: [:services, :update], service: @service.name)
+      redirect_to service_path(service), flash: { success: t(:success, scope: [:services, :update], service: @service.name) }
     else
       render :edit
     end

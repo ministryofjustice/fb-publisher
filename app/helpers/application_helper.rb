@@ -10,8 +10,8 @@ module ApplicationHelper
     policy.send( (action.to_s + "?").to_sym )
   end
 
-  def environment_name(slug)
-    ServiceEnvironment.name_of(slug)
+  def form_environment(slug)
+    ServiceEnvironment.find(slug).try(:form_environment)
   end
 
   # workaround for a Rails routing issue that's "not possible to fix with

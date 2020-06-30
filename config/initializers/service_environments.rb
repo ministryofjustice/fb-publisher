@@ -12,6 +12,7 @@ ALL_ENVS = {
     deployment_adapter: 'cloud_platform',
     kubectl_context: ENV['KUBECTL_CONTEXT'],
     name: 'Development',
+    form_environment: 'Test',
     namespace: "formbuilder-services-#{ENV['PLATFORM_ENV']}-dev",
     protocol: 'https://',
     url_root: url_root,
@@ -23,6 +24,7 @@ ALL_ENVS = {
     deployment_adapter: 'cloud_platform',
     kubectl_context: ENV['KUBECTL_CONTEXT'],
     name: 'Production',
+    form_environment: 'Live',
     namespace: "formbuilder-services-#{ENV['PLATFORM_ENV']}-production",
     protocol: 'https://',
     url_root: url_root,
@@ -40,6 +42,7 @@ if ['development'].include?(ENV['RAILS_ENV'])
     deployment_adapter: 'minikube',
     kubectl_context: 'minikube',
     name: 'localhost',
+    form_environment: 'localhost',
     namespace: 'formbuilder-services-localhost',
     protocol: 'http://',
     url_root: 'minikube.local'
