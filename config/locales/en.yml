@@ -79,11 +79,6 @@ en:
       teams: Teams
     unsigned_user_nav:
       sign_in: Sign in
-  phase_banner:
-    content_html:
-      This is a new service - your <a href="%{link_url}">feedback</a>
-      will help improve it
-    phase: BETA
   services:
     config_params:
       config_param:
