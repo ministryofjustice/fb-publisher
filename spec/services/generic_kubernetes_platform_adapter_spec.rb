@@ -203,12 +203,12 @@ describe GenericKubernetesPlatformAdapter do
         let(:args) { {runner_repo: 'my-repo', env_slug: 'my-slug'} }
 
         it 'returns "(runner_repo):latest-(platformEnv)"' do
-          expect(subject.default_runner_image_ref(args)).to eq("my-repo:latest-runnerImagePlatformEnv")
+          expect(subject.default_runner_image_ref(**args)).to eq("my-repo:latest-runnerImagePlatformEnv")
         end
       end
       context 'but no env_slug' do
         it 'uses the slug from the environment attribute' do
-          expect(subject.default_runner_image_ref(args)).to end_with(":latest-runnerImagePlatformEnv")
+          expect(subject.default_runner_image_ref(**args)).to end_with(":latest-runnerImagePlatformEnv")
         end
       end
     end
@@ -219,7 +219,7 @@ describe GenericKubernetesPlatformAdapter do
         allow(ENV).to receive(:[]).with('RUNNER_IMAGE_REPO').and_return('some-repo')
       end
       it 'uses the environment variable RUNNER_IMAGE_REPO' do
-        expect(subject.default_runner_image_ref(args)).to start_with("some-repo:")
+        expect(subject.default_runner_image_ref(**args)).to start_with("some-repo:")
       end
     end
   end

@@ -1,9 +1,10 @@
-FROM ministryofjustice/ruby:2.6.3
+FROM ruby:2.7.1-buster
 
 # https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 
-RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
+RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev \
+  chromium chromium-driver
 
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
@@ -13,7 +14,7 @@ RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
 RUN chown deploy:deploy /var/www/fb-publisher
 
 COPY --chown=deploy:deploy Gemfile Gemfile.lock .ruby-version ./
-ENV BUNDLER_VERSION 2.0.2
+ENV BUNDLER_VERSION 2.1.4
 RUN gem install bundler
 ARG BUNDLE_FLAGS="--jobs 2 --no-cache --without development test"
 RUN bundle install ${BUNDLE_FLAGS}

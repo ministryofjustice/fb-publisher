@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.3'
-
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 
@@ -90,8 +88,6 @@ group :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15', '< 4.0'
   gem 'database_cleaner'
-  gem 'poltergeist'
-  gem 'phantomjs'
   gem 'rspec', '~>3.9.0'
   gem 'rspec-rails', '4.0.1'
   gem 'selenium-webdriver'
