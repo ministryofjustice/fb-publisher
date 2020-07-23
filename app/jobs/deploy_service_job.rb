@@ -103,7 +103,7 @@ class DeployServiceJob < ApplicationJob
     JobLogService.log(
       message: I18n.t(
         message_key,
-        i18n_args
+        **i18n_args
       ),
       job: self,
       tag: self.class.log_tag(@service_deployment_id)

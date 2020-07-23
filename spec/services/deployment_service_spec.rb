@@ -211,17 +211,17 @@ describe DeploymentService do
 
     it 'creates the config dir' do
       expect(FileUtils).to receive(:mkdir_p).with('config_dir')
-      described_class.setup_service(args)
+      described_class.setup_service(**args)
     end
 
     it 'gets the adapter for the given environment_slug' do
       expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
-      described_class.setup_service(args)
+      described_class.setup_service(**args)
     end
 
     it 'asks the adapter to setup_service passing on all args' do
-      expect(described_class).to receive(:setup_service).with(args).and_return(mock_adapter)
-      described_class.setup_service(args)
+      expect(described_class).to receive(:setup_service).with(**args).and_return(mock_adapter)
+      described_class.setup_service(**args)
     end
   end
 
@@ -241,12 +241,12 @@ describe DeploymentService do
 
     it 'gets the adapter for the given environment_slug' do
       expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
-      described_class.expose(args)
+      described_class.expose(**args)
     end
 
     it 'asks the adapter to expose passing on all args except environment_slug' do
-      expect(mock_adapter).to receive(:expose).with(args.except(:environment_slug)).and_return(mock_adapter)
-      described_class.expose(args)
+      expect(mock_adapter).to receive(:expose).with(**args.except(:environment_slug)).and_return(mock_adapter)
+      described_class.expose(**args)
     end
   end
 
@@ -265,12 +265,12 @@ describe DeploymentService do
 
     it 'gets the adapter for the given environment_slug' do
       expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
-      described_class.create_network_policy(args)
+      described_class.create_network_policy(**args)
     end
 
     it 'asks the adapter to expose passing on all args' do
-      expect(mock_adapter).to receive(:create_network_policy).with(args).and_return(mock_adapter)
-      described_class.create_network_policy(args)
+      expect(mock_adapter).to receive(:create_network_policy).with(**args).and_return(mock_adapter)
+      described_class.create_network_policy(**args)
     end
   end
 
@@ -290,12 +290,12 @@ describe DeploymentService do
 
     it 'gets the adapter for the given environment_slug' do
       expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
-      described_class.create_service_monitor(args)
+      described_class.create_service_monitor(**args)
     end
 
     it 'asks the adapter to expose passing on all args' do
-      expect(mock_adapter).to receive(:create_service_monitor).with(args).and_return(mock_adapter)
-      described_class.create_service_monitor(args)
+      expect(mock_adapter).to receive(:create_service_monitor).with(**args).and_return(mock_adapter)
+      described_class.create_service_monitor(**args)
     end
   end
 
@@ -314,12 +314,12 @@ describe DeploymentService do
 
     it 'gets the adapter for the given environment_slug' do
       expect(described_class).to receive(:adapter_for).with('env_slug').and_return(mock_adapter)
-      described_class.start_service(args)
+      described_class.start_service(**args)
     end
 
     it 'asks the adapter to start_service passing on all args except environment_slug' do
-      expect(mock_adapter).to receive(:start_service).with(args.except(:environment_slug)).and_return(mock_adapter)
-      described_class.start_service(args)
+      expect(mock_adapter).to receive(:start_service).with(**args.except(:environment_slug)).and_return(mock_adapter)
+      described_class.start_service(**args)
     end
   end
 
@@ -337,12 +337,12 @@ describe DeploymentService do
     end
 
     it 'gets the adapter for the given environment_slug' do
-      described_class.restart_service(args)
+      described_class.restart_service(**args)
       expect(described_class).to have_received(:adapter_for).with('env_slug')
     end
 
     it 'asks the adapter to delete_pods passing on all args except environment_slug' do
-      described_class.restart_service(args)
+      described_class.restart_service(**args)
       expect(mock_adapter).to have_received(:patch_deployment).with(name: 'some-service')
     end
   end

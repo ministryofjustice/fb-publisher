@@ -77,13 +77,13 @@ describe Concerns::NestedResourceController do
         let(:stored_options){ MockController.send(:instance_variable_get, '@nested_resource_options') }
 
         it 'includes the given resource name' do
-          MockController.send(:nest_under, :mock_model, args)
+          MockController.send(:nest_under, :mock_model, **args)
           expect(stored_options[:resource_name]).to eq(:mock_model)
         end
         context 'given an :attr_name' do
           let(:args) { {attr_name: 'my_attr'} }
           it 'passes on the given attr_name' do
-            MockController.send(:nest_under, :mock_model, args)
+            MockController.send(:nest_under, :mock_model, **args)
             expect(stored_options[:attr_name]).to eq('my_attr')
           end
         end
@@ -91,7 +91,7 @@ describe Concerns::NestedResourceController do
         context 'given no :attr_name' do
           let(:args) { {} }
           it 'passes attr_name: :id' do
-            MockController.send(:nest_under, :mock_model, args)
+            MockController.send(:nest_under, :mock_model, **args)
             expect(stored_options[:attr_name]).to eq(:id)
           end
         end
@@ -99,7 +99,7 @@ describe Concerns::NestedResourceController do
         context 'given an :resource_class' do
           let(:args) { {resource_class: 'my resource_class'} }
           it 'passes on the given resource_class' do
-            MockController.send(:nest_under, :mock_model, args)
+            MockController.send(:nest_under, :mock_model, **args)
             expect(stored_options[:resource_class]).to eq('my resource_class')
           end
         end
@@ -107,7 +107,7 @@ describe Concerns::NestedResourceController do
         context 'given no :resource_class' do
           let(:args) { {} }
           it 'derives a resource class from the given resource_name' do
-            MockController.send(:nest_under, :mock_model, args)
+            MockController.send(:nest_under, :mock_model, **args)
             expect(stored_options[:resource_class]).to eq(MockModel)
           end
         end
@@ -115,7 +115,7 @@ describe Concerns::NestedResourceController do
         context 'given an :param_name' do
           let(:args) { {param_name: 'my param_name'} }
           it 'passes on the given param_name' do
-            MockController.send(:nest_under, :mock_model, args)
+            MockController.send(:nest_under, :mock_model, **args)
             expect(stored_options[:param_name]).to eq('my param_name')
           end
         end
@@ -123,7 +123,7 @@ describe Concerns::NestedResourceController do
         context 'given no :param_name' do
           let(:args) { {} }
           it 'derives param_name from (resource_name)_id' do
-            MockController.send(:nest_under, :mock_model, args)
+            MockController.send(:nest_under, :mock_model, **args)
             expect(stored_options[:param_name]).to eq('mock_model_id')
           end
         end
