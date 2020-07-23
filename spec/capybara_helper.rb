@@ -4,18 +4,14 @@ require 'capybara/rails'
 
 require 'support/sessions'
 
-require 'phantomjs'
-require 'capybara/poltergeist'
-
 Capybara.default_driver = :rack_test
 
-options = {
-  js_errors: false,
-  phantomjs: Phantomjs.path
-}
-
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, options)
+Capybara.register_driver :selenium do |app|
+  chrome_options = Selenium::WebDriver::Chrome::Options.new.tap do |o|
+    o.add_argument '--headless'
+    o.add_argument '--no-sandbox'
+  end
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: chrome_options)
 end
 
-Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :selenium

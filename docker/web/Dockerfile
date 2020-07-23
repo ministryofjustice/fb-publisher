@@ -3,7 +3,8 @@ FROM ruby:2.7.1-buster
 # https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 
-RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
+RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev \
+  chromium chromium-driver
 
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
