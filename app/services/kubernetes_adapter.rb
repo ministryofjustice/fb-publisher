@@ -353,7 +353,7 @@ class KubernetesAdapter
                                                environment_slug: @environment.slug)
 
     <<~ENDHEREDOC
-    apiVersion: apps/v1beta2
+    apiVersion: apps/v1
     kind: Deployment
     metadata:
       name: #{name}
