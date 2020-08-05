@@ -185,3 +185,8 @@ spec:
               secretKeyRef:
                 name: fb-publisher-app-secrets-{{ .Values.environmentName }}
                 key: runner_sentry_dsn
+          - name: SLACK_PUBLISH_WEBHOOK
+            valueFrom:
+              secretKeyRef:
+                name: fb-publisher-app-secrets-{{ .Values.environmentName }}
+                key: slack_publish_webhook
