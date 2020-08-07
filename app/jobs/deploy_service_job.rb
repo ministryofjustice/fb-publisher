@@ -74,6 +74,7 @@ class DeployServiceJob < ApplicationJob
     log_for_user(:complete)
     @deployment.complete!
 
+    notify_first_live_publish if ENV['SLACK_PUBLISH_WEBHOOK']
     log_for_user(:all_done)
   end
 
@@ -108,5 +109,20 @@ class DeployServiceJob < ApplicationJob
       job: self,
       tag: self.class.log_tag(@service_deployment_id)
     )
+  end
+
+  def notify_first_live_publish
+    prod_deployments = @deployment.service
+                                  .service_deployments
+                                  .where(environment_slug: 'production')
+                                  .where(status: 'completed')
+
+    # current service deployment job could be to production in which case if
+    # there is only one then it's the first time
+    if prod_deployments.count == 1
+      NotificationService.notify(
+        "#{@deployment.service.name} has been published to Live for the first time"
+      )
+    end
   end
 end

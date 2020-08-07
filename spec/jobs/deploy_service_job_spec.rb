@@ -2,7 +2,9 @@ require 'rails_helper'
 
 describe DeployServiceJob do
   let(:json_sub_dir) { nil }
-  let(:service) { double('service', git_repo_url: 'https://some/repo', deploy_key: nil) }
+  let(:service) do
+    double('service', name: 'Servotron', git_repo_url: 'https://some/repo', deploy_key: nil)
+  end
   let(:deployment) do
     double('deployment',
       id: 'my-deployment-id',
@@ -73,6 +75,7 @@ describe DeployServiceJob do
 
       it 'does not complete! the deployment' do
         expect(deployment).to_not receive(:complete!)
+        expect(NotificationService).to_not receive(:notify)
         perform_and_handle_error
       end
 
@@ -110,7 +113,7 @@ describe DeployServiceJob do
     end
 
     context 'when the job does not throw an error' do
-      it 'complete!s the deployment' do
+      it 'completes the deployment' do
         expect(deployment).to receive(:complete!)
         perform
       end
@@ -136,6 +139,31 @@ describe DeployServiceJob do
         environment_slug: 'myenv'
       )
       perform
+    end
+
+    context 'First publish of a service to Live' do
+      let(:deployment) do
+        double('deployment',
+          id: 'my-deployment-id',
+          commit_sha: 'tag:1234',
+          json_sub_dir: json_sub_dir,
+          service: service,
+          status: 'completed',
+          environment_slug: 'production'
+        )
+      end
+      let(:message) { "#{deployment.service.name} has been published to Live for the first time" }
+
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with('SLACK_PUBLISH_WEBHOOK').and_return('https://www.foo.com/bar')
+        allow(deployment).to receive_message_chain(:service, :service_deployments, :where, :where) { [deployment] }
+      end
+
+      it 'notifies the first time a service is published to production' do
+        expect(NotificationService).to receive(:notify).with(message)
+        perform
+      end
     end
   end
 end
