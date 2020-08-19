@@ -81,6 +81,19 @@ describe KubernetesAdapter do
         expect(value).to eql('runner-sentry-dsn-here')
       end
 
+      it 'sets SUBMISSION_ENCRYPTION_KEY for the runner' do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with('SUBMISSION_ENCRYPTION_KEY')
+                                  .and_return('runner-submission-encryption-key')
+
+        create_deployment
+
+        hash = YAML.load(File.open(config_dir.join(filename)).read)
+        value = hash.dig('spec', 'template', 'spec', 'containers', 0, 'env')
+                    .find{|k,v| k['name'] == 'SUBMISSION_ENCRYPTION_KEY' }['value']
+        expect(value).to eql('runner-submission-encryption-key')
+      end
+
       it 'sets SERVICE_SHA' do
         create_deployment
 
