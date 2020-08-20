@@ -407,6 +407,8 @@ class KubernetesAdapter
                 value: #{ENV['RUNNER_SENTRY_DSN']}
               - name: SERVICE_SHA
                 value: "#{commit_ref}"
+              - name: SUBMISSION_ENCRYPTION_KEY
+                value: "#{ENV['SUBMISSION_ENCRYPTION_KEY']}"
             image: #{image}
             imagePullPolicy: Always
             ports:
