@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+orbs:
+  slack: circleci/slack@3.4.2
+
 jobs:
   test:
     working_directory: ~/circle
@@ -22,6 +25,11 @@ jobs:
       - run:
           name: test
           command: 'make spec'
+      - slack/status: &slack_status
+          fail_only: true
+          only_for_branches: master
+          failure_message: ":facepalm:  Failed job $CIRCLE_JOB  :homer-disappear:"
+          include_job_number_field: false
   build_and_deploy_to_test:
     working_directory: ~/circle/git/fb-publisher
     docker: &ecr_base_image
@@ -32,15 +40,15 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - add_ssh_keys:
+      - add_ssh_keys: &ssh_keys
           fingerprints:
             - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
-      - run:
+      - run: &base_environment_variables
           name: Setup base environment variable
           command: |
             echo "export BUILD_SHA=$CIRCLE_SHA1" >> $BASH_ENV
             echo "export SSH_FILE_FOR_SECRETS=~/.ssh/id_rsa_050e96bc58f960ccb634cbf505912c11" >> $BASH_ENV
-      - run:
+      - run: &deploy_scripts
           name: cloning deploy scripts
           command: 'git clone git@github.com:ministryofjustice/fb-deploy.git deploy-scripts'
       - run:
@@ -55,23 +63,16 @@ jobs:
             PLATFORM_ENV: test
             K8S_NAMESPACE: formbuilder-publisher-test
           command: './deploy-scripts/bin/deploy'
+      - slack/status: *slack_status
   build_and_deploy_to_live:
     working_directory: ~/circle/git/fb-publisher
     docker: *ecr_base_image
     steps:
       - checkout
       - setup_remote_docker
-      - add_ssh_keys:
-          fingerprints:
-            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
-      - run:
-          name: Setup base environment variable
-          command: |
-            echo "export BUILD_SHA=$CIRCLE_SHA1" >> $BASH_ENV
-            echo "export SSH_FILE_FOR_SECRETS=~/.ssh/id_rsa_050e96bc58f960ccb634cbf505912c11" >> $BASH_ENV
-      - run:
-          name: cloning deploy scripts
-          command: 'git clone git@github.com:ministryofjustice/fb-deploy.git deploy-scripts'
+      - add_ssh_keys: *ssh_keys
+      - run: *base_environment_variables
+      - run: *deploy_scripts
       - run:
           name: build and push docker images
           environment:
@@ -84,6 +85,11 @@ jobs:
             PLATFORM_ENV: live
             K8S_NAMESPACE: formbuilder-publisher-live
           command: './deploy-scripts/bin/deploy'
+      - slack/status:
+          only_for_branches: master
+          success_message: ":rocket:  Successfully deployed to Live  :guitar:"
+          failure_message: ":alert:  Failed to deploy to Live  :try_not_to_cry:"
+          include_job_number_field: false
 
 workflows:
   version: 2
@@ -96,6 +102,11 @@ workflows:
           filters:
             branches:
               only: master
+      - slack/approval-notification:
+          message: ":portalorangeparrot:  Deployment to Live pending approval  :portalblueparrot:"
+          include_job_number_field: false
+          requires:
+            - build_and_deploy_to_test
       - confirm_live_deploy:
           type: approval
           requires:
