@@ -6,8 +6,8 @@
       %li
         - if current_env == env.slug.to_s
           %span
-            = env.name
+            = env.form_environment
         - else
-          = link_to env.name, {env: env.slug}
+          = link_to env.form_environment, {env: env.slug}
     %li
       = link_to t('.all_envs_status'), status_service_deployments_path(@service)

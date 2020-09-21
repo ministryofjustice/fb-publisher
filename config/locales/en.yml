@@ -109,8 +109,8 @@ en:
         delete_confirm: Are you sure you want to delete the deployment of %{name} in the %{environment} environment?
         deleting: Deleting...
       environments_nav:
-        all_envs_status: '(all)'
-        environments: 'Deployments in'
+        all_envs_status: 'All'
+        environments: 'Published on'
       index:
         completed_at: Finished at
         created_at: Job created at
@@ -133,7 +133,7 @@ en:
         status: Status
         actions: Actions
     create:
-      success: Your form has been added.
+      success: Your form has been added
     destroy:
       success: Service "%{service}" deleted successfully
     edit_confirm:
