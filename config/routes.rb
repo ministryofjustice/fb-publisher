@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   get '/health' => 'health#show'
+  get '/ping.json' => 'ping#show'
   get '/dashboard' => 'dashboard#show'
   get '/welcome' => 'welcome#show'
   get '/signup_not_allowed' => 'user_sessions#signup_not_allowed', as: 'signup_not_allowed'
