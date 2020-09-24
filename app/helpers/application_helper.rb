@@ -28,4 +28,16 @@ module ApplicationHelper
       {action: :create}
     end
   end
+
+  def mask_value(name, value)
+    return value unless Rails.application.config.mask_values.include?(name)
+
+    if value.length <= Rails.application.config.mask_lower_length
+      value.gsub(/./, Rails.application.config.mask_character)
+    elsif value.length <= Rails.application.config.mask_upper_length
+      value.gsub(/.(?=.{2})/, Rails.application.config.mask_character)
+    else
+      value.gsub(/.(?=.{4})/, Rails.application.config.mask_character)
+    end
+  end
 end
