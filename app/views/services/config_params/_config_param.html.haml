@@ -6,7 +6,7 @@
       %em.font-xsmall
         = t('.empty_value')
     - else
-      = config_param.value
+      = mask_value(config_param.name, config_param.value)
   %td.actions
     - if can?(:edit, config_param)
       = link_to t('.edit'), edit_service_config_param_path(config_param.service, config_param)

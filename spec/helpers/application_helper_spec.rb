@@ -147,4 +147,39 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe '#mask_value' do
+    let(:config_names) { %w(leonardo michelangelo donatello) }
+    let(:six_characters) { '8VBgf8' }
+    let(:twelve_characters) { '8VBgf8LEv8kr' }
+    let(:long_value) { '8VBgf8LEv8krunOd' }
+
+    before do
+      allow(Rails.application.config).to receive(:mask_values).and_return(config_names)
+    end
+
+    context 'six characters' do
+      it 'masks all the character' do
+        expect(mock_controller.mask_value('leonardo', six_characters)).to eq('******')
+      end
+    end
+
+    context 'twelve characters' do
+      it 'masks all but the last 2 characters' do
+        expect(mock_controller.mask_value('michelangelo', twelve_characters)).to eq('**********kr')
+      end
+    end
+
+    context 'more than twelve characters' do
+      it 'masks all but the last 4 characters' do
+        expect(mock_controller.mask_value('donatello', long_value)).to eq('************unOd')
+      end
+    end
+
+    context 'config name not in mask values config' do
+      it 'does not mask any characters' do
+        expect(mock_controller.mask_value('raphael', long_value)).to eq(long_value)
+      end
+    end
+  end
 end
