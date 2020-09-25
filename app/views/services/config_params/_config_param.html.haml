@@ -8,7 +8,7 @@
     - else
       = mask_value(config_param.name, config_param.value)
   %td.actions
-    - if can?(:edit, config_param)
+    - if can?(:edit, config_param) && !masked_config?(config_param.name)
       = link_to t('.edit'), edit_service_config_param_path(config_param.service, config_param)
     - if can?(:destroy, config_param)
       = button_to t('.delete'),
