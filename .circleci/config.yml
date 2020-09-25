@@ -101,7 +101,8 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only:
+                - master
       - slack/approval-notification:
           message: ":portalorangeparrot:  Deployment to Live pending approval  :portalblueparrot:"
           include_job_number_field: false
