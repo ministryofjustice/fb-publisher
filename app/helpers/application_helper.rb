@@ -29,8 +29,12 @@ module ApplicationHelper
     end
   end
 
+  def masked_config?(name)
+    Rails.application.config.mask_values.include?(name)
+  end
+
   def mask_value(name, value)
-    return value unless Rails.application.config.mask_values.include?(name)
+    return value unless masked_config?(name)
 
     if value.length <= Rails.application.config.mask_lower_length
       value.gsub(/./, Rails.application.config.mask_character)

@@ -19,6 +19,7 @@ describe "visiting a service's config params page" do
 
     context 'when adding new environment variables' do
       before do
+        allow(Rails.application.config).to receive(:mask_values).and_return([name])
         visit "/services/#{service.slug}/configuration"
         fill_in('Name', with: name)
         fill_in('Value', with: value)
@@ -45,6 +46,12 @@ describe "visiting a service's config params page" do
 
         it 'displays error message' do
           expect(page).to have_content('Name has already been taken')
+        end
+      end
+
+      context 'masked environment variables' do
+        it 'does not allow masked variables to be edited' do
+          expect(page).to_not have_content('Edit')
         end
       end
     end
