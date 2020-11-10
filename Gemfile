@@ -80,7 +80,7 @@ end
 
 group :development do
   gem 'i18n-debug'
-  gem 'listen', '>= 3.0.5', '< 3.3'
+  gem 'listen', '>= 3.0.5', '< 3.4'
   gem 'guard-rspec', require: false
 end
 
