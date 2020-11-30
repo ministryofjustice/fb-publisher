@@ -25,3 +25,10 @@ make serve
 ```
 
 Visit [http://localhost:3000](http://localhost:3000)
+
+## Testing
+The test suite is run through Docker locally and on CircleCi.
+
+```
+make spec
+```
