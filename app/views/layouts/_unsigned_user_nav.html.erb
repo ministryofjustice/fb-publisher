@@ -1,9 +1,9 @@
 <ul id="proposition-links">
   <li>
     <% if Rails.env.development? %>
-      <%= link_to t('.sign_in'), '/auth/developer' %>
+      <%= link_to t('.sign_in'), '/auth/developer', method: :post %>
     <% else %>
-      <%= link_to t('.sign_in'), '/auth/auth0' %>
+      <%= link_to t('.sign_in'), '/auth/auth0', method: :post %>
     <% end %>
   </li>
 </ul>
