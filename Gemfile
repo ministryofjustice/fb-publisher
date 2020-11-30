@@ -32,6 +32,7 @@ gem 'jquery-rails'
 
 gem 'omniauth' #, '~> 1.6.1'
 gem 'omniauth-auth0', '~> 2.4.1'
+gem 'omniauth-rails_csrf_protection', '~> 0.1'
 
 # Pagination
 gem 'pagy'
