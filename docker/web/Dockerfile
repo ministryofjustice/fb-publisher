@@ -1,4 +1,4 @@
-FROM ruby:2.7.2-buster
+FROM ruby:3.0.0-buster
 
 # https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
