@@ -195,6 +195,7 @@ describe GenericKubernetesPlatformAdapter do
   describe 'default_runner_image_ref' do
     context 'given a runner_repo' do
       before do
+        allow(ENV).to receive(:[])
         allow(ENV).to receive(:[]).with('PLATFORM_ENV').and_return('runnerImagePlatformEnv')
       end
       let(:args) { {runner_repo: 'my-repo'} }
@@ -215,6 +216,7 @@ describe GenericKubernetesPlatformAdapter do
     context 'given no runner_repo' do
       let(:args) { {} }
       before do
+        allow(ENV).to receive(:[])
         allow(ENV).to receive(:[]).with('PLATFORM_ENV')
         allow(ENV).to receive(:[]).with('RUNNER_IMAGE_REPO').and_return('some-repo')
       end
