@@ -66,6 +66,7 @@ describe DeploymentService do
             )
           end
           before do
+            allow(ENV).to receive(:[])
             allow(ENV).to receive(:[]).with('REMOTE_DOCKER_USERNAME').and_return('me-at-docker')
           end
 
