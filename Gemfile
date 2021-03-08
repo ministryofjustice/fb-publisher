@@ -90,7 +90,7 @@ group :test do
   gem 'capybara', '>= 2.15', '< 4.0'
   gem 'database_cleaner'
   gem 'rspec', '~>3.10.0'
-  gem 'rspec-rails', '4.0.2'
+  gem 'rspec-rails', '4.1.0'
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'webmock'
