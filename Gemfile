@@ -51,7 +51,7 @@ gem 'pundit'
 gem 'rack-cors', require: 'rack/cors'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.3'
+gem 'rails', '~> 6.1.3'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0'
