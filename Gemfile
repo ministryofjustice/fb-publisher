@@ -18,7 +18,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'git'
 
 # Gov.uk styling (TODO: upgrade to use new Design System)
-gem 'govuk_frontend_toolkit', '~> 9.0.0'
+gem 'govuk_frontend_toolkit', '~> 9.0.1'
 gem 'govuk_elements_rails', '~> 3.1.3'
 gem 'govuk_elements_form_builder',  '~>1.3.0'
 gem 'govuk_template'
