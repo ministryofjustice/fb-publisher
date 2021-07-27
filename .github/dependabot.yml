@@ -1,0 +1,38 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "03:00"
+    timezone: Europe/London
+  open-pull-requests-limit: 10
+  reviewers:
+  - tomas-stefano
+  - brenetic
+  - mattempty
+  - njseeto
+- package-ecosystem: docker
+  directory: "/docker/web"
+  schedule:
+    interval: daily
+    time: "03:00"
+    timezone: Europe/London
+  open-pull-requests-limit: 10
+  reviewers:
+  - tomas-stefano
+  - brenetic
+  - mattempty
+  - njseeto
+- package-ecosystem: docker
+  directory: "/docker/worker"
+  schedule:
+    interval: daily
+    time: "03:00"
+    timezone: Europe/London
+  open-pull-requests-limit: 10
+  reviewers:
+  - tomas-stefano
+  - brenetic
+  - mattempty
+  - njseeto
