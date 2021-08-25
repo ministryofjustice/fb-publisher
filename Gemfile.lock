@@ -158,7 +158,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jwt (2.2.2)
     libv8 (3.16.14.19)
-    listen (3.6.0)
+    listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.12.0)
@@ -395,7 +395,7 @@ DEPENDENCIES
   i18n-debug
   jbuilder (~> 2.11)
   jquery-rails
-  listen (>= 3.0.5, < 3.7)
+  listen (>= 3.0.5, < 3.8)
   omniauth
   omniauth-auth0 (~> 2.6.0)
   omniauth-rails_csrf_protection (~> 0.1)
