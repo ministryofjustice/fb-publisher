@@ -468,6 +468,8 @@ class KubernetesAdapter
         kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
         nginx.ingress.kubernetes.io/custom-http-errors: "400, 401, 403, 404, 500, 503"
+        external-dns.alpha.kubernetes.io/set-identifier: #{service_slug}-ingress-#{@environment.namespace}-blue
+        external-dns.alpha.kubernetes.io/aws-weight: "100"
     spec:
       tls:
         - hosts:
