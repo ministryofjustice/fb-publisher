@@ -4,7 +4,7 @@ metadata:
   name: "fb-publisher-ing-{{ .Values.environmentName }}"
   annotations:
     external-dns.alpha.kubernetes.io/set-identifier: "fb-publisher-ing-{{ .Values.environmentName }}-formbuilder-publisher-{{ .Values.environmentName }}-green"
-    external-dns.alpha.kubernetes.io/aws-weight: "100"
+    external-dns.alpha.kubernetes.io/aws-weight: "{{ .Values.eks_weighting }}"
 spec:
   tls:
   - hosts:
