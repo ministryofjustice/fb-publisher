@@ -8,9 +8,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - fb-publisher-{{ .Values.environmentName }}.apps.live-1.cloud-platform.service.justice.gov.uk
+    - fb-publisher-{{ .Values.environmentName }}.apps.live.cloud-platform.service.justice.gov.uk
   rules:
-  - host: fb-publisher-{{ .Values.environmentName }}.apps.live-1.cloud-platform.service.justice.gov.uk
+  - host: fb-publisher-{{ .Values.environmentName }}.apps.live.cloud-platform.service.justice.gov.uk
     http:
       paths:
       - path: /
