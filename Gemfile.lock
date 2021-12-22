@@ -101,7 +101,7 @@ GEM
     faraday-net_http (1.0.1)
     ffi (1.15.3)
     formatador (0.2.5)
-    git (1.9.1)
+    git (1.10.0)
       rchardet (~> 1.8)
     globalid (0.5.2)
       activesupport (>= 5.0)
