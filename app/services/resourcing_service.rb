@@ -59,7 +59,7 @@ class ResourcingService
   private
 
   def default_deployment_replicas
-    2
+    4
   end
 
   def default_resources

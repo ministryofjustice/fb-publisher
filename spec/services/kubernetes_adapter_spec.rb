@@ -162,7 +162,7 @@ describe KubernetesAdapter do
         hash = YAML.load(File.open(config_dir.join(filename)).read)
         replicas = hash.dig('spec', 'replicas')
 
-        expect(replicas).to eql(2)
+        expect(replicas).to eql(4)
       end
 
       context do
