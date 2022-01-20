@@ -13,6 +13,7 @@ en:
         invalid: "is invalid (can only contain lower case letters or numbers, '-' or '.', and must start and end with a letter or number)"
     team:
       super_admin: "only one team can be assigned super admin rights"
+    access_denied: "This Publisher is only available to members of the MoJ Forms team. Please visit the <a href='https://fb-publisher-live.apps.live-1.cloud-platform.service.justice.gov.uk'>Live Publisher</a>"
   helpers:
     hint:
       service:

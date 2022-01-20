@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 
   before_action :identify_user
   around_action :set_time_zone, if: :current_user
+  before_action :identify_public_user, if: :current_user
 
   rescue_from Pundit::Error, with: :pundit_errors
 
@@ -21,5 +22,17 @@ class ApplicationController < ActionController::Base
                            default: I18n.t(:default, scope: scope))
 
     redirect_to(request.referrer || root_path)
+  end
+
+  def identify_public_user
+    if ENV['PLATFORM_ENV'] == 'test' && public_user?
+      session.clear
+      flash[:alert] = I18n.t('errors.access_denied').html_safe
+      redirect_to root_path
+    end
+  end
+
+  def public_user?
+    Rails.application.config.moj_forms_team.exclude?(current_user.email)
   end
 end
