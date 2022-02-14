@@ -89,7 +89,7 @@ group :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15', '< 4.0'
   gem 'database_cleaner'
-  gem 'rspec', '~>3.10.0'
+  gem 'rspec', '~>3.11.0'
   gem 'rspec-rails', '5.1.0'
   gem 'selenium-webdriver'
   gem 'simplecov'
