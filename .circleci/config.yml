@@ -57,19 +57,19 @@ jobs:
             ENVIRONMENT_NAME: test
           command: './deploy-scripts/bin/build'
       - run:
-          name: deploy to test
-          environment:
-            APPLICATION_NAME: fb-publisher
-            PLATFORM_ENV: test
-            K8S_NAMESPACE: formbuilder-publisher-test
-          command: './deploy-scripts/bin/deploy'
-      - run:
           name: deploy to test environment in EKS
           environment:
             APPLICATION_NAME: fb-publisher
             PLATFORM_ENV: test
             K8S_NAMESPACE: formbuilder-publisher-test
           command: './deploy-scripts/bin/deploy-eks'
+      - run:
+          name: deploy to test
+          environment:
+            APPLICATION_NAME: fb-publisher
+            PLATFORM_ENV: test
+            K8S_NAMESPACE: formbuilder-publisher-test
+          command: './deploy-scripts/bin/deploy'
       - slack/status: *slack_status
   build_and_deploy_to_live:
     working_directory: ~/circle/git/fb-publisher
@@ -85,6 +85,13 @@ jobs:
           environment:
             ENVIRONMENT_NAME: live
           command: './deploy-scripts/bin/build'
+      - run:
+          name: deploy to live (eks)
+          environment:
+            APPLICATION_NAME: fb-publisher
+            PLATFORM_ENV: live
+            K8S_NAMESPACE: formbuilder-publisher-live
+          command: './deploy-scripts/bin/deploy-eks'
       - run:
           name: deploy to live
           environment:
