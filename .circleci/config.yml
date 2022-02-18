@@ -122,10 +122,10 @@ workflows:
           include_job_number_field: false
           requires:
             - build_and_deploy_to_test
-      - confirm_live_deploy:
-          type: approval
-          requires:
-            - build_and_deploy_to_test
-      - build_and_deploy_to_live:
-          requires:
-            - confirm_live_deploy
+      # - confirm_live_deploy:
+      #     type: approval
+      #     requires:
+      #       - build_and_deploy_to_test
+      # - build_and_deploy_to_live:
+      #     requires:
+      #       - confirm_live_deploy
