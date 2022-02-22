@@ -30,7 +30,7 @@ jobs:
           only_for_branches: master
           failure_message: ":facepalm:  Failed job $CIRCLE_JOB  :homer-disappear:"
           include_job_number_field: false
-  build_and_deploy_to_test:
+  build_and_push_image:
     working_directory: ~/circle/git/fb-publisher
     docker: &ecr_base_image
       - image: $AWS_BUILD_IMAGE_ECR_ACCOUNT_URL
@@ -40,9 +40,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - add_ssh_keys: &ssh_keys
-          fingerprints:
-            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
       - run: &base_environment_variables
           name: Setup base environment variable
           command: |
@@ -56,6 +53,18 @@ jobs:
           environment:
             ENVIRONMENT_NAME: test
           command: './deploy-scripts/bin/build'
+      - slack/status: *slack_status
+  deploy_to_test:
+    working_directory: ~/circle/git/fb-publisher
+    docker: *ecr_base_image
+    steps:
+      - checkout
+      - setup_remote_docker
+      - add_ssh_keys: &ssh_keys
+          fingerprints:
+            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
+      - run: *base_environment_variables
+      - run: *deploy_scripts
       - run:
           name: deploy to test environment in EKS
           environment:
@@ -63,15 +72,8 @@ jobs:
             PLATFORM_ENV: test
             K8S_NAMESPACE: formbuilder-publisher-test
           command: './deploy-scripts/bin/deploy-eks'
-      - run:
-          name: deploy to test
-          environment:
-            APPLICATION_NAME: fb-publisher
-            PLATFORM_ENV: test
-            K8S_NAMESPACE: formbuilder-publisher-test
-          command: './deploy-scripts/bin/deploy'
       - slack/status: *slack_status
-  build_and_deploy_to_live:
+  deploy_to_live:
     working_directory: ~/circle/git/fb-publisher
     docker: *ecr_base_image
     steps:
@@ -80,11 +82,6 @@ jobs:
       - add_ssh_keys: *ssh_keys
       - run: *base_environment_variables
       - run: *deploy_scripts
-      - run:
-          name: build and push docker images
-          environment:
-            ENVIRONMENT_NAME: live
-          command: './deploy-scripts/bin/build'
       - run:
           name: deploy to live (eks)
           environment:
@@ -110,22 +107,25 @@ workflows:
   test_and_build:
     jobs:
       - test
-      - build_and_deploy_to_test:
+      - build_and_push_image:
           requires:
             - test
           filters:
             branches:
               only:
                 - master
+      - deploy_to_test:
+          requires:
+            - build_and_push_image
       - slack/approval-notification:
           message: ":portalorangeparrot:  Deployment to Live pending approval  :portalblueparrot:"
           include_job_number_field: false
           requires:
-            - build_and_deploy_to_test
-      # - confirm_live_deploy:
-      #     type: approval
-      #     requires:
-      #       - build_and_deploy_to_test
-      # - build_and_deploy_to_live:
-      #     requires:
-      #       - confirm_live_deploy
+            - deploy_to_test
+      - confirm_live_deploy:
+          type: approval
+          requires:
+            - deploy_to_test
+      - deploy_to_live:
+          requires:
+            - confirm_live_deploy
