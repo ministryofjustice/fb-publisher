@@ -39,7 +39,9 @@ jobs:
           aws_secret_access_key: $AWS_BUILD_IMAGE_SECRET_ACCESS_KEY
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker: &remote_docker
+          version: 20.10.11
+          docker_layer_caching: true
       - run: &base_environment_variables
           name: Setup base environment variable
           command: |
@@ -59,7 +61,7 @@ jobs:
     docker: *ecr_base_image
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker: *remote_docker
       - add_ssh_keys: &ssh_keys
           fingerprints:
             - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
@@ -78,7 +80,7 @@ jobs:
     docker: *ecr_base_image
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker: *remote_docker
       - add_ssh_keys: *ssh_keys
       - run: *base_environment_variables
       - run: *deploy_scripts
@@ -89,13 +91,6 @@ jobs:
             PLATFORM_ENV: live
             K8S_NAMESPACE: formbuilder-publisher-live
           command: './deploy-scripts/bin/deploy-eks'
-      - run:
-          name: deploy to live
-          environment:
-            APPLICATION_NAME: fb-publisher
-            PLATFORM_ENV: live
-            K8S_NAMESPACE: formbuilder-publisher-live
-          command: './deploy-scripts/bin/deploy'
       - slack/status:
           only_for_branches: master
           success_message: ":rocket:  Successfully deployed to Live  :guitar:"
@@ -106,10 +101,10 @@ workflows:
   version: 2
   test_and_build:
     jobs:
-      # - test
+      - test
       - build_and_push_image:
-          # requires:
-          #   - test
+          requires:
+            - test
           filters:
             branches:
               only:
