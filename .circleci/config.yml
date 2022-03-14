@@ -15,7 +15,7 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: root
           DATABASE_URL: postgresql://root@localhost/fb-publisher_test
-      - image: circleci/postgres:10.6-alpine-ram
+      - image: cimg/postgres:10.19
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle-test_test
