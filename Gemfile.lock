@@ -147,7 +147,7 @@ GEM
       haml (>= 4.0, < 6)
       nokogiri (>= 1.6.0)
       ruby_parser (~> 3.5)
-    i18n (1.9.1)
+    i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     i18n-debug (1.2.0)
       i18n (< 2)
@@ -286,7 +286,7 @@ GEM
     rspec-mocks (3.11.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
-    rspec-rails (5.1.0)
+    rspec-rails (5.1.1)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       railties (>= 5.2)
@@ -412,7 +412,7 @@ DEPENDENCIES
   rails-data-migrations
   resque
   rspec (~> 3.11.0)
-  rspec-rails (= 5.1.0)
+  rspec-rails (= 5.1.1)
   rubocop
   sass-rails (~> 6.0)
   selenium-webdriver
