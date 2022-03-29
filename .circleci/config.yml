@@ -21,7 +21,9 @@ jobs:
           POSTGRES_DB: circle-test_test
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker: &remote_docker
+          version: 20.10.11
+          docker_layer_caching: true
       - run:
           name: test
           command: 'make spec'
@@ -39,9 +41,7 @@ jobs:
           aws_secret_access_key: $AWS_BUILD_IMAGE_SECRET_ACCESS_KEY
     steps:
       - checkout
-      - setup_remote_docker: &remote_docker
-          version: 20.10.11
-          docker_layer_caching: true
+      - setup_remote_docker: *remote_docker
       - run: &base_environment_variables
           name: Setup base environment variable
           command: |
