@@ -13,7 +13,7 @@ class Pagy
     def pagy_array_get_vars(array, vars)
       # Return the merged variables to initialize the Pagy object
       { count: array.count,
-        page:  params[vars[:page_param]||VARS[:page_param]] }.merge!(vars)
+        page:  params[vars[:page_param] || DEFAULT[:page_param]] }.merge!(vars)
     end
   end
 end
