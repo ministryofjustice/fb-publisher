@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 2.11'
 gem 'jquery-rails'
 
 gem 'omniauth-auth0', '~> 3.0.0'
-gem 'omniauth-rails_csrf_protection', '~> 0.1'
+gem 'omniauth-rails_csrf_protection', '~> 1.0'
 
 # Pagination
 gem 'pagy'
