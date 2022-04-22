@@ -30,9 +30,8 @@ gem 'haml-rails'
 gem 'jbuilder', '~> 2.11'
 gem 'jquery-rails'
 
-gem 'omniauth' #, '~> 1.6.1'
-gem 'omniauth-auth0', '~> 2.6.0'
-gem 'omniauth-rails_csrf_protection', '~> 0.1'
+gem 'omniauth-auth0', '~> 3.0.0'
+gem 'omniauth-rails_csrf_protection', '~> 1.0'
 
 # Pagination
 gem 'pagy'
@@ -71,6 +70,8 @@ gem 'resque'
 gem 'rails-data-migrations'
 gem 'uri-ssh_git'
 gem 'sentry-raven'
+
+gem 'activerecord-session_store'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

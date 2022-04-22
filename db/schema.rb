@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_21_164749) do
+ActiveRecord::Schema.define(version: 2022_04_22_144616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -83,6 +83,15 @@ ActiveRecord::Schema.define(version: 2019_11_21_164749) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "deploy_key"
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.string "session_id", null: false
+    t.text "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
+    t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
   create_table "team_members", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
