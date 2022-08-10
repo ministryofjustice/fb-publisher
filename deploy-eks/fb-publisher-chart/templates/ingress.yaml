@@ -6,6 +6,7 @@ metadata:
     external-dns.alpha.kubernetes.io/set-identifier: "fb-publisher-ing-{{ .Values.environmentName }}-formbuilder-publisher-{{ .Values.environmentName }}-green"
     external-dns.alpha.kubernetes.io/aws-weight: "{{ .Values.eks_weighting }}"
 spec:
+  ingressClassName: default
   tls:
   - hosts:
     - fb-publisher-{{ .Values.environmentName }}.apps.live.cloud-platform.service.justice.gov.uk
