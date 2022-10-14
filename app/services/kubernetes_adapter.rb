@@ -459,7 +459,7 @@ class KubernetesAdapter
 
   def ingress_rule(service_slug:, hostname:, container_port: 3000)
     <<~ENDHEREDOC
-    apiVersion: networking.k8s.io/v1beta1
+    apiVersion: networking.k8s.io/v1
     kind: Ingress
     metadata:
       name: #{service_slug}-ingress
@@ -480,9 +480,12 @@ class KubernetesAdapter
         http:
           paths:
           - path: /
+            pathType: ImplementationSpecific
             backend:
-              serviceName: #{service_slug}
-              servicePort: #{container_port}
+              service:
+                name: #{service_slug}
+                port:
+                  number: #{container_port}
     ENDHEREDOC
   end
 end
