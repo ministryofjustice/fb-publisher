@@ -45,7 +45,7 @@ jobs:
           name: Setup base environment variable
           command: |
             echo "export BUILD_SHA=$CIRCLE_SHA1" >> $BASH_ENV
-            echo "export SSH_FILE_FOR_SECRETS=~/.ssh/id_rsa_050e96bc58f960ccb634cbf505912c11" >> $BASH_ENV
+            echo "export SSH_FILE_FOR_SECRETS=~/.ssh/id_rsa_65357fbcc65a92dfff23ac166c2e76de" >> $BASH_ENV
       - run: &deploy_scripts
           name: cloning deploy scripts
           command: 'git clone git@github.com:ministryofjustice/fb-deploy.git deploy-scripts'
@@ -63,7 +63,7 @@ jobs:
       - setup_remote_docker: *remote_docker
       - add_ssh_keys: &ssh_keys
           fingerprints:
-            - "05:0e:96:bc:58:f9:60:cc:b6:34:cb:f5:05:91:2c:11"
+            - 65:35:7f:bc:c6:5a:92:df:ff:23:ac:16:6c:2e:76:de
       - run: *base_environment_variables
       - run: *deploy_scripts
       - run:
@@ -100,8 +100,11 @@ workflows:
   version: 2
   test_and_build:
     jobs:
-      - test
+      - test:
+          context: &context
+            - moj-forms
       - build_and_push_image:
+          context: *context
           requires:
             - test
           filters:
@@ -109,6 +112,7 @@ workflows:
               only:
                 - master
       - deploy_to_test:
+          context: *context
           requires:
             - build_and_push_image
       - slack/approval-notification:
@@ -121,5 +125,6 @@ workflows:
           requires:
             - deploy_to_test
       - deploy_to_live:
+          context: *context
           requires:
             - confirm_live_deploy
