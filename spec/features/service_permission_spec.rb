@@ -9,6 +9,7 @@ describe 'visiting / service permissions' do
   end
   context 'as a logged in user' do
     before do
+      allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
       login_as!(user)
     end
 

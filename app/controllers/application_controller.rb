@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   end
 
   def identify_public_user
-    if ENV['PLATFORM_ENV'] == 'test' && public_user?
+    if public_user?
       session.clear
       flash[:alert] = I18n.t('errors.access_denied').html_safe
       redirect_to root_path

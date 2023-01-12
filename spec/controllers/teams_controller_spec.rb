@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe TeamsController do
   before do
+    allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
     session[:user_id] = user.try(:id)
     controller.send(:instance_variable_set, "@current_user", user)
   end
