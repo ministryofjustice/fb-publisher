@@ -1,6 +1,10 @@
 require 'capybara_helper'
 
 describe 'visiting services/deployment' do
+  before do
+    allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
+  end
+
   context 'as a logged in user' do
     let(:user) do
       User.create(id: 'abc123', name: 'test user',

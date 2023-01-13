@@ -2,6 +2,7 @@ require 'capybara_helper'
 
 describe 'visiting /services' do
   before do
+    allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
     allow(DeploymentService).to receive(:url_for).and_return('url.test')
   end
 

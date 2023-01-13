@@ -6,6 +6,7 @@ describe 'View / Profile' do
       let(:user) { User.find_or_create_by(name: 'test user', email: 'test@example.justice.gov.uk') }
 
       before do
+        allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
         login_as!(user)
         visit 'user/edit'
       end

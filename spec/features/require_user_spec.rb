@@ -3,6 +3,7 @@ require 'capybara_helper'
 
 describe 'visiting the home page' do
   before do
+    allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
     visit '/'
   end
   context 'when not logged in' do
@@ -42,6 +43,7 @@ end
 
 describe 'visiting a page that requires a current user' do
   before do
+    allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
     visit '/services'
   end
   context 'when not logged in' do

@@ -2,6 +2,7 @@ require 'capybara_helper'
 
 describe 'logging in as a particular user' do
   before do
+    allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
     clear_session!
   end
 

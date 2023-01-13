@@ -3,6 +3,7 @@ require 'capybara_helper'
 describe 'signing out' do
   let(:user){ User.new(name: 'new user', email: 'user@justice.gov.uk') }
   before do
+    allow_any_instance_of(ApplicationController).to receive(:public_user?).and_return(false)
     clear_session!
   end
 
