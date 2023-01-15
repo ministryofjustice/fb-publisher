@@ -2,7 +2,7 @@
 
 # Form Builder Publisher
 
-This Ruby on Rails app allows users to deploy their forms in to [https://github.com/ministryofjustice/cloud-platform-environments](Cloud Platform)
+This Ruby on Rails app allows users to deploy their forms in to [Cloud Platform](https://github.com/ministryofjustice/cloud-platform-environments).
 
 ## Environments
 
