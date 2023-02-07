@@ -1,13 +1,10 @@
-FROM ruby:3.1.3-buster
+FROM ruby:3.0.5-buster
 
 # https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 
-ENV LIBV8_VERSION 3.16.14.19
 RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev \
-  chromium chromium-driver && \
-  gem install libv8 -v ${LIBV8_VERSION} -- --with-system-v8 && \
-  gem install therubyracer
+  chromium chromium-driver
 
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT

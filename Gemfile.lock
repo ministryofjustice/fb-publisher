@@ -165,7 +165,11 @@ GEM
     libv8 (3.16.14.19)
 =======
     jwt (2.7.0)
+<<<<<<< HEAD
 >>>>>>> 432d1b0 (Removing rubyracer from gemfile but installing through docker instead)
+=======
+    libv8 (3.16.14.19)
+>>>>>>> a112ce3 (removing 3.1.3 updates and use 3.0.5 instead)
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -288,9 +292,13 @@ GEM
     redis-namespace (1.10.0)
       redis (>= 4)
 <<<<<<< HEAD
+<<<<<<< HEAD
     ref (2.0.0)
 =======
 >>>>>>> 432d1b0 (Removing rubyracer from gemfile but installing through docker instead)
+=======
+    ref (2.0.0)
+>>>>>>> a112ce3 (removing 3.1.3 updates and use 3.0.5 instead)
     regexp_parser (2.6.2)
     resque (2.4.0)
       mono_logger (~> 1.0)
@@ -382,6 +390,9 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     temple (0.10.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
+      ref
     thor (1.2.1)
     thread_safe (0.3.6)
     tilt (2.0.11)
@@ -446,6 +457,7 @@ DEPENDENCIES
   sentry-raven
   simplecov
   sprockets (~> 4.0.2)
+  therubyracer
   typhoeus
   tzinfo-data
   uglifier (>= 1.3.0)
@@ -453,4 +465,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.1.4
+   2.2.33
