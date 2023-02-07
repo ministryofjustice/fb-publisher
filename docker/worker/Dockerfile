@@ -12,7 +12,7 @@ WORKDIR $RAILS_ROOT
 RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
 RUN chown deploy:deploy /var/www/fb-publisher
 
-RUN gem install libv8 -v "3.16.14.19" --source 'https://rubygems.org/'
+RUN gem install libv8 -v "3.16.14.19" -- --with-system-v8
 RUN gem install therubyracer -v "0.12.3" -- --with-system-v8
 
 COPY --chown=deploy:deploy Gemfile Gemfile.lock .ruby-version ./
