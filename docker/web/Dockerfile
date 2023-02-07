@@ -3,8 +3,11 @@ FROM ruby:3.1.3-buster
 # https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 
+ENV LIBV8_VERSION 3.16.14.19
 RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev \
-  chromium chromium-driver
+  chromium chromium-driver && \
+  gem install libv8 -v ${LIBV8_VERSION} && \
+  gem install therubyracer
 
 ENV RAILS_ROOT /var/www/fb-publisher
 RUN mkdir -p $RAILS_ROOT
@@ -13,8 +16,7 @@ WORKDIR $RAILS_ROOT
 RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
 RUN chown deploy:deploy /var/www/fb-publisher
 
-RUN gem install libv8 -v "3.16.14.19" -- --with-system-v8
-RUN gem install therubyracer -v "0.12.3" -- --with-system-v8
+
 
 COPY --chown=deploy:deploy Gemfile Gemfile.lock .ruby-version ./
 ENV BUNDLER_VERSION 2.1.4
