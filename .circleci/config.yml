@@ -111,21 +111,20 @@ workflows:
             branches:
               only:
                 - master
-                - bump-ruby3
       - deploy_to_test:
           context: *context
           requires:
             - build_and_push_image
-      # - slack/approval-notification:
-      #     message: ":portalorangeparrot:  Deployment to Live pending approval  :portalblueparrot:"
-      #     include_job_number_field: false
-      #     requires:
-      #       - deploy_to_test
-      # - confirm_live_deploy:
-      #     type: approval
-      #     requires:
-      #       - deploy_to_test
-      # - deploy_to_live:
-      #     context: *context
-      #     requires:
-      #       - confirm_live_deploy
+      - slack/approval-notification:
+          message: ":portalorangeparrot:  Deployment to Live pending approval  :portalblueparrot:"
+          include_job_number_field: false
+          requires:
+            - deploy_to_test
+      - confirm_live_deploy:
+          type: approval
+          requires:
+            - deploy_to_test
+      - deploy_to_live:
+          context: *context
+          requires:
+            - confirm_live_deploy
