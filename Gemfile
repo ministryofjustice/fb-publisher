@@ -30,6 +30,11 @@ gem 'haml-rails'
 gem 'jbuilder', '~> 2.11'
 gem 'jquery-rails'
 
+# These were moved from default gems to bundled gems in Ruby 3
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
+
 gem 'omniauth-auth0', '~> 3.0.0'
 gem 'omniauth-rails_csrf_protection', '~> 1.0'
 
