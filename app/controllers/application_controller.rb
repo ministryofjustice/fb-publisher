@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include Auth0Helper
-  include Pundit
+  include Pundit::Authorization
   protect_from_forgery
 
   before_action :identify_user
