@@ -1,4 +1,4 @@
-FROM ruby:2.7.7-buster
+FROM ruby:3.1.3-buster
 
 # https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
@@ -14,7 +14,7 @@ RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
 RUN chown deploy:deploy /var/www/fb-publisher
 
 COPY --chown=deploy:deploy Gemfile Gemfile.lock .ruby-version ./
-ENV BUNDLER_VERSION 2.1.4
+ENV BUNDLER_VERSION 2.4.5
 RUN gem install bundler
 ARG BUNDLE_FLAGS="--jobs 2 --no-cache --without development test"
 RUN bundle install ${BUNDLE_FLAGS}

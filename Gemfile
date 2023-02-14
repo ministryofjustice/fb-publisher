@@ -30,6 +30,11 @@ gem 'haml-rails'
 gem 'jbuilder', '~> 2.11'
 gem 'jquery-rails'
 
+# These were moved from default gems to bundled gems in Ruby 3
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
+
 gem 'omniauth-auth0', '~> 3.0.0'
 gem 'omniauth-rails_csrf_protection', '~> 1.0'
 
@@ -38,6 +43,8 @@ gem 'pagy'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
+# Pin psych, as psych 4 is default with Ruby 3.1.x and has breaking changes
+gem 'psych', '< 4'
 # Use Puma as the app server
 gem 'puma', '~> 5.6'
 
@@ -64,7 +71,7 @@ gem 'typhoeus'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'therubyracer'
+gem 'mini_racer'
 gem 'uglifier', '>= 1.3.0'
 gem 'resque'
 gem 'rails-data-migrations'
