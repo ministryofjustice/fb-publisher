@@ -38,6 +38,8 @@ gem 'pagy'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
+# Pin psych, as psych 4 is default with Ruby 3.1.x and has breaking changes
+gem 'psych', '< 4'
 # Use Puma as the app server
 gem 'puma', '~> 5.6'
 
