@@ -35,7 +35,7 @@ gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
 
-gem 'omniauth-auth0', '~> 3.0.0'
+gem 'omniauth-auth0', '~> 3.1.1'
 gem 'omniauth-rails_csrf_protection', '~> 1.0'
 
 # Pagination
