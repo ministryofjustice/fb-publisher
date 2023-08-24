@@ -9,7 +9,6 @@ MOJ_FORMS_TEAM = [
   'hellema.ibrahim@digital.justice.gov.uk',
   'mark.jefferson@digital.justice.gov.uk',
   'matt.tei@digital.justice.gov.uk',
-  'natalie.seeto@digital.justice.gov.uk',
   'sijy.mathew@digital.justice.gov.uk',
   'steven.leighton@digital.justice.gov.uk',
 ].freeze
