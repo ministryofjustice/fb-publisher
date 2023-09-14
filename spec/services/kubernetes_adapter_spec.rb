@@ -220,7 +220,7 @@ describe KubernetesAdapter do
         subject.create_service(config_dir: config_dir,
                                service: service)
 
-        expect(File.exists?(config_dir.join(filename)))
+        expect(File.exist?(config_dir.join(filename)))
       end
 
       it 'generates correct service.yaml' do

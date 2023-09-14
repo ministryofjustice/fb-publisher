@@ -1,7 +1,7 @@
 class FileLogAdapter
   def self.log(message:, job_id:, tag:, in_log:)
     log = file_path(in_log)
-    FileUtils.mkdir_p(log_dir) unless File.exists?(log_dir)
+    FileUtils.mkdir_p(log_dir) unless File.exist?(log_dir)
     File.open(log, 'a') do |f|
       f << message + "\n"
     end
